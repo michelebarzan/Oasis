@@ -1,0 +1,894 @@
+/*GESTIONE CARICHI DI LAVORO-----------------------------------------------------------------------------------------------------------------------------------------*/
+/*::-moz-selection
+{
+    background-color:Transparent;
+    color:#000;
+}
+::selection
+{
+    background-color:Transparent;
+    color:#000;
+}
+#myTableProvaExcelWeb::-moz-selection,
+#myTableProvaExcelWeb::selection { ... }*/
+html{
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+#btnForzaDisconnessione
+{
+	text-decoration:underline;
+	margin-left:10px;
+	float:right;
+	display:inline-block;
+	outline:none;
+	width:auto;
+	height:30px;
+	border:none;
+	background:transparent;
+	color:white;
+	font-weight:bold;
+	cursor:pointer;
+	opacity:0.8;
+	font-family:'Montserrat',sans-serif;
+	-webkit-transition: all .3s;
+    transition: all .3s;
+}
+#btnForzaDisconnessione:hover
+{
+	opacity:1;
+	font-weight:bold;
+	color:red;
+}
+#containerGestioneSettimane
+{
+	position:relative;
+	width:95%;
+	max-width:95%;
+	min-width:1300px;
+	overflow-x:auto;
+	overflow-y:hidden;
+	/*min-height:370px;*/
+	height:auto;
+	display:none;
+	text-align:center;
+	-webkit-transition: all 1s;
+    transition: all 1s;
+	left:-50%;
+	margin-bottom:50px;
+	/*background-color:pink;*/
+}
+.colonnaContainerGestioneSettimane
+{
+	box-sizing:border-box;
+	margin-top:15px;
+	margin-bottom:20px;
+	margin-left:1%;
+	width:15.5%;
+	height:auto;
+	/*min-height:600px;*/
+	-webkit-box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.4);
+	box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.4);
+	display:inline-block;
+	float:left;
+	text-align:center;
+}
+.periodo
+{
+	height:50px;
+	width:100%;
+	line-height:50px;
+	border-bottom:1px solid #A8A8A8;
+	display:inline-block;
+	font-family:sans-serif;
+	font-size:110%;
+	background:#CBCBCB;
+}
+.week
+{
+	height:25px;
+	width:100%;
+	line-height:30px;
+	background-color:transparent;
+	display:inline-block;
+	color:black;
+	font-family:sans-serif;
+	/*font-size:105%;*/
+}
+.days
+{
+	height:25px;
+	width:100%;
+	line-height:25px;
+	background-color:transparent;
+	display:inline-block;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:80%;
+}
+#popupCapacitaProduttiva
+{
+	opacity:1;
+	width:0px;
+	height:0px;
+	/*margin-bottom:70px;*/
+	opacity:1;
+	top:150;
+	position: absolute;
+    z-index: 9;
+	/*margin-left:-250px;*/
+	float:center;
+	display:inline-block;
+	background:white;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	-webkit-transition: width .5s, height .5s;
+    transition: width .5s, height .5s;
+	-webkit-box-shadow: 0 0 8px #12365A;
+    box-shadow: 0 0 8px #12365A;
+	box-sizing:border-box;
+	overflow:hidden;
+	text-align:center;
+}
+#popupCapacitaProduttivaheader
+{
+	cursor: -webkit-grab; 
+	z-index: 10;
+	background:#12365A;
+	text-align:left;
+	height:60px;
+	width:500px;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	margin-bottom:30px;
+}
+#btnChiudiPopupCapacitaProduttiva
+{
+	margin-top:20px;
+	margin-right:20px;
+	text-align:center;
+	width:50px;
+	outline:none;
+	height:25px;
+	display:inline-block;
+	float:right;
+	background:transparent;
+	border:none;
+	cursor:pointer;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	-webkit-transition: all .5s;
+    transition: all .5s;
+}
+#btnChiudiPopupCapacitaProduttiva:hover
+{
+	background:red;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#tabellaPopupCapacitaProduttiva
+{
+	width:440px;
+	height:180px;
+	display:inline-block;
+	text-align:center;
+	overflow:auto;
+	box-sizing:border-box;
+	padding-top:20px;
+}
+#containerInputPopupCapacitaProduttiva
+{
+	margin-top:10px;
+	width:440px;
+	height:30px;
+	display:inline-block;
+}
+#btnConfermaPopupCapacitaProduttiva
+{
+	float:left;
+	display:inline-block;
+	width:100px;
+	margin-left:50px;
+}
+#statoCapacitaProduttiva
+{
+	float:left;
+	display:inline-block;
+	width:140px;
+	height:30px;
+	text-align:center;
+	padding-left:58px;
+	box-sizing:border-box;
+}
+#btnAnnullaPopupCapacitaProduttiva
+{
+	float:left;
+	display:inline-block;
+	width:100px;
+}
+.boxCapacitaProduttiva
+{
+	font-size:90%;
+	height:80px;
+	width:220px;
+	float:left;
+	display:inline-block;
+}
+.inputCapacitaProduttiva
+{
+	font-family:'Montserrat',sans-serif;
+	border:1px solid #ddd;
+	padding-left:5px;
+	padding-right:5px;
+	font-size:95%;
+	color:black;
+	width:170px;
+	border-radius:2px;
+	height:20px;
+}
+.progressBarContainer
+{
+	height:40px;
+	width:100%;
+	border-bottom:1px solid #A8A8A8;
+	display:inline-block;
+	background:#CBCBCB;
+	text-align:ceter;
+	cursor:pointer;
+	z-index:6;
+}
+.progressBarContainer:hover
+{
+	opacity:0.8;
+}
+.progressBarHeader
+{
+	height:25px;
+	line-height:25px;
+	width:100%;
+	display:inline-block;
+	font-family:sans-serif;
+	font-size:90%;
+	background:transparent;
+	text-align:ceter;
+}
+.capacitaProduttivaTitle
+{
+	font-family:sans-serif;
+	color:#666f77;
+	text-align:left;
+	float:left;
+	display:inline-block;
+	margin-left:10px;
+}
+.capacitaProduttivaTitle2
+{
+	float:right;
+	display:inline-block;
+	font-family:sans-serif;
+	color:black;
+	text-align:right;
+	margin-right:10px;
+}
+progress 
+{
+	opacity:0.7;
+	border-top:1px solid #A8A8A8;
+	background: #EBEBEB;
+	width:100%;
+	height:15px;
+	line-height:15px;
+	margin:0;
+	padding:0;
+	color:black;
+	outline:none;
+	text-align: center;
+	-webkit-appearance: none;
+	position:relative;
+}
+progress:before 
+{
+  content: attr(data-label);
+  vertical-align: 0;
+  font-size:90%;
+  font-family:sans-serif;
+  
+  /*Position text over the progress bar */
+  position:absolute;
+  left:0;
+  right:0;
+}
+progress::-moz-progress-bar 
+{
+	background: #009900;
+	-webkit-transition: all .2s;
+	-moz-transition: all .2s;
+	-o-transition: all .2s;
+	-ms-transition: all .2s;
+	transition: all .2s;
+}
+progress::-webkit-progress-bar 
+{
+	background: #EBEBEB;
+}
+progress::-webkit-progress-value 
+{
+	background: #009900;
+	-webkit-transition: all .2s;
+	-moz-transition: all .2s;
+	-o-transition: all .2s;
+	-ms-transition: all .2s;
+	transition: all .2s;
+}
+.totali
+{
+	z-index:5;
+	height:30px;
+	width:100%;
+	padding-left:3%;
+	padding-right:3%;
+	box-sizing:border-box;
+	line-height:30px;
+	border-bottom:1px solid #A8A8A8;
+	display:inline-block;
+	font-weight:bold;
+	overflow:hidden;
+	background:#CBCBCB;
+}
+.containerColonne
+{
+	height:40px;
+	width:100%;
+	padding-left:3%;
+	padding-right:3%;
+	box-sizing:border-box;
+	line-height:40px;
+	border-bottom:1px solid #A8A8A8;
+	display:inline-block;
+	font-weight:bold;
+	overflow:hidden;
+	background:#CBCBCB;
+}
+.colonnaOrdineVer
+{
+	width:20%;
+	height:40px;
+	display:inline-block;
+	float:left;
+	border-right:1px solid #A8A8A8;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:60%;
+	box-sizing:border-box;
+	font-weight:bold;
+}
+.colonnaNVer
+{
+	width:8%;
+	height:40px;
+	display:inline-block;
+	float:left;
+	border-right:1px solid #A8A8A8;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:60%;
+	box-sizing:border-box;
+	font-weight:bold;
+}
+.colonnaDataConsegnaVer
+{
+	width:22%;
+	height:40px;
+	display:inline-block;
+	float:left;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:60%;
+	box-sizing:border-box;
+	font-weight:bold;
+}
+.containerOrdini
+{
+	z-index:9;
+	width:100%;
+	text-align:center;
+	min-height:510px;
+	height:auto;
+	display:inline-block;
+	background-color:#EBEBEB;
+	box-sizing:border-box;
+	/*padding-bottom:7px;*/
+	-webkit-transition: all .3s;
+    transition: all .3s;
+	/*background:pink;*/
+}
+.containerResiduo
+{
+	width:100%;
+	text-align:center;
+	min-height:510px;
+	height:auto;
+	display:inline-block;
+	background-color:#EBEBEB;
+	box-sizing:border-box;
+	-webkit-transition: all .2s;
+    transition: all .2s;
+	/*background:pink;*/
+}
+.ordiniVER
+{
+	height:auto;
+}
+.elementOrdine
+{
+	-webkit-transition: all .2s;
+    transition: all .2s;
+	z-index:10;
+	border:1px solid #A8A8A8;
+	background-color:#DEDEDE;
+	width:94%;
+	margin-left:3%;
+	margin-top:7px;
+	height:25px;
+	line-height:25px;
+	-webkit-box-shadow: 0px 0px 7px 2px rgba(0,0,0,0.42);
+	-moz-box-shadow: 0px 0px 7px 2px rgba(0,0,0,0.42);
+	box-shadow: 0px 0px 7px 2px rgba(0,0,0,0.42);
+	cursor: grab;
+}
+.elementOrdine div
+{
+	pointer-events: none;
+}
+.elementOrdine:hover
+{
+	width:97%;
+	margin-left:1.5%;
+	margin-top:5.5px;
+	height:26px;
+	line-height:26px;
+}
+.cellaOrdineVer
+{
+	width:20%;
+	height:100%;
+	display:inline-block;
+	float:left;
+	border-right:1px solid #C0C0C0;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:65%;
+	box-sizing:border-box;
+	font-weight:bold;
+}
+.cellaNVer
+{
+	width:8%;
+	height:100%;
+	display:inline-block;
+	float:left;
+	border-right:1px solid #C0C0C0;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:65%;
+	box-sizing:border-box;
+	font-weight:normal;
+}
+.cellaDataConsegnaVer
+{
+	width:22%;
+	height:100%;
+	display:inline-block;
+	float:left;
+	overflow:hidden;
+	color:#666f77;
+	font-family:sans-serif;
+	font-size:65%;
+	box-sizing:border-box;
+	font-weight:normal;
+}
+#selectVer
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+#selectMon
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+#selectWEEK,#selectWEEKPDF
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:5px
+}
+#btnColori
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+#btnExcel
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+#btnSalvaStato
+{
+	float:left;
+	margin-top:10px;
+	margin-left:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+#popupColori
+{
+	opacity:1;
+	width:0px;
+	height:0px;
+	/*margin-bottom:70px;*/
+	opacity:1;
+	top:150;
+	position: absolute;
+    z-index: 9;
+	/*margin-left:-250px;*/
+	float:center;
+	display:inline-block;
+	background:white;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	-webkit-transition: width .5s, height .5s;
+    transition: width .5s, height .5s;
+	-webkit-box-shadow: 0 0 8px #12365A;
+    box-shadow: 0 0 8px #12365A;
+	box-sizing:border-box;
+	overflow:hidden;
+}
+#popupColoriheader
+{
+	cursor: -webkit-grab; 
+	z-index: 10;
+	background:#12365A;
+	text-align:left;
+	height:60px;
+	width:500px;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	margin-bottom:30px;
+}
+#btnChiudiPopupColori
+{
+	margin-top:20px;
+	margin-right:20px;
+	text-align:center;
+	width:50px;
+	outline:none;
+	height:25px;
+	display:inline-block;
+	float:right;
+	background:transparent;
+	border:none;
+	cursor:pointer;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	-webkit-transition: all .5s;
+    transition: all .5s;
+}
+#btnChiudiPopupColori:hover
+{
+	background:red;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#popupColoriContainer
+{
+	width:100%;
+	height:220px;
+	overflow-y:auto;
+	padding-left:20px;
+	padding-right:20px;
+	margin-bottom:20px;
+	box-sizing:border-box;
+}
+#myTableColoriCollezioni
+{
+	border-collapse: collapse;
+	width:100%;
+	font-family:sans-serif;
+	border:1px solid #BABABA;
+}
+#myTableColoriCollezioni th
+{
+	border: 1px solid #E9E9E9;
+	white-space: nowrap;
+	font-family:'Montserrat',sans-serif;
+	text-align:left;
+	font-weight:normal;
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:10px;
+	padding-bottom:10px;
+	color:#12365A;
+	font-size:80%;
+	font-weight:bold;
+	background:#EBEBEB;
+}
+#myTableColoriCollezioni td 
+{
+	padding:5px;
+	color:#666f77;
+	text-align: left;
+	border: 1px solid #F6F6F6;
+	font-size:80%;
+}
+#btnModificaColoriCollezioni
+{
+	height:25px;
+	line-height:25px;
+	width:80px;
+}
+.jscolor
+{
+	font-family:sans-serif;
+	color:#666f77;
+	border:none;
+	outline:none;
+}
+#popupDettaglioOrdine
+{
+	opacity:1;
+	width:0px;
+	height:0px;
+	/*margin-bottom:70px;*/
+	opacity:1;
+	top:150;
+	position: fixed;
+    z-index: 9;
+	/*margin-left:-250px;*/
+	float:center;
+	display:inline-block;
+	background:white;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	-webkit-transition: width .5s, height .5s;
+    transition: width .5s, height .5s;
+	-webkit-box-shadow: 0 0 8px #12365A;
+    box-shadow: 0 0 8px #12365A;
+	box-sizing:border-box;
+	overflow:hidden;
+}
+#popupDettaglioOrdineheader
+{
+	cursor: -webkit-grab; 
+	z-index: 10;
+	background:#12365A;
+	text-align:left;
+	height:60px;
+	width:500px;
+	color:black;
+	font-family:'Montserrat',sans-serif;
+	margin-bottom:30px;
+}
+#titoloPopupDettaglioOrdine
+{
+	color:white;
+	box-sizing:border-box;
+	height:60px;
+	padding-left:40px;
+	padding-top:20px;
+	width:300px;
+	float:left;
+	display:inline-block;
+	font-weight:bold
+}
+#btnChiudipopupDettaglioOrdine
+{
+	margin-top:20px;
+	margin-right:20px;
+	text-align:center;
+	width:50px;
+	outline:none;
+	height:25px;
+	display:inline-block;
+	float:right;
+	background:transparent;
+	border:none;
+	cursor:pointer;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	-webkit-transition: all .5s;
+    transition: all .5s;
+}
+#btnChiudipopupDettaglioOrdine:hover
+{
+	background:red;
+	background-image: url("../images/crossWhite.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#popupDettaglioOrdineContainer
+{
+	width:100%;
+	height:170px;
+	overflow-y:auto;
+	padding-left:20px;
+	padding-right:20px;
+	/*margin-bottom:20px;*/
+	box-sizing:border-box;
+}
+#popupDettaglioOrdineInput
+{
+	width:100%;
+	height:70px;
+	padding-left:80px;
+	padding-right:80px;
+	box-sizing:border-box;
+}
+#myTableDettaglioOrdine
+{
+	border-collapse: collapse;
+	width:100%;
+	font-family:sans-serif;
+	border:1px solid #BABABA;
+}
+#myTableDettaglioOrdine th
+{
+	border: 1px solid #E9E9E9;
+	white-space: nowrap;
+	font-family:'Montserrat',sans-serif;
+	text-align:left;
+	font-weight:normal;
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:10px;
+	padding-bottom:10px;
+	color:#12365A;
+	font-size:80%;
+	font-weight:bold;
+	background:#EBEBEB;
+}
+#myTableDettaglioOrdine td 
+{
+	padding:5px;
+	color:#666f77;
+	text-align: left;
+	border: 1px solid #F6F6F6;
+	font-size:80%;
+}
+#btnPdfPopupDettaglioOrdine
+{
+	float:left;
+	margin-top:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px;
+	text-decoration:none;
+	line-height:30px;
+	font-size:80%;
+}
+#btnStampaPopupDettaglioOrdine
+{
+	float:right;
+	margin-top:20px;
+	width:120px;
+	padding-left:10px;
+	padding-right:10px
+}
+.btnDettaglioMq
+{
+	border:none;
+	background-color:transparent;
+	display:inline-block;
+	float:right;
+	text-decoration:underline;
+	outline:none;
+	cursor:pointer;
+	color:gray;
+}
+.btnDettaglioMq:hover
+{
+	color:black;
+}
+.inputCorreggiMq
+{
+	width:50px;
+	padding-left:5px;
+	padding-top:3px;
+	padding-bottom:3px;
+	border:1px solid #ccc;
+	border-radius:3px;
+	display:inline-block;float:left
+}
+#selectSettimanaSalvataggioAutomatico
+{
+	width:150px;
+	margin-top:20px;
+	margin-bottom:20px;
+	height:25px;
+	font-family:'Montserrat',sans-serif;
+	font-size:14px;
+	outline:none;
+	border:none;
+	border-bottom:1px solid gray;
+	background-color:transparent;
+	transition:all .5s;
+	color:black;
+	cursor:pointer;
+}
+#selectSettimanaSalvataggioAutomatico:hover
+{
+	color:#79A5D1;
+	border-bottom:1px solid #79A5D1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
