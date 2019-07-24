@@ -20,6 +20,7 @@
 	$reportPkList=[];
 	$subjectList=[];
 	$messageList=[];
+	$lettersArray=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI'];
 	
 	$queryR="SELECT * FROM report_list WHERE active='true'";
 	$resultR=sqlsrv_query($conn,$queryR);
@@ -37,16 +38,13 @@
 			$messageList[$rowR['report']]=$rowR['testo'];
 			$reportPkList[$rowR['report']]=$rowR['id_report'];
 		}
-	}
+		foreach($reportList as $view)
+		{
+			createExcel($conn,$view,$lettersArray);
+			sendMail($view,$conn,$subjectList,$messageList,$reportPkList);
+		}
+	}	
 	
-	//$reportList=['report_stato_consegne_parziale'];
-	$lettersArray=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI'];
-	
-	foreach($reportList as $view)
-	{
-		createExcel($conn,$view,$lettersArray);
-		sendMail($view,$conn,$subjectList,$messageList,$reportPkList);
-	}
 	
 	function createExcel($conn,$view,$lettersArray)
 	{
@@ -97,11 +95,16 @@
 		$mail->Port = 587;
 		$mail->SMTPSecure = 'tls';
 		$mail->SMTPAuth = true;
-		$mail->Username = "michele@servizioglobale.it";
+		$mail->Username = "noreply@oasisgroup.it";
+		$mail->Password = "Serglo123";
+		
+		//From
+		$mail->setFrom('noreply@oasisgroup.it', 'No Reply');
+		/*$mail->Username = "michele@servizioglobale.it";
 		$mail->Password = "Maddalena123";
 		
 		//From
-		$mail->setFrom('michele@servizioglobale.it', 'Michele Barzan');
+		$mail->setFrom('michele@servizioglobale.it', 'Michele Barzan');*/
 		//To
 		$query3="SELECT * FROM destinatari_report WHERE report=".$reportPkList[$view];	
 		$result3=sqlsrv_query($conn,$query3);
