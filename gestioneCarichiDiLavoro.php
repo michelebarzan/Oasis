@@ -94,6 +94,7 @@
 		</style>
 	</head>
 	<body onload="document.getElementById('btnConfermaSettimane').disabled=false;document.getElementById('btnNonAggiornare').disabled=false;" >
+		<input type="hidden" id="server_adress" value="<?php echo $_SERVER['SERVER_ADDR']; ?>" />
 		<form target="_blank" id="scaricaPdfSettimanaForm" method="post" action="scaricaPdfSettimana.php" style="display:none;">
 			<input type="hidden" name="scaricaPdfSettimanaFormStazione" id="scaricaPdfSettimanaFormStazione" value="" />
 			<input type="hidden" name="scaricaPdfSettimanaFormSettimana" id="scaricaPdfSettimanaFormSettimana" value="" />

@@ -256,7 +256,7 @@
 				<div class="menuListContainer">
 					<div class="menuListInputContainer">
 						<button class="menuListButton" id="btnElencoRegistrazioni" onclick="resetStyle();getElencoRegistrazioniProduzione()">Registrazioni<i class="fal fa-list" style="font-size:100%;margin-left:15px"></i></button>
-						<button class="menuListButton" id="btnFotoOrdini" onclick="if(sincronizzati){resetStyle();getFotoOrdini();}else{window.alert('Sincronizzare gli allegati prima di proseguire');}">Foto ordini<i class="fal fa-camera" style="font-size:100%;margin-left:15px"></i></button>
+						<button class="menuListButton" id="btnFotoOrdini" onclick="resetStyle();getFotoOrdini()">Foto ordini<i class="fal fa-camera" style="font-size:100%;margin-left:15px"></i></button>
 					</div>
 				</div>
 				<div id="registrazioniProduzioneContainer"></div>

@@ -9,7 +9,7 @@
 		$foldersOrdiniStazioniImmagini=[];
 		$percorsoSql=[];
 		
-		$shellOutput = scandir("c:/xampp/htdocs/oasis/fotoproduzioneandroid");
+		$shellOutput = scandir("c:/xampp/htdocs/OasisFotoProduzione/fotoproduzioneandroid");
 		
 		foreach ($shellOutput as $value) 
 		{
@@ -18,7 +18,7 @@
 		}
 		foreach ($foldersOrdini as $value) 
 		{
-			$shellOutput = scandir("c:/xampp/htdocs/oasis/fotoproduzioneandroid/".$value);
+			$shellOutput = scandir("c:/xampp/htdocs/OasisFotoProduzione/fotoproduzioneandroid/".$value);
 			foreach ($shellOutput as $value2) 
 			{
 				if($value2!="." && $value2!="..")
@@ -27,7 +27,7 @@
 		}
 		foreach ($foldersOrdiniStazioni as $value) 
 		{
-			$shellOutput = scandir("c:/xampp/htdocs/oasis/fotoproduzioneandroid/".$value);
+			$shellOutput = scandir("c:/xampp/htdocs/OasisFotoProduzione/fotoproduzioneandroid/".$value);
 			foreach ($shellOutput as $value2) 
 			{
 				if($value2!="." && $value2!=".." && $value2!="Thumbs.db")

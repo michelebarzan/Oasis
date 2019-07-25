@@ -1283,7 +1283,9 @@ var stazioneVisualizzata;
 		}
 		function pdfPopupDettaglio(docnum)
 		{
-			document.getElementById('btnPdfPopupDettaglioOrdine').setAttribute("href","./pdf_ordini/H"+docnum+".pdf");
+			//var server_adress=document.getElementById("server_adress");
+			document.getElementById('btnPdfPopupDettaglioOrdine').setAttribute("href","http://remote.oasisgroup.it/oasisPdfOrdini/pdf_ordini/H"+docnum+".pdf");
+			//document.getElementById('btnPdfPopupDettaglioOrdine').setAttribute("href","./pdf_ordini/H"+docnum+".pdf");
 		}
 		function apriPopupCapacitaProduttiva(week)
 		{
