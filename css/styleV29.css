@@ -3213,3 +3213,157 @@ html
 	text-align:left;
 	box-sizing:border-box;
 }
+/*SOMMARIO ARCHIVI-----------------------------------------------------------*/
+.funcionListContainer
+{
+	position:absolute;
+	left:0;
+	right:0;
+	height:60px;
+	width:100%;
+	display:inline-block;
+	background-color:#2B586F;
+	text-align:center;
+}
+.functionList
+{
+	width:auto;
+	min-width:1300px;
+	height:60px;
+	text-align:left;
+	display:inline-block;
+	float:center;
+}
+.functionListButton
+{
+	margin-left:10px;
+	margin-right:10px;
+	height:60px;
+	width:auto;
+	float:left;
+	display:inline-block;
+	text-align:center;
+	color:white;
+	border:none;
+	background-color:#2B586F;
+	font-family: 'Montserrat', sans-serif;
+	font-size:11px;
+	cursor:pointer;
+	transition: all 0.5s;
+	outline:none;
+	border-bottom:3px solid #2B586F;
+	padding-left:10px;
+	padding-right:10px;
+}
+.functionListButton:hover
+{
+	border-bottom:3px solid white;
+	background: #2B586F radial-gradient(circle, transparent 1%, #2B586F 1%) center/15000%;
+	/*background-color:#43738B;*/
+}
+.functionListButton:active
+{
+	background-color: #43738B;
+	background-size: 100%;
+	transition: background 0s;
+}
+.functionListButtonActive
+{
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	background-color: #43738B;
+	border-bottom:3px solid white;
+}
+.functionListButtonActive:hover
+{
+	background-color: #43738B;
+}
+.functionListFieldContainer
+{
+	width:175px;
+	padding-left:10px;
+	padding-right:10px;
+	/*border-left:5px solid white;
+	border-right:5px solid white;*/
+	height:80px;
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:5px;
+	margin-right:5px;
+	float:left;
+	display:inline-block;
+	overflow:hidden;
+	box-sizing:border-box;
+}
+.absoluteActionBarSommarioArchivi
+{
+	width:calc(100%-100);
+	position:absolute;
+	left:50;
+	right:50;
+	top:180;
+	height:30px;
+	line-height:30px;
+	box-sizing:border-box;
+	padding:5px;
+	text-align:center;
+	-webkit-transition: all 1s;
+    transition: all 1s;
+	background-color:#E5E5E5;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.absoluteActionBarSommarioArchiviButton
+{
+	height:20px;
+	width:auto;
+	margin-right:5px;
+	margin-left:5px;
+	background-color:#ddd;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	line-height:20px;
+	float:left;
+	display:inline-block;
+	border:none;
+	outline:none;
+	box-sizing:border-box;
+	cursor:pointer;
+	padding-left:5px;
+	padding-right:5px;
+	font-family:'Montserrat',sans-serif;
+	font-size:12px;
+}
+.absoluteActionBarSommarioArchiviButton:hover
+{
+	background-color:#ccc;
+}
+.absoluteActionBarSommarioArchiviElement
+{
+	font-family:'Montserrat',sans-serif;
+	font-size:12px;
+	height:20px;
+	width:auto;
+	margin-right:5px;
+	margin-left:5px;
+	line-height:20px;
+	float:left;
+	display:inline-block;
+	box-sizing:border-box;
+	padding-left:5px;
+	padding-right:5px;
+}
+#containerSommarioArchivi
+{
+	width:calc(100%-100);
+	height:calc(100%-310);
+	position:absolute;
+	left:50;
+	right:50;
+	bottom:90;
+	top:220;
+	overflow:auto;
+	height:auto;
+	display:inline-block;
+	text-align:center;
+	-webkit-transition: all 1s;
+	transition: all 1s;
+}

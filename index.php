@@ -11,7 +11,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV28.css" />
+			<link rel="stylesheet" href="css/styleV29.css" />
 			<script src="struttura.js"></script>
 			<script>
 				/*function getPopup(titolo,descrizione)
@@ -106,6 +106,10 @@
 					<div class="homepageLink" data-tooltip="Genera il report dell' ufficio commerciale" onclick="gotopath('reportUfficioCommerciale.php')">
 						<i class="fal fa-file-plus"></i>
 						<div>Report ufficio commerciale</div>
+					</div>
+					<div class="homepageLink" data-tooltip="Consulta, filtra ed esporta i report, gli archivi, le tabelle, le query ecc..." onclick="gotopath('sommarioArchivi.php')">
+						<i class="fal fa-database"></i>
+						<div>Sommario archivi</div>
 					</div>
 				</div>
 			</div>

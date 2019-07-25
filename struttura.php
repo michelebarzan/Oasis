@@ -115,6 +115,7 @@
 		<input type="button" value="Registrazioni produzione" data-toggle='tooltip' title='Registrazioni produzione' class="btnGoToPath" onclick="goToPath('registrazioniProduzione.php')" />
 		<input type="button" value="Ricevimento merci" data-toggle='tooltip' title='Ricevimento merci' class="btnGoToPath" onclick="goToPath('ricevimentoMerci.php')" />
 		<input type="button" value="Report ufficio commerciale" data-toggle='tooltip' title='Report ufficio commerciale' class="btnGoToPath" onclick="goToPath('reportUfficioCommerciale.php')" />
+		<input type="button" value="Sommario archivi" data-toggle='tooltip' title='Sommario archivi' class="btnGoToPath" onclick="goToPath('sommarioArchivi.php')" />
 	</div>
 	
 	<?php 
