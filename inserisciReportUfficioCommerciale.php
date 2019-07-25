@@ -3,9 +3,10 @@
 	include "Session.php";
 	include "connessione.php";
 	
-    $queries=json_decode($_REQUEST['JSONqueries']);	
+	$queries=json_decode($_REQUEST['JSONqueries']);	
+	$nome_salvataggio=$_REQUEST['nome_salvataggio'];
 	
-	$query2="DELETE FROM report_ufficio_commerciale WHERE nome_salvataggio = { fn CONCAT('salvataggio_', { fn CONCAT(CONVERT(varchar(4), DATEPART(yy, GETDATE())), CONVERT(varchar(2), DATEPART(ww, GETDATE()))) }) }";	
+	$query2="DELETE FROM report_ufficio_commerciale WHERE nome_salvataggio = '$nome_salvataggio'";	
 	$result2=sqlsrv_query($conn,$query2);
 	if($result2==FALSE)
 	{

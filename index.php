@@ -11,7 +11,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV29.css" />
+			<link rel="stylesheet" href="css/styleV30.css" />
 			<script src="struttura.js"></script>
 			<script>
 				/*function getPopup(titolo,descrizione)

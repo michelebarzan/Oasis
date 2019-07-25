@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="jquery.table2excel.js"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV29.css" />
+		<link rel="stylesheet" href="css/styleV30.css" />
 		<script src="struttura.js"></script>
 		<script>
 			function getTable(table,orderBy,orderType)

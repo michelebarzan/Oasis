@@ -3213,6 +3213,33 @@ html
 	text-align:left;
 	box-sizing:border-box;
 }
+#settimanaSalvataggioReportUfficioCommerciale,#nomeFileReportUfficioCommerciale
+{
+	margin-top:20px;
+	margin-bottom:20px;
+	height:25px;
+	font-family:'Montserrat',sans-serif;
+	font-size:14px;
+	outline:none;
+	border:none;
+	border-bottom:1px solid gray;
+	background-color:transparent;
+	transition:all .5s;
+	color:black;
+}
+#settimanaSalvataggioReportUfficioCommerciale
+{
+	width:80px;
+}
+#nomeFileReportUfficioCommerciale
+{
+	width:80%;
+}
+#settimanaSalvataggioReportUfficioCommerciale:hover,#nomeFileReportUfficioCommerciale:hover
+{
+	color:#79A5D1;
+	border-bottom:1px solid #79A5D1;
+}
 /*SOMMARIO ARCHIVI-----------------------------------------------------------*/
 .funcionListContainer
 {

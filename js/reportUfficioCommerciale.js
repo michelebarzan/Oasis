@@ -231,111 +231,170 @@
     }
     function salvaModifiche()
     {
-        var id_utente=document.getElementById("id_utente").value;
-        var errore_colonne_mancanti=false;
-        var colonne_mancanti=[];
-
-        var colHeader=report.getColHeader();
-        var data=report.getData();
-
-        var columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note'];
-
-        var queries=[];
-
-        data.forEach(function(row)
+        $.post("getSqlSrvWeekToday.php",
+        function(response, status)
         {
-            var query="INSERT INTO report_ufficio_commerciale (";
-            columns.forEach(function(column)
+            if(status=="success")
             {
-                query+="["+column+"],";
-            });
-            query+="nome_salvataggio,data_salvataggio,utente_salvataggio) VALUES (";
-
-            for (var i = 0; i < columns.length; i++)
-            { 
-                var column=columns[i];
-                var index=colHeader.indexOf(column);
-                if(index>-1)
+                if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
                 {
-                    var cell=row[index];
-                    if(cell===null || cell===undefined || cell==="" || cell===" ")
-                        cell="";
-                    else
-                        cell = cell.toString().replace("'", "");
-                    query+="'"+cell+"',";
+                    Swal.fire
+                    ({
+                        type: 'error',
+                        title: 'Errore',
+                        text: "Se il problema persiste contatta l' amministratore"
+                    });
+                    console.log(response);
                 }
                 else
                 {
-                    errore_colonne_mancanti=true;
-                    colonne_mancanti.push(column);
+                    //------------------------------------------------------
+                    var inputSettimana=document.createElement("input");
+                    inputSettimana.setAttribute("type","number");
+                    inputSettimana.setAttribute("value",response);
+                    inputSettimana.setAttribute("id","settimanaSalvataggioReportUfficioCommerciale");
+                    
+                    Swal.fire
+                    ({
+                        type: 'question',
+                        title: 'Inserisci la settimana di cui stai salvando il report',
+                        html : inputSettimana.outerHTML
+                    }).then((result) => 
+                    {
+                        if (result.value)
+                        {
+                            swal.close();
+                            var week=document.getElementById("settimanaSalvataggioReportUfficioCommerciale").value;
+                            if(week.toString().length===6)
+                            {
+                                var nome_salvataggio="salvataggio_"+week;
+                                var id_utente=document.getElementById("id_utente").value;
+                                var errore_colonne_mancanti=false;
+                                var colonne_mancanti=[];
+
+                                var colHeader=report.getColHeader();
+                                var data=report.getData();
+
+                                var columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note'];
+
+                                var queries=[];
+
+                                data.forEach(function(row)
+                                {
+                                    var query="INSERT INTO report_ufficio_commerciale (";
+                                    columns.forEach(function(column)
+                                    {
+                                        query+="["+column+"],";
+                                    });
+                                    query+="nome_salvataggio,data_salvataggio,utente_salvataggio) VALUES (";
+
+                                    for (var i = 0; i < columns.length; i++)
+                                    { 
+                                        var column=columns[i];
+                                        var index=colHeader.indexOf(column);
+                                        if(index>-1)
+                                        {
+                                            var cell=row[index];
+                                            if(cell===null || cell===undefined || cell==="" || cell===" ")
+                                                cell="";
+                                            else
+                                                cell = cell.toString().replace("'", "");
+                                            query+="'"+cell+"',";
+                                        }
+                                        else
+                                        {
+                                            errore_colonne_mancanti=true;
+                                            colonne_mancanti.push(column);
+                                        }
+                                    }
+                                    query+="'"+nome_salvataggio+"',GETDATE(),"+id_utente+")";
+
+                                    queries.push(query);
+                                });
+
+                                if(errore_colonne_mancanti)
+                                {
+                                    var colonne_mancanti_unique = [];
+                                    $.each(colonne_mancanti, function(i, el){
+                                        if($.inArray(el, colonne_mancanti_unique) === -1) colonne_mancanti_unique.push(el);
+                                    });
+                                    Swal.fire
+                                    ({
+                                        type: 'error',
+                                        title: 'Errore',
+                                        text: "Colonne mancanti ("+colonne_mancanti_unique.toString()+")"
+                                    });
+                                }
+                                if(!errore_colonne_mancanti)
+                                {
+                                    newCircleSpinner("Salvataggio modifiche in corso...");
+                                    var JSONqueries=JSON.stringify(queries);
+                                    $.post("inserisciReportUfficioCommerciale.php",
+                                    {
+                                        JSONqueries,
+                                        nome_salvataggio
+                                    },
+                                    function(response, status)
+                                    {
+                                        if(status=="success")
+                                        {
+                                            if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                                            {
+                                                Swal.fire
+                                                ({
+                                                    type: 'error',
+                                                    title: 'Errore',
+                                                    text: "Se il problema persiste contatta l' amministratore"
+                                                });
+                                                console.log(response);
+                                            }
+                                            if(response.indexOf("errrow")>-1)
+                                            {
+                                                var row=response.split("|")[1];
+                                                Swal.fire
+                                                ({
+                                                    type: 'error',
+                                                    title: 'Errore',
+                                                    text: "Ricontrolla la riga numero "+row
+                                                });
+                                                console.log(response);
+                                            }
+                                            if(response.indexOf("ok")>-1)
+                                            {
+                                                removeCircleSpinner();
+                                                Swal.fire
+                                                ({
+                                                    type: 'success',
+                                                    title: 'Modifiche salvate',
+                                                    html: '<div class="warning-message-container-swal"><i class="far fa-exclamation-triangle" style="margin-right:10px"></i>A parità di settimana i salvataggi verranno sovrascritti</div>'
+                                                });
+                                            }
+                                        }
+                                        else
+                                            console.log(status);
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                Swal.fire
+                                ({
+                                    type: 'error',
+                                    title: 'Valore non valido',
+                                    text : "La settimana deve essere composta da 6 numeri (Es: 201806)"
+                                });
+                            }
+                        }
+                        else
+                            swal.close();
+                    })
+                    //------------------------------------------------------
                 }
             }
-            query+="{ fn CONCAT('salvataggio_', { fn CONCAT(CONVERT(varchar(4), DATEPART(yy, GETDATE())), CONVERT(varchar(2), DATEPART(ww, GETDATE()))) }) },GETDATE(),"+id_utente+")";
-
-            queries.push(query);
+            else
+                console.log(status);
         });
 
-        if(errore_colonne_mancanti)
-        {
-            var colonne_mancanti_unique = [];
-            $.each(colonne_mancanti, function(i, el){
-                if($.inArray(el, colonne_mancanti_unique) === -1) colonne_mancanti_unique.push(el);
-            });
-            Swal.fire
-            ({
-                type: 'error',
-                title: 'Errore',
-                text: "Colonne mancanti ("+colonne_mancanti_unique.toString()+")"
-            });
-        }
-        if(!errore_colonne_mancanti)
-        {
-            newCircleSpinner("Salvataggio modifiche in corso...");
-            var JSONqueries=JSON.stringify(queries);
-            $.post("inserisciReportUfficioCommerciale.php",
-            {
-                JSONqueries
-            },
-            function(response, status)
-            {
-                if(status=="success")
-                {
-                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
-                    {
-                        Swal.fire
-                        ({
-                            type: 'error',
-                            title: 'Errore',
-                            text: "Se il problema persiste contatta l' amministratore"
-                        });
-                        console.log(response);
-                    }
-                    if(response.indexOf("errrow")>-1)
-                    {
-                        var row=response.split("|")[1];
-                        Swal.fire
-                        ({
-                            type: 'error',
-                            title: 'Errore',
-                            text: "Ricontrolla la riga numero "+row
-                        });
-                        console.log(response);
-                    }
-                    if(response.indexOf("ok")>-1)
-                    {
-                        removeCircleSpinner();
-                        Swal.fire
-                        ({
-                            type: 'success',
-                            title: 'Modifiche salvate',
-                            html: '<div class="warning-message-container-swal"><i class="far fa-exclamation-triangle" style="margin-right:10px"></i>A parità di settimana i salvataggi verranno sovrascritti</div>'
-                        });
-                    }
-                }
-                else
-                    console.log(status);
-            });
-        }
         
     }
     function esportaExcel()
@@ -357,8 +416,31 @@
                 }
                 else
                 {
-                    var filename="report_ufficio_commerciale_"+response;
-                    xlsExport(report,filename);
+
+                    var inputNomeFile=document.createElement("input");
+                    inputNomeFile.setAttribute("type","text");
+                    inputNomeFile.setAttribute("value","report_ufficio_commerciale_"+response);
+                    inputNomeFile.setAttribute("id","nomeFileReportUfficioCommerciale");
+                    Swal.fire
+                    ({
+                        type: 'question',
+                        title: 'Scegli il nome del file',
+                        html : inputNomeFile.outerHTML
+                    }).then((result) => 
+                    {
+                        if (result.value)
+                        {
+                            swal.close();
+                            var filename=document.getElementById("nomeFileReportUfficioCommerciale").value;
+                            if(filename==null || filename=='')
+                            {
+                                var filename="report_ufficio_commerciale_"+response;
+                            }
+                            xlsExport(report,filename);
+                        }
+                        else
+                            swal.close();
+                    })
                 }
             }
             else

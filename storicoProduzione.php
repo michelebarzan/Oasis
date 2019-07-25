@@ -12,7 +12,7 @@
 	<head>
 		<title><?php echo $pageName; ?></title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-			<link rel="stylesheet" href="css/styleV29.css" />
+			<link rel="stylesheet" href="css/styleV30.css" />
 			<script src="struttura.js"></script>
 			<script>
 				var stazioneG;
