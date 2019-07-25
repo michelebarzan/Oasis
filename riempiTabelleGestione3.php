@@ -40,7 +40,7 @@
            ,[settimana]
            ,[dataConsegna]
            ,[collezione]
-           ,[sigla]) SELECT DISTINCT * FROM dettaglioVer_2";
+           ,[sigla]) SELECT DISTINCT * FROM dettaglioVer_2  OPTION ( QUERYTRACEON 9481 )";
 		$result=sqlsrv_query($conn,$query);
 		if($result==FALSE)
 		{

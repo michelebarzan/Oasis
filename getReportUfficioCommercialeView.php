@@ -18,45 +18,32 @@
 	$data2Array['year']=explode("-",$data2)[0];
 	$data2Int=intval($data2Array['year'].$data2Array['month'].$data2Array['day']);
 	
-	$columns=[];
+	$columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note','area_manager','ragg_stat','slp_name','finitura','doc_total'];
 	$rows=[];
 	
-	$query1="SELECT * FROM Cecklist.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'report_ufficio_vendite_view'";	
-	$result1=sqlsrv_query($conn,$query1);
-	if($result1==FALSE)
+	$query2="SELECT * FROM report_ufficio_vendite_view WHERE annoMeseGiorno BETWEEN $data1Int AND $data2Int ORDER BY numero_documento";	
+	$result2=sqlsrv_query($conn,$query2);
+	if($result2==FALSE)
 	{
 		die("error");
 	}
 	else
 	{
-		while($row1=sqlsrv_fetch_array($result1))
+		while($row2=sqlsrv_fetch_array($result2))
 		{
-			array_push($columns,$row1["COLUMN_NAME"]);
-		}
-		$query2="SELECT * FROM report_ufficio_vendite_view WHERE annoMeseGiorno BETWEEN $data1Int AND $data2Int ORDER BY docnum";	
-		$result2=sqlsrv_query($conn,$query2);
-		if($result2==FALSE)
-		{
-			die("error");
-		}
-		else
-		{
-			while($row2=sqlsrv_fetch_array($result2))
+			$row=[];
+			foreach ($columns as $column)
 			{
-				$row=[];
-				foreach ($columns as $column)
-				{
-					array_push($row,$row2[$column]);
-				}
-				array_push($rows,$row);
+				array_push($row,$row2[$column]);
 			}
+			array_push($rows,$row);
 		}
-		$response=[];
-		
-		array_push($response,json_encode($columns));
-		array_push($response,json_encode($rows));
-		
-		echo json_encode($response);
 	}
+	$response=[];
+	
+	array_push($response,json_encode($columns));
+	array_push($response,json_encode($rows));
+	
+	echo json_encode($response);
 	
 ?>

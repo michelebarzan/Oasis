@@ -10,13 +10,13 @@ function newCircleSpinner(message)
 	inner.setAttribute("id","innerCircleSpinner");
 	
 	var spinWrapper=document.createElement("div");
-	spinWrapper.setAttribute("class","circleSpinner-spin-wrapper");
+	spinWrapper.setAttribute("class","cirlceSpinner-spin-wrapper");
 	
 	var spinner=document.createElement("div");
 	spinner.setAttribute("class","circleSpinner-spinner");
 	
 	var spinnerLabel=document.createElement("div");
-	spinnerLabel.setAttribute("class","circleSpinnerLabel");
+	spinnerLabel.setAttribute("class","circleSpinner-spinnerLabel");
 	spinnerLabel.innerHTML=message;
 	
 	spinWrapper.appendChild(spinner);
@@ -39,4 +39,22 @@ function removeCircleSpinner()
 function newGridSpinner(message,container,spinnerContainerStyle,spinnerStyle,messageStyle)
 {
 	document.getElementById(container).innerHTML='<div id="gridSpinnerContainer"  style="'+spinnerContainerStyle+'"><div  style="'+spinnerStyle+'" class="sk-cube-grid"><div class="sk-cube sk-cube1"></div><div class="sk-cube sk-cube2"></div><div class="sk-cube sk-cube3"></div><div class="sk-cube sk-cube4"></div><div class="sk-cube sk-cube5"></div> <div class="sk-cube sk-cube6"></div><div class="sk-cube sk-cube7"></div><div class="sk-cube sk-cube8"></div><div class="sk-cube sk-cube9"></div></div><div id="messaggiSpinner" style="'+messageStyle+'">'+message+'</div></div>';
+}
+function newMouseSpinner(event)
+{
+	var mouseSpinner=document.createElement("span");
+	mouseSpinner.setAttribute("id","mouseSpinner");
+	document.body.appendChild(mouseSpinner);
+	$('#mouseSpinner').css({'top':event.pageY+10,'left':event.pageX+15});
+
+	document.addEventListener("mousemove", followMouse);
+}
+function followMouse(event)
+{
+	$('#mouseSpinner').css({'top':event.pageY+10,'left':event.pageX+15});
+}
+function removeMouseSpinner()
+{
+	document.getElementById("mouseSpinner").remove();
+	document.removeEventListener("mousemove", followMouse);
 }

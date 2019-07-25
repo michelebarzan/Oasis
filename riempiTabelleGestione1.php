@@ -37,7 +37,7 @@
            ,[Altro]
            ,[dataConsegna]
            ,[collezione]
-           ,[sigla]) SELECT DISTINCT * FROM dettaglioMon_2";
+           ,[sigla]) SELECT DISTINCT * FROM dettaglioMon_2 OPTION ( QUERYTRACEON 9481 )";
 		$result=sqlsrv_query($conn,$query);
 		if($result==FALSE)
 		{

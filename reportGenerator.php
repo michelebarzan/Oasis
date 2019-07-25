@@ -85,7 +85,7 @@
 		}
 		
 		$writer = new Xlsx($spreadsheet);
-		$writer->save("excelReport\\$view.xlsx");
+		$writer->save("C:\\xampp\\htdocs\\oasis\\excelReport\\$view.xlsx");
 	}
 	function sendMail($view,$conn,$subjectList,$messageList,$reportPkList)
 	{
@@ -129,7 +129,7 @@
 		$mail->Subject = $subjectList[$view];
 		//echo "<br>";
 		//echo "Oggetto: ".$subjectList[$view];
-		$mail->addAttachment("excelReport\\$view.xlsx");
+		$mail->addAttachment("C:\\xampp\\htdocs\\oasis\\excelReport\\$view.xlsx");
 		//$mail->Body = "Report excel generato automaticamente";
 		$mail->Body = $messageList[$view];
 		//echo "<br>";

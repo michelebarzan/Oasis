@@ -29,6 +29,7 @@
 					session_start();
 					$_SESSION['Username']=$username;
 					$_SESSION['Password']=$password;
+					$_SESSION['id_utente']=$row['id_utente'];
 					
 					echo "ok";
 					$errore="No";
