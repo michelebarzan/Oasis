@@ -9,6 +9,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
 			<link rel="stylesheet" href="css/styleV30.css" />
@@ -28,26 +29,6 @@
 			<style>
 				@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
 				@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
-
-				/* width */
-				::-webkit-scrollbar {
-					width: 10px;
-				}
-
-				/* Track */
-				::-webkit-scrollbar-track {
-					background: #f1f1f1;
-				}
-
-				/* Handle */
-				::-webkit-scrollbar-thumb {
-					background: #888;
-				}
-
-				/* Handle on hover */
-				::-webkit-scrollbar-thumb:hover {
-					background: #555;
-				}
 			</style>
 	</head>
 	<body>

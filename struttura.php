@@ -1,6 +1,7 @@
 	<?php $appName="Oasis"; ?>
 	<div id="header" class="header" >
-		<input type="button" id="nascondi" value="" onclick="nascondi()" data-toggle='tooltip' title='Apri menu' />
+		<!--<input type="button" id="nascondi" value="" onclick="nascondi()" data-toggle='tooltip' title='Apri menu' />-->
+		<button class="main-nav-bar-open-button" onclick="mainNavBarOpen()" title="Apri"><i class="fal fa-list fa-2x"></i></button>
 		<div id="pageName" class="pageName"><?php echo $pageName; ?></div>
 		<div id="user" class="user">
 			<div id="username"><?php echo $_SESSION['Username']; ?></div>
@@ -99,7 +100,38 @@
 		</div>
 	</div>
 
-	<div id="navBar">
+	<div class="main-nav-bar">
+		<div class="main-nav-bar-close-button-container main-nav-bar-hidden-elements">
+			<button class="main-nav-bar-close-button" title="Chiudi" onclick="mainNavBarClose()"><i class="fal fa-list fa-2x"></i></button>
+			<div class="main-nav-bar-close-button-text">MENU</div>
+			<img class="main-nav-bar-close-button-logo" src="images/logo3.png"/>
+		</div>
+		<div class="main-nav-bar-user-info-container main-nav-bar-hidden-elements">
+			<div class="main-nav-bar-user-info-menu">
+				<div class="main-nav-bar-user-info-user-image"></div>
+				<div class="main-nav-bar-user-info-username"><?php echo $_SESSION['Username']; ?></div>
+				<div class="main-nav-bar-user-info-arrow"><i class="fas fa-sort-down" onclick="$('.main-nav-bar-user-info-hidden-menu').toggle()"></i></div>
+			</div>
+		</div>
+		<div class="main-nav-bar-user-info-hidden-menu main-nav-bar-hidden-elements">
+			<div class="main-nav-bar-user-info-hidden-menu-row"><a href="#" onclick="logoutB()">Logout</a></div>
+			<div class="main-nav-bar-user-info-hidden-menu-row"><a href="cambiapassword.html">Cambia password</a></div>
+		</div>
+		<div id="main-nav-bar-sections-outer-container" class="main-nav-bar-hidden-elements">
+			<!--<div class="main-nav-bar-section-container">
+				<div class="main-nav-bar-section-title">Preferiti</div>
+				<div class="main-nav-bar-section-row">
+					<a href="gestioneCarichiDiLavoro.php" class="main-nav-bar-section-row-link">
+						<div class="main-nav-bar-section-row-item" style="width:30px;"><i class="fal fa-balance-scale" ></i></div>
+						<div class="main-nav-bar-section-row-item" style="width:200px;padding-left:5px;">Gestione carichi di lavoro</div>
+						<div class="main-nav-bar-section-row-item" style="width:30px;text-align:right;"><i class="fal fa-star" style="color:#F2CE5A;cursor:pointer" onclick="aggiungiPaginaPreferiti(event)"></i></div>
+					</a>
+				</div>
+			</div>-->
+		</div>
+	</div>
+	
+	<!--<div id="navBar">
 		<input type="button" id="nascondi2" value="ME" onclick="nascondi()" data-toggle='tooltip' title='Chiudi menu' />
 		<input type="button" id="nascondi3" value="NU" onclick="nascondi()" data-toggle='tooltip' title='Chiudi menu' />
 		<input type="hidden" id="stato" value="Chiuso" />
@@ -116,7 +148,7 @@
 		<input type="button" value="Ricevimento merci" data-toggle='tooltip' title='Ricevimento merci' class="btnGoToPath" onclick="goToPath('ricevimentoMerci.php')" />
 		<input type="button" value="Report ufficio commerciale" data-toggle='tooltip' title='Report ufficio commerciale' class="btnGoToPath" onclick="goToPath('reportUfficioCommerciale.php')" />
 		<input type="button" value="Sommario archivi" data-toggle='tooltip' title='Sommario archivi' class="btnGoToPath" onclick="goToPath('sommarioArchivi.php')" />
-	</div>
+	</div>-->
 	
 	<?php 
 		$id_utente=getIdUtente($conn,$_SESSION['Username']);
