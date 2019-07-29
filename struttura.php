@@ -109,7 +109,7 @@
 		<div class="main-nav-bar-close-button-container main-nav-bar-hidden-elements">
 			<button class="main-nav-bar-close-button" title="Chiudi" onclick="mainNavBarClose()"><i class="fal fa-list fa-2x"></i></button>
 			<div class="main-nav-bar-close-button-text">MENU</div>
-			<img class="main-nav-bar-close-button-logo" src="images/logo3.png"/>
+			<img class="main-nav-bar-close-button-logo" src="images/logo-white.png"/>
 		</div>
 		<div class="main-nav-bar-user-info-container main-nav-bar-hidden-elements">
 			<div class="main-nav-bar-user-info-menu">
