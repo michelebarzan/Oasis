@@ -8,7 +8,7 @@
 	<head>
 		<title><?php echo $pageName; ?></title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-		<link rel="stylesheet" href="css/styleV30.css" />
+		<link rel="stylesheet" href="css/styleV31.css" />
 		<link rel="stylesheet" href="css/styleGestioneV7.css" />
 		<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
