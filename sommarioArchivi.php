@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV31.css" />
+		<link rel="stylesheet" href="css/styleV32.css" />
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script src="struttura.js"></script>
 		<script src="js/sommarioArchivi.js"></script>
@@ -37,11 +37,12 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body onload="getSommariUtenti()">
 		<?php include('struttura.php'); ?>
         <div class="funcionListContainer" style="top:100;">
 			<div class="functionList">
-				<button class="functionListButton" onclick="resetStyle(this);getTable('report_ufficio_commerciale')">Sommario ufficio commerciale</button>
+				<!--<button class="functionListButton" onclick="resetStyle(this);getTable('report_ufficio_commerciale_user_view')">Sommario ufficio commerciale</button>
+				<button class="functionListButton" onclick="resetStyle(this);getTable('report_ufficio_commerciale_manager_view')">Sommario ufficio commerciale (manager)</button>-->
 			</div>
 		</div>
 		<div class="absoluteActionBarSommarioArchivi">

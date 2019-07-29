@@ -10,7 +10,7 @@
 	<head>
 		<title><?php echo $pageName; ?></title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-			<link rel="stylesheet" href="css/styleV31.css" />
+			<link rel="stylesheet" href="css/styleV32.css" />
 			<script src="struttura.js"></script>
 			<script>
 				function stampa(divName) 

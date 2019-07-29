@@ -12,7 +12,7 @@
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV31.css" />
+			<link rel="stylesheet" href="css/styleV32.css" />
 			<script src="struttura.js"></script>
 			<script>
 				/*function getPopup(titolo,descrizione)

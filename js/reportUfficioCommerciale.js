@@ -275,7 +275,7 @@
                                 var colHeader=report.getColHeader();
                                 var data=report.getData();
 
-                                var columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note'];
+                                var columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note','area_manager','ragg_stat','slp_name','finitura','doc_total'];
 
                                 var queries=[];
 

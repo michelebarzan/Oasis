@@ -9,7 +9,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV31.css" />
+			<link rel="stylesheet" href="css/styleV32.css" />
 			<script src="struttura.js"></script>
 			<style>
 				@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);

@@ -13,97 +13,65 @@
     }
     function getTable(table,orderBy,orderType)
     {
-        if(table=="report_ufficio_commerciale")
+        if(table=="report_ufficio_commerciale_user_view")
         {
-            console.log("we");
             getEditableTable
             ({
-                table:'report_ufficio_commerciale',
+                table:'report_ufficio_commerciale_user_view',
+                primaryKey: "id_report_ufficio_vendite",
                 editable: false,
                 container:'containerSommarioArchivi',
                 noFilterColumns:['data_scadenza','data_creazione','note','data_salvataggio'],
-                foreignKeys:[['utente_salvataggio','utenti','id_utente','username']],
                 orderBy:orderBy,
                 orderType:orderType
             });
         }
-        if(table=="produzione_bf_finiture")
+        if(table=="report_ufficio_commerciale_manager_view")
         {
             getEditableTable
             ({
-                table:'produzione_bf_finiture',
-                readOnlyColumns:['id_finitura','commessa'],
-                noInsertColumns:['id_finitura'],
-                container:'containerGestioneAnagrafiche',
-                foreignKeys:[['commessa','commesse','id_commessa','commessa']],
+                table:'report_ufficio_commerciale_manager_view',
+                primaryKey: "id_report_ufficio_vendite",
+                editable: false,
+                container:'containerSommarioArchivi',
+                noFilterColumns:['data_scadenza','data_creazione','note','data_salvataggio'],
                 orderBy:orderBy,
                 orderType:orderType
             });
         }
-        if(table=="produzione_bf_delta_articoli")
+    }
+    function getSommariUtenti()
+    {
+        $.get("getSommariUtenti.php",
+        function(response, status)
         {
-            getEditableTable
-            ({
-                table:'produzione_bf_delta_articoli',
-                readOnlyColumns:['id_articolo','commessa','utente','data_importazione'],
-                noInsertColumns:['id_articolo'],
-                noFilterColumns:['data_importazione'],
-                container:'containerGestioneAnagrafiche',
-                foreignKeys:[['utente','utenti','id_utente','username']],
-                orderBy:orderBy,
-                orderType:orderType
-            });
-        }	
-        if(table=="produzione_bf_kit_bifacciali")
-        {
-            getEditableTable
-            ({
-                table:'produzione_bf_kit_bifacciali',
-                readOnlyColumns:['id_kit_bifacciale','utente','data_importazione','commessa'],
-                noInsertColumns:['id_kit_bifacciale','utente','data_importazione'],
-                noFilterColumns:['data_importazione'],
-                container:'containerGestioneAnagrafiche',
-                foreignKeys:[['commessa','commesse','id_commessa','commessa'],['utente','utenti','id_utente','username']],
-                orderBy:orderBy,
-                orderType:orderType
-            });
-        }
-        if(table=="produzione_bf_lavorazioni_x_v")
-        {
-            getEditableTable
-            ({
-                table:'produzione_bf_lavorazioni_x_v',
-                readOnlyColumns:['id'],
-                noInsertColumns:['id'],
-                primaryKey:"id",
-                container:'containerGestioneAnagrafiche',
-                orderBy:orderBy,
-                orderType:orderType
-            });
-        }
-        if(table=="produzione_bf_lavorazioni_y_v")
-        {
-            getEditableTable
-            ({
-                table:'produzione_bf_lavorazioni_y_v',
-                readOnlyColumns:['id'],
-                noInsertColumns:['id'],
-                primaryKey:"id",
-                container:'containerGestioneAnagrafiche',
-                orderBy:orderBy,
-                orderType:orderType
-            });
-        }
-        if(table=="elementi_elet")
-        {
-            getEditableTable
-            ({
-                table:'elementi_elet',
-                readOnlyColumns:['id'],
-                noInsertColumns:['id'],
-                container:'containerGestioneAnagrafiche',
-                orderBy:orderBy,
-                orderType:orderType
-            });
-        }
+            if(status=="success")
+            {
+                if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                {
+                    Swal.fire
+                    ({
+                        type: 'error',
+                        title: 'Errore',
+                        text: "Se il problema persiste contatta l' amministratore"
+                    });
+                    console.log(response);
+                }
+                else
+                {
+                    var sommari_archivi_utenti = JSON.parse(response);
+                    sommari_archivi_utenti.forEach(function(sommario)
+                    {
+                        var button=document.createElement("button");
+                        button.setAttribute("class","functionListButton");
+                        button.setAttribute("onclick","resetStyle(this);getTable('"+sommario.sommario+"')");
+                        button.innerHTML=sommario.nomeSommario;
+
+                        $('.functionList').append(button);
+                    });
+                }
+            }
+            else
+                console.log(status);
+        });
     }
