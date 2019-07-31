@@ -10,7 +10,6 @@
 		<link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
 			<link rel="stylesheet" href="css/styleV32.css" />
 			<script src="struttura.js"></script>
@@ -91,6 +90,10 @@
 					<div class="homepageLink" data-tooltip="Consulta, filtra ed esporta i report, gli archivi, le tabelle, le query ecc..." onclick="gotopath('sommarioArchivi.php')">
 						<i class="fal fa-database"></i>
 						<div>Sommario archivi</div>
+					</div>
+					<div class="homepageLink" data-tooltip="Controlla lo stato degli ordini da un grafico Gantt" onclick="gotopath('ganttStatoOrdini.php')">
+						<i class="fal fa-analytics"></i>
+						<div>Gantt stato ordini</div>
 					</div>
 				</div>
 			</div>

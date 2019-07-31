@@ -7,7 +7,6 @@
 <html>
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<title><?php echo $pageName; ?></title>
 			<link rel="stylesheet" href="css/styleV32.css" />
 			<script src="struttura.js"></script>

@@ -11,7 +11,6 @@
 		<link rel="stylesheet" href="css/styleV32.css" />
 		<link rel="stylesheet" href="css/styleGestioneV7.css" />
 		<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
-		<link rel="stylesheet" href="fontawesomepro/css/fontawesomepro.css" />
 		<script src="struttura.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<script src="jquery.table2excel.js"></script>
