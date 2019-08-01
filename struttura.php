@@ -122,39 +122,9 @@
 			<div class="main-nav-bar-user-info-hidden-menu-row"><a href="#" onclick="logoutB()">Logout</a></div>
 			<div class="main-nav-bar-user-info-hidden-menu-row"><a href="cambiapassword.html">Cambia password</a></div>
 		</div>
-		<div id="main-nav-bar-sections-outer-container" class="main-nav-bar-hidden-elements">
-			<!--<div class="main-nav-bar-section-container">
-				<div class="main-nav-bar-section-title">Preferiti</div>
-				<div class="main-nav-bar-section-row">
-					<a href="gestioneCarichiDiLavoro.php" class="main-nav-bar-section-row-link">
-						<div class="main-nav-bar-section-row-item" style="width:30px;"><i class="fal fa-balance-scale" ></i></div>
-						<div class="main-nav-bar-section-row-item" style="width:200px;padding-left:5px;">Gestione carichi di lavoro</div>
-						<div class="main-nav-bar-section-row-item" style="width:30px;text-align:right;"><i class="fal fa-star" style="color:#F2CE5A;cursor:pointer" onclick="aggiungiPaginaPreferiti(event)"></i></div>
-					</a>
-				</div>
-			</div>-->
-		</div>
+		<div id="main-nav-bar-sections-outer-container" class="main-nav-bar-hidden-elements"></div>
 	</div>
-	
-	<!--<div id="navBar">
-		<input type="button" id="nascondi2" value="ME" onclick="nascondi()" data-toggle='tooltip' title='Chiudi menu' />
-		<input type="button" id="nascondi3" value="NU" onclick="nascondi()" data-toggle='tooltip' title='Chiudi menu' />
-		<input type="hidden" id="stato" value="Chiuso" />
-		<input type="button" value="Homepage" data-toggle='tooltip' title='Homepage' class="btnGoToPath" onclick="goToPath('index.php')" />
-		<input type="button" value="Ticket Assistenza" data-toggle='tooltip' title='Ticket Assistenza' class="btnGoToPath" onclick="goToPath('ticketAssistenza.php')" />
-		<input type="button" value="Liste di carico" data-toggle='tooltip' title='Liste di carico' class="btnGoToPath" onclick="goToPath('gestionePicking.php')" />
-		<input type="button" value="Stampa pallet" data-toggle='tooltip' title='Stampa pallet' class="btnGoToPath" onclick="goToPath('stampaPallet.php')" />
-		<input type="button" value="Controlla pick" data-toggle='tooltip' title='Controlla pick' class="btnGoToPath" onclick="goToPath('controlloPick.php')" />
-		<input type="button" value="Carichi di lavoro" data-toggle='tooltip' title='Carichi di lavoro' class="btnGoToPath" onclick="goToPath('carichiDiLavoro.php')" />
-		<input type="button" value="Storico produzione" data-toggle='tooltip' title='Storico produzione' class="btnGoToPath" onclick="goToPath('storicoProduzione.php')" />
-		<input type="button" value="Gestione carichi di lavoro" data-toggle='tooltip' title='Gestione carichi di lavoro' class="btnGoToPath" onclick="goToPath('gestioneCarichiDiLavoro.php')" />
-		<input type="button" value="Sommario produzione" data-toggle='tooltip' title='Sommario produzione' class="btnGoToPath" onclick="goToPath('sommarioProduzione.php')" />
-		<input type="button" value="Registrazioni produzione" data-toggle='tooltip' title='Registrazioni produzione' class="btnGoToPath" onclick="goToPath('registrazioniProduzione.php')" />
-		<input type="button" value="Ricevimento merci" data-toggle='tooltip' title='Ricevimento merci' class="btnGoToPath" onclick="goToPath('ricevimentoMerci.php')" />
-		<input type="button" value="Report ufficio commerciale" data-toggle='tooltip' title='Report ufficio commerciale' class="btnGoToPath" onclick="goToPath('reportUfficioCommerciale.php')" />
-		<input type="button" value="Sommario archivi" data-toggle='tooltip' title='Sommario archivi' class="btnGoToPath" onclick="goToPath('sommarioArchivi.php')" />
-	</div>-->
-	
+		
 	<?php 
 		$id_utente=getIdUtente($conn,$_SESSION['Username']);
 		if(!checkPermessi($conn,$id_utente,$pageName))

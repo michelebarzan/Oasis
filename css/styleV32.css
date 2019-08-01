@@ -3702,8 +3702,8 @@ html
 	height:auto;
 	display:inline-block;
 	text-align:center;
-	-webkit-transition: all 1s;
-	transition: all 1s;
+	-webkit-transition: all 0.2s;
+	transition: all 0.2s;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 .absoluteActionBarGanttStatoOrdini
@@ -3718,8 +3718,8 @@ html
 	box-sizing:border-box;
 	padding:5px;
 	text-align:center;
-	-webkit-transition: all 1s;
-    transition: all 1s;
+	-webkit-transition: all 0.2s;
+	transition: all 0.2s;
 	background-color:#E5E5E5;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
@@ -3732,12 +3732,10 @@ html
 	background-color:#ddd;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-	line-height:20px;
 	float:left;
-	display:inline-block;
+	display:block;
 	border:none;
 	outline:none;
-	box-sizing:border-box;
 	cursor:pointer;
 	padding-left:5px;
 	padding-right:5px;
@@ -3745,6 +3743,29 @@ html
 	font-size:12px;
 }
 .absoluteActionBarGanttStatoOrdiniButton:hover
+{
+	background-color:#ccc;
+}
+.absoluteActionBarGanttStatoOrdiniSelect
+{
+	height:20px;
+	width:auto;
+	margin-right:5px;
+	margin-left:5px;
+	background-color:#ddd;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	float:left;
+	display:block;
+	border:none;
+	outline:none;
+	cursor:pointer;
+	padding-left:5px;
+	padding-right:5px;
+	font-family:'Montserrat',sans-serif;
+	font-size:12px;
+}
+.absoluteActionBarGanttStatoOrdiniSelect:hover
 {
 	background-color:#ccc;
 }
@@ -3777,4 +3798,95 @@ html
 	padding-right:5px;
 	font-family:'Montserrat',sans-serif;
 	font-size:12px;
+}
+.material-design-table-dark
+{
+	background-color: #3D3D47;
+	border-radius:3px;
+	margin-top:20px;
+	margin-bottom:10px;
+	margin-right:20px;
+	margin-left:20px;
+	border-collapse: collapse;
+	width: calc(100% - 40px);
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.proprieta-grafico-table-border-right
+{
+	border-right: 1px solid #4C4C50;
+}
+.material-design-table-dark thead tr
+{
+	transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+}
+.material-design-table-dark th
+{
+	padding:20px 30px;
+	color:#aaa;
+	text-align: left;
+	font-size:12px;
+	font-family: 'Montserrat',sans-serif;
+}
+.material-design-table-dark td 
+{
+	padding:20px 30px;
+	color:#ddd;
+	text-align: left;
+	font-size:12px;
+	font-family: 'Montserrat',sans-serif;
+}
+.material-design-table-dark input[type=text],.material-design-table-dark input[type=number],.material-design-table-dark select
+{
+	height:25px;
+	width:80px;
+	border-radius:2px;
+	background-color: #464651;
+	border:1px solid #606062;
+	outline:none;
+	padding:5px;
+	color:#ddd;
+	text-align: left;
+	font-size:12px;
+	float:left;
+	display: inline-block;
+}
+.material-design-table-dark input[type=color]
+{
+	height:25px;
+	width:80px;
+	border-radius:2px;
+	border:1px solid #606062;
+	background-color: #464651;
+	outline:none;
+	padding:2px;
+	float:left;
+	display: inline-block;
+}
+.material-design-table-dark tbody tr
+{
+	transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+	border-top: 1px solid #4C4C50;
+}
+.material-design-table-dark tbody tr:hover,.material-design-table-dark thead tr:hover
+{
+	background-color: #464651;
+}
+.material-design-table-dark select
+{
+	height:25px;
+	border-radius:2px;
+	padding:5px;
+	border:none;
+	background-color: transparent;
+	outline:none;
+	float:left;
+	display: block;
+	cursor: pointer;
+	transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+	font-family: 'Montserrat',sans-serif;
+	border-bottom: 2px solid #363640;
+}
+.material-design-table-dark select:hover
+{
+	border-bottom: 2px solid #363640;
 }

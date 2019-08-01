@@ -17,8 +17,12 @@
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script src="struttura.js"></script>
 		<script src="js/ganttStatoOrdini.js"></script>
+
         <script src="js_libraries/dhtmlxgantt/codebase/dhtmlxgantt.js" ></script>
-        <link rel="stylesheet" href="js_libraries/dhtmlxgantt/codebase/dhtmlxgantt.css" type="text/css">
+		<link id="ganntThemeLink" rel="stylesheet" href="js_libraries/dhtmlxgantt/codebase/dhtmlxgantt.css" type="text/css">
+		<script src="js_libraries/dhtmlxgantt/codebase/ext/dhtmlxgantt_fullscreen.js"></script>
+		<!--<script src="js_libraries/dhtmlxgantt/codebase/ext/dhtmlxgantt_tooltip.js"></script>-->
+
 		<style>
 			.swal2-title
 			{
@@ -39,15 +43,14 @@
 	</head>
 	<body onload="">
         <?php include('struttura.php'); ?>
-        <div class="absoluteActionBarGanttStatoOrdini">
-			<input type="search" class="absoluteActionBarGanttStatoOrdiniInput" id="ganttStatoOrdiniinputSearchOrdine" placeholder="Ordine..." onkeyup="checkInputSearchOrdine(this)">
-			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="">Ricerca avanzata ordine <i style="margin-left:5px;" class="far fa-search"></i></button>
+        <div class="absoluteActionBarGanttStatoOrdini" id="absoluteActionBarGanttStatoOrdini">
+			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupDati()">Dati <i style="margin-left:5px;" class="fad fa-database"></i></button>
+			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
+			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupVisualizzazione()">Visualizzazione <i style="margin-left:5px;" class="fad fa-window"></i></button>
+
+			<button class="absoluteActionBarGanttStatoOrdiniButton" style="float:right" onclick="toggleGanttFullScreen()"><i class="fal fa-window-maximize" id="ganttStatoOrdiniFullscreenIcon" title="Schermo intero"></i></button>
 		</div>
-		<div id="containerGanttStatoOrdini">
-        </div>
-		<!--<div id="outerContainerGanttStatoOrdini">
-            <div id="ganttStatoOrdiniContainer" style='width:100%; height:50vh;'></div>
-        </div>-->
+		<div id="containerGanttStatoOrdini"></div>
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>
