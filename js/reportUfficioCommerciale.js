@@ -194,7 +194,7 @@
                                         //formulas:true,
                                         height:"100%"
                                     });
-                                    console.clear();
+                                    //console.clear();
                                     document.getElementById("hot-display-license-info").style.display="none";
                                     document.getElementsByClassName("ht_clone_left")[0].style.zIndex="97";
                                     document.getElementsByClassName("ht_clone_top_left_corner")[0].style.zIndex="97";

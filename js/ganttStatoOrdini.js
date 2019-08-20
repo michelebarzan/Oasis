@@ -2,7 +2,8 @@
     var ganttProperties=
     {
         "scala":"week",
-        "tema":"dhtmlxgantt.css"
+        "tema":"dhtmlxgantt.css",
+        "collapsed":false
     };
     
     $(document).ready(async function()
@@ -20,12 +21,33 @@
     {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.config.scales = [{unit: "week", step: 1, format: "%Y_%W"}];
+
+        var filterValue = "";
+        gantt.$doFilter = function(value){
+            filterValue = value;
+            gantt.refreshData();
+        }
+
+        gantt.attachEvent("onBeforeTaskDisplay", function(id, task){
+            if(!filterValue) return true;
+
+            var normalizedText = task.text.toLowerCase();
+            var normalizedValue = filterValue.toLowerCase();
+            return normalizedText.indexOf(normalizedValue) > -1;
+        });
+
+        gantt.attachEvent("onGanttRender", function(){
+            gantt.$root.querySelector("[data-text-filter]").value = filterValue;
+        })
+
+        var textFilter = "<div class='ganttStatoOrdiniSearchContainer'>Ordine/attività<i style='border-bottom:2px solid #cecece;margin-left:10px;height:15px' class='fal fa-search'></i><input placeholder='Cerca...' data-text-filter class='ganttStatoOrdiniSearchInput' type='text' oninput='gantt.$doFilter(this.value)'></div>";
         gantt.config.columns=
         [
-            {name:"text",       label:"Ordine",  tree:true, width:'*' },
-            {name:"start_date", label:"Data creazione", align: "center", width:'*' },
-            {name:"end_date", label:"Data consegna", align: "center", width:'*' }
+            {name:"text",       label:textFilter,  tree:true, width:250 },
+            {name:"start_date", label:"Data creazione", align: "center", width:100 },
+            {name:"end_date", label:"Data consegna", align: "center", width:100 }
         ];
+        
         gantt.config.readonly = true;
         gantt.init("containerGanttStatoOrdini");
         gantt.parse
@@ -35,11 +57,6 @@
         });
         
     }
-    /*function checkInputSearchOrdine(input)
-    {
-        if(input.value.lenght==8)
-            var ordine=input.value;
-    }*/
     function getDataStatoOrdini()
     {
         return new Promise(function (resolve, reject) 
@@ -448,18 +465,45 @@
         {
             $(icon).removeClass();
             $(icon).addClass("fal fa-window-restore");
-            $(icon).attr("title","Riduci");
+            $(icon).parent().attr("title","Riduci");
 
-            $("#absoluteActionBarGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","z-index":"999"});
-            $("#containerGanttStatoOrdini").css({"left": "0", "right": "0","top": "30", "bottom": "0","z-index":"999"});
+            $("#shadowContainerGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","bottom": "0","z-index":"999"});
+            /*$("#absoluteActionBarGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","z-index":"999"});
+            $("#containerGanttStatoOrdini").css({"left": "0", "right": "0","top": "30", "bottom": "0","z-index":"999"});*/
         }
         else
         {
             $(icon).removeClass();
             $(icon).addClass("fal fa-window-maximize");
-            $(icon).attr("title","Schermo intero");
+            $(icon).parent().attr("title","Schermo intero");
 
-            $("#absoluteActionBarGanttStatoOrdini").css({"left": "", "right": "","top": "","z-index":""});
-            $("#containerGanttStatoOrdini").css({"left": "", "right": "","top": "", "bottom": "","z-index":""});
+            $("#shadowContainerGanttStatoOrdini").css({"left": "", "right": "","top": "","bottom": "","z-index":"999"});
+            /*$("#absoluteActionBarGanttStatoOrdini").css({"left": "", "right": "","top": "","z-index":""});
+            $("#containerGanttStatoOrdini").css({"left": "", "right": "","top": "", "bottom": "","z-index":""});*/
         }
     });
+    function toggleGanttCollapse(icon)
+    {
+        if(!ganttProperties["collapsed"])
+        {
+            gantt.eachTask(function(task){
+                task.$open = false;
+            });
+            gantt.render();
+            $(icon).removeClass();
+            $(icon).addClass("fal fa-object-ungroup");
+            $(icon).parent().attr("title","Esplodi tutti");
+            ganttProperties["collapsed"]=true;
+        }
+        else
+        {
+            gantt.eachTask(function(task){
+                task.$open = true;
+            });
+            gantt.render();
+            $(icon).removeClass();
+            $(icon).addClass("fal fa-object-group");
+            $(icon).parent().attr("title","Collassa tutti");
+            ganttProperties["collapsed"]=false;
+        }
+    }

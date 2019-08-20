@@ -42,15 +42,21 @@
 		</style>
 	</head>
 	<body onload="">
-        <?php include('struttura.php'); ?>
-        <div class="absoluteActionBarGanttStatoOrdini" id="absoluteActionBarGanttStatoOrdini">
-			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupDati()">Dati <i style="margin-left:5px;" class="fad fa-database"></i></button>
-			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
-			<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupVisualizzazione()">Visualizzazione <i style="margin-left:5px;" class="fad fa-window"></i></button>
-
-			<button class="absoluteActionBarGanttStatoOrdiniButton" style="float:right" onclick="toggleGanttFullScreen()"><i class="fal fa-window-maximize" id="ganttStatoOrdiniFullscreenIcon" title="Schermo intero"></i></button>
+		<?php include('struttura.php'); ?>
+		<div id="shadowContainerGanttStatoOrdini">
+			<div class="absoluteActionBarGanttStatoOrdini" id="absoluteActionBarGanttStatoOrdini">
+				<div class="absoluteActionBarGanttStatoOrdiniRow" style="border-bottom:1px solid #cecece">
+					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupDati()">Dati <i style="margin-left:5px;" class="fad fa-database"></i></button>
+					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
+					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupVisualizzazione()">Visualizzazione <i style="margin-left:5px;" class="fad fa-window"></i></button>
+				</div>
+				<div class="absoluteActionBarGanttStatoOrdiniRow">
+					<button class="absoluteActionBarGanttStatoOrdiniButton" title="Schermo intero" style="float:right" onclick="toggleGanttFullScreen()"><i class="fal fa-window-maximize" id="ganttStatoOrdiniFullscreenIcon"></i></button>
+					<button class="absoluteActionBarGanttStatoOrdiniButton" title="Collassa tutti" onclick="toggleGanttCollapse(this.childNodes[0])"><i class="fal fa-object-group" ></i></button>
+				</div>
+			</div>
+			<div id="containerGanttStatoOrdini"></div>
 		</div>
-		<div id="containerGanttStatoOrdini"></div>
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>

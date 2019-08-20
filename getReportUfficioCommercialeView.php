@@ -22,6 +22,7 @@
 	$rows=[];
 	
 	$query2="SELECT * FROM report_ufficio_vendite_view WHERE annoMeseGiorno BETWEEN $data1Int AND $data2Int ORDER BY numero_documento";	
+	//echo $query2;
 	$result2=sqlsrv_query($conn,$query2);
 	if($result2==FALSE)
 	{
@@ -34,16 +35,17 @@
 			$row=[];
 			foreach ($columns as $column)
 			{
-				array_push($row,$row2[$column]);
+				array_push($row,utf8_encode($row2[$column]));
 			}
 			array_push($rows,$row);
+			
 		}
 	}
 	$response=[];
 	
 	array_push($response,json_encode($columns));
 	array_push($response,json_encode($rows));
-	
+
 	echo json_encode($response);
 	
 ?>
