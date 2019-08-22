@@ -467,7 +467,7 @@
             $(icon).addClass("fal fa-window-restore");
             $(icon).parent().attr("title","Riduci");
 
-            $("#shadowContainerGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","bottom": "0","z-index":"999"});
+            $("#shadowContainerGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","bottom": "0","z-index":"998"});
             /*$("#absoluteActionBarGanttStatoOrdini").css({"left": "0", "right": "0","top": "0","z-index":"999"});
             $("#containerGanttStatoOrdini").css({"left": "0", "right": "0","top": "30", "bottom": "0","z-index":"999"});*/
         }
@@ -477,7 +477,7 @@
             $(icon).addClass("fal fa-window-maximize");
             $(icon).parent().attr("title","Schermo intero");
 
-            $("#shadowContainerGanttStatoOrdini").css({"left": "", "right": "","top": "","bottom": "","z-index":"999"});
+            $("#shadowContainerGanttStatoOrdini").css({"left": "", "right": "","top": "","bottom": "","z-index":"998"});
             /*$("#absoluteActionBarGanttStatoOrdini").css({"left": "", "right": "","top": "","z-index":""});
             $("#containerGanttStatoOrdini").css({"left": "", "right": "","top": "", "bottom": "","z-index":""});*/
         }
