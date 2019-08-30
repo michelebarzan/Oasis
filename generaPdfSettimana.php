@@ -18,7 +18,7 @@
 	
 	$settimanaTmp=substr($week, 0, 4)."-".substr($week, 4, 6);
 	
-	set_time_limit(240);
+	set_time_limit(3000);
 	
 	$dataInizio=getDays($conn,$week)[0];
 	$dataFine=getDays($conn,$week)[1];
