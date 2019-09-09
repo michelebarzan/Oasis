@@ -16,7 +16,8 @@
 		<script src="js_libraries/spinners/spinner.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-		<script src="jquery.table2excel.js"></script>
+		<script src="js_libraries/jquery.table2excel.js"></script>
+		<script src="js_libraries/tableToExcel.js"></script>
 		<style>
 			.swal2-title
 			{
@@ -143,12 +144,45 @@
 			{
 				var settimana=document.getElementById('selectSalvataggioSommarioProduzione').value;
 				var stazione=document.getElementById('selectStazioneSommarioProduzione').value;
-				$("#"+table).table2excel({
+				
+				/*$("#"+table).table2excel({
 				// exclude CSS class
 				exclude: ".noExl",
 				name: "Sommario produzione_"+settimana+"_"+stazione,
 				filename: "Sommario produzione_"+settimana+"_"+stazione //do not include extension
-				});
+				});*/
+				exportTableToExcel(table, "Sommario produzione_"+settimana+"_"+stazione);
+			}
+			function exportTableToExcel(tableID, filename = '')
+			{
+				var downloadLink;
+				var dataType = 'application/vnd.ms-excel';
+				var tableSelect = document.getElementById(tableID);
+				var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+				
+				// Specify file name
+				filename = filename?filename+'.xls':'excel_data.xls';
+				
+				// Create download link element
+				downloadLink = document.createElement("a");
+				
+				document.body.appendChild(downloadLink);
+				
+				if(navigator.msSaveOrOpenBlob){
+					var blob = new Blob(['\ufeff', tableHTML], {
+						type: dataType
+					});
+					navigator.msSaveOrOpenBlob( blob, filename);
+				}else{
+					// Create a link to the file
+					downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+				
+					// Setting the file name
+					downloadLink.download = filename;
+					
+					//triggering the function
+					downloadLink.click();
+				}
 			}
 		</script>
 	</head>

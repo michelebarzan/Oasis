@@ -507,3 +507,8 @@
             ganttProperties["collapsed"]=false;
         }
     }
+    async function getIntro()
+    {
+        if(await getCookie("into1GanttStatoOrdini")!="true")
+            introJs().setOption('showProgress', true).oncomplete(function() {setCookie("into1GanttStatoOrdini","true")}).onexit(function() {setCookie("into1GanttStatoOrdini","true")}).start();
+    }

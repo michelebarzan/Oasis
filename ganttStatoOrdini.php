@@ -23,6 +23,9 @@
 		<script src="js_libraries/dhtmlxgantt/codebase/ext/dhtmlxgantt_fullscreen.js"></script>
 		<!--<script src="js_libraries/dhtmlxgantt/codebase/ext/dhtmlxgantt_tooltip.js"></script>-->
 
+		<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">
+		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>
+
 		<style>
 			.swal2-title
 			{
@@ -41,17 +44,18 @@
 			}
 		</style>
 	</head>
-	<body onload="">
+	<body onload="getIntro()">
 		<?php include('struttura.php'); ?>
 		<div id="shadowContainerGanttStatoOrdini">
 			<div class="absoluteActionBarGanttStatoOrdini" id="absoluteActionBarGanttStatoOrdini">
 				<div class="absoluteActionBarGanttStatoOrdiniRow" style="border-bottom:1px solid #cecece">
-					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupDati()">Dati <i style="margin-left:5px;" class="fad fa-database"></i></button>
-					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
-					<button class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupVisualizzazione()">Visualizzazione <i style="margin-left:5px;" class="fad fa-window"></i></button>
+					<button data-step="1" data-intro="Usa questo menu per filtri avanzati sui dati" class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupDati()">Dati <i style="margin-left:5px;" class="fad fa-database"></i></button>
+					<button data-step="2" data-intro="Usa questo menu per modificare le impostazioni del grafico" class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
+					<button data-step="3" data-intro="Usa questo menu per modificare la visualizzazione del grafico" class="absoluteActionBarGanttStatoOrdiniButton" onclick="apriPopupVisualizzazione()">Visualizzazione <i style="margin-left:5px;" class="fad fa-window"></i></button>
+					<button onclick="setCookie('into1GanttStatoOrdini','false');getIntro()" class="absoluteActionBarGanttStatoOrdiniButton" title="Tutorial"><i class="far fa-question"></i></button>
 				</div>
-				<div class="absoluteActionBarGanttStatoOrdiniRow">
-					<button class="absoluteActionBarGanttStatoOrdiniButton" title="Schermo intero" style="float:right" onclick="toggleGanttFullScreen()"><i class="fal fa-window-maximize" id="ganttStatoOrdiniFullscreenIcon"></i></button>
+				<div class="absoluteActionBarGanttStatoOrdiniRow" data-step="4" data-intro="Usa questi pulsanti per accedere alle funzioni più utilizzate">
+					<button data-step="5" data-intro="Usa questo pulsante per attivare/disattivare la modalità schermo intero" class="absoluteActionBarGanttStatoOrdiniButton" title="Schermo intero" style="float:right" onclick="toggleGanttFullScreen()"><i class="fal fa-window-maximize" id="ganttStatoOrdiniFullscreenIcon"></i></button>
 					<button class="absoluteActionBarGanttStatoOrdiniButton" title="Collassa tutti" onclick="toggleGanttCollapse(this.childNodes[0])"><i class="fal fa-object-group" ></i></button>
 				</div>
 			</div>
