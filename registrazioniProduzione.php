@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="js_libraries/spinners/spinner.css" />
 		<script src="js_libraries/spinners/spinner.js"></script>
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV32.css" />
+			<link rel="stylesheet" href="css/styleV33.css" />
 			<script src="struttura.js"></script>
 			<script>
 				var sincronizzati=false;

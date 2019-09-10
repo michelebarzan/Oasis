@@ -8,7 +8,7 @@
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV32.css" />
+			<link rel="stylesheet" href="css/styleV33.css" />
 			<script src="struttura.js"></script>
 			<style>
 				@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);

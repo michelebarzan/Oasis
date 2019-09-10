@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<title>Dettaglio carico di lavoro</title>
-			<link rel="stylesheet" href="css/styleV32.css" />
+			<link rel="stylesheet" href="css/styleV33.css" />
 			<script>
 				//var parameters=window.my_special_setting;
 				var stazioneG;

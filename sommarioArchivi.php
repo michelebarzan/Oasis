@@ -14,7 +14,7 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV32.css" />
+		<link rel="stylesheet" href="css/styleV33.css" />
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script src="struttura.js"></script>
 		<script src="js/sommarioArchivi.js"></script>

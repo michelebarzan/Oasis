@@ -2516,7 +2516,7 @@ html
 	overflow-y:hidden;
 	min-height:370px;
 	height:auto;
-	display:inline-block;
+	display:block;
 	float:center;
 	text-align:center;
 	-webkit-transition: all 1s;
@@ -2671,6 +2671,11 @@ html
 	padding-left:10px;
 	padding-right:5px;
 	display:inline-block;
+}
+.linkPdfEditableTable
+{
+	font-size: 16px;
+	color:red;
 }
 /*TICKET---------------------------------------*/
 .menuListContainer
