@@ -95,6 +95,10 @@
 						<i class="fal fa-analytics"></i>
 						<div>Gantt stato ordini</div>
 					</div>
+					<div class="homepageLink" data-tooltip="Apri una nuova richiesta o consulta quelle esistenti" onclick="gotopath('richiesteEfaq.php')">
+						<i class="fal fa-question-square"></i>
+						<div>FAQ &<br>richieste</div>
+					</div>
 				</div>
 			</div>
 		</div>

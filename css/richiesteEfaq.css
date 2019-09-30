@@ -1,0 +1,774 @@
+/*NUOVA RICHIESTA--------------------------------*/
+.nuovaRichiestaOuterContainer
+{
+    width:100%;
+    box-sizing: border-box;
+    padding:10px;
+    height:100%;
+    float: left;
+    display: block;
+}
+#formNuovaRichiesta,#formNuovaReplica
+{
+    width:100%;
+    height:100%;
+    float: left;
+    display: block;
+    margin-bottom:0px;
+}
+.formNuovaRichiestaInputContainer
+{
+    width:100%;
+    float:left;
+    display: block;
+    min-height:40px;
+    height: auto;
+    line-height: 40px;
+    box-sizing: border-box;
+    padding-top:5px;
+    padding-bottom: 5px;
+}
+.formNuovaRichiestaInputLabel
+{
+    float:left;
+    display: block;
+    height:30px;
+    line-height: 30px;
+    width:150px;
+    box-sizing: border-box;
+    text-align: left;
+    padding-left:20px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+}
+.formNuovaRichiestaInput
+{
+    float:left;
+    display: block;
+    width:calc(100% - 190px);
+    margin-left:20px;
+    margin-right: 20px;
+    height: 30px;
+    min-height: 30px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    border-radius: 2px;
+}
+.formNuovaRichiestaInput:hover
+{
+    border: 1px solid gray;
+}
+textarea.formNuovaRichiestaInput
+{
+    resize: vertical;
+}
+#formNuovaRichiestaNuovaCategoriaContainer
+{
+    float:right;
+    display: block;
+    width:calc(100% - 190px);
+    margin-left:20px;
+    margin-right: 20px;
+    height: 70px;
+    min-height: 70px;
+}
+.formNuovaRichiestaButtonNuovaCategoria
+{
+    width:130px;
+    float: left;
+    display: block;
+    height:30px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    border-radius: 2px;
+    border:none;
+    outline:none;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    color:white;
+}
+.formNuovaRichiestaButtonNuovaCategoria:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.formNuovaRichiestaButtonNuovaCategoria:active
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.formNuovaRichiestaContainerScegliFile
+{
+    float:left;
+    display: block;
+    width:calc(100% - 190px);
+    margin-left:20px;
+    margin-right: 20px;
+    height: auto;
+    min-height: 30px;
+}
+#formNuovaRichiestaButtonScegliFile,#formNuovaRichiestaButtonRimuoviFile
+{
+    float: left;
+    display: block;
+    height:30px;
+    width:160px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    border-radius: 2px;
+    border:none;
+    outline:none;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+#formNuovaRichiestaButtonScegliFile:hover,#formNuovaRichiestaButtonRimuoviFile:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+#formNuovaRichiestaButtonScegliFile
+{
+    background-color: #fcf7b7;
+}
+#formNuovaRichiestaButtonRimuoviFile
+{
+    background-color: #d43f3a;
+    margin-left: 30px;
+    color:white;
+}
+#formNuovaRichiestaButtonScegliFile:active,#formNuovaRichiestaButtonRimuoviFile:active
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+#formNuovaRichiestaInputScegliFile
+{
+    display: none;
+}
+#formNuovaReplicaButtonScegliFile,#formNuovaReplicaButtonRimuoviFile
+{
+    float: left;
+    display: block;
+    height:30px;
+    width:160px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    border-radius: 2px;
+    border:none;
+    outline:none;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+#formNuovaReplicaButtonScegliFile:hover,#formNuovaReplicaButtonRimuoviFile:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+#formNuovaReplicaButtonScegliFile
+{
+    background-color: #fcf7b7;
+}
+#formNuovaReplicaButtonRimuoviFile
+{
+    background-color: #d43f3a;
+    margin-left: 30px;
+    color:white;
+}
+#formNuovaReplicaButtonScegliFile:active,#formNuovaReplicaButtonRimuoviFile:active
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+#formNuovaReplicaInputScegliFile
+{
+    display: none;
+}
+.formNuovaRichiestaFileListTable
+{
+	margin-top:20px;
+	width: 100% ;
+	border-collapse:separate; 
+    border-spacing:0 10px; 
+    margin-bottom: -10px;
+}
+.formNuovaRichiestaFileListTable td 
+{
+	padding-left:15px;
+	padding-right:15px;
+	padding-top:5px;
+	padding-bottom:5px;
+	color:gray;
+	text-align: left;
+	font-size:12px;
+    font-family: 'Montserrat',sans-serif;
+}
+.formNuovaRichiestaFileListTable tr
+{
+    background-color: #E8E7E5;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.formNuovaRichiestaFileListTable tr:hover
+{
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.upload-file-success-button-importaDati
+{
+	margin-top:10px;
+	width: 97% ;
+	margin-left:1%;
+	margin-right:2%;
+	background-color: #8bc34a;
+	color:white;
+}
+.formNuovaRichiestaButtonAggiungiUtente
+{
+    margin-left:10px;
+    cursor:pointer;
+    padding:5px;
+    border-radius: 2px;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.formNuovaRichiestaButtonAggiungiUtente:hover
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.formNuovaRichiestaButtonAggiungiUtente:active
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+#formNuovaRichiestaSelectAggiungiUtente
+{
+    width:25px;
+    outline: none;
+    background-color: transparent;
+    border:none;
+    margin-left:-10px;
+}
+.formNuovaRichiestaUtentiCoinvoltiListContainer
+{
+    float:right;
+    display: block;
+    width:calc(100% - 190px);
+    margin-left:20px;
+    margin-right: 20px;
+    min-height: 30px;
+    height:auto;
+}
+#formNuovaRichiestaUtentiCoinvoltiList
+{
+    float:left;
+    display: block;
+    width:100%;
+    margin-top:5px;
+    margin-bottom: 0px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    padding-left: 20;
+}
+#formNuovaRichiestaUtentiCoinvoltiList li
+{
+    height:25px;
+    line-height:25px;
+}
+#formNuovaRichiestaUtentiCoinvoltiList li div
+{
+    float:left;
+    display: block;
+    height:25px;
+    line-height:25px;
+    text-align: left;
+    width:150px;
+}
+#formNuovaRichiestaUtentiCoinvoltiList li button
+{
+    float:left;
+    display: block;
+    padding:5px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    background-color: transparent;
+    border:none;
+    border-radius: 2px;
+}
+#formNuovaRichiestaUtentiCoinvoltiList li button:hover
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+#formNuovaRichiestaUtentiCoinvoltiList li button:active
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.nuovaRichiestaButtonContainer
+{
+    width:100%;
+    height:30px;
+    line-height:30px;
+    margin-top:20px;
+    float: left;
+    display: block;
+}
+.nuovaRichiestaButton
+{
+    display: block;
+    width:30%;
+    height:30px;
+    background-color: #fff;
+    font-family: 'Montserrat',sans-serif;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    border:none;
+    cursor: pointer;
+    outline:none;
+}
+.nuovaRichiestaButton:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.nuovaRichiestaButton:active
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+/*---------------------------------------------------------------------*/
+#viewFunctionBar
+{
+    width: 100%;
+    max-width: 100%;
+    float: left;
+    /*display: block;*/
+    min-height:32px;
+    
+    overflow:visible;
+    box-sizing: border-box;
+    background-color: #ddd;
+    border: 1px solid #bbb;
+    padding-right: 5px;
+    display: none;
+    /*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);*/
+}
+#viewTitleContainer
+{
+    background-color:#4C91CB;
+    border:1px solid #4C91CB;
+    color:white;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    float:left;
+    display: block;
+    height:32px;
+    line-height: 32px;
+    margin-top:-1px;
+    margin-left: -1px;
+}
+#viewTitle
+{
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+}
+.viewFunctionBarTextContainer
+{
+    float:left;
+    display: block;
+    margin:5px 10px;
+    height:20px;
+    line-height: 20px;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+}
+#richiesteContainer
+{
+    width: 100%;
+    float: left;
+    display: block;
+}
+#editableTableElementsRichiesteEfaq,#listViewElementsRichiesteEfaq
+{
+    min-height:20px;
+    margin-top:5px;
+    overflow: visible;
+    float: left;
+    display: block;
+    
+}
+/*SWITCH------------------------------------*/
+.switchVisualizzazioneKnobs, .switchVisualizzazioneLayer
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+.switchVisualizzazioneButton
+{
+    position: relative;
+    width: 120px;
+    height: 20px;
+    overflow: hidden;
+    float:left;
+    display:block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.switchVisualizzazioneButton:hover
+{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+}
+.switchVisualizzazioneButton.switchVisualizzazioneR, .switchVisualizzazioneButton.switchVisualizzazioneR .switchVisualizzazioneLayer
+{
+    border-radius: 3px;
+}
+
+.switchVisualizzazioneButton.b2
+{
+    border-radius: 2px;
+}
+
+.switchVisualizzazioneCheckbox
+{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.switchVisualizzazioneKnobs
+{
+    z-index: 2;
+}
+
+.switchVisualizzazioneLayer
+{
+    width: 100%;
+    background-color: #D0DCE1;
+    transition: 0.3s ease all;
+    z-index: 1;
+}
+
+/* Button 1 */
+#switchVisualizzazioneButton-1 .switchVisualizzazioneKnobs:before
+{
+    content: 'Lista';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 60px;
+    height: 20px;
+    color: #fff;
+    font-size: 11px;
+    font-family: 'Montserrat',sans-serif;
+    text-align: center;
+    line-height: 20px;
+    /*padding: 9px 4px;*/
+    background-color: #4C91CB;
+    border-radius: 3px;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+}
+
+#switchVisualizzazioneButton-1 .switchVisualizzazioneCheckbox:checked + .switchVisualizzazioneKnobs:before
+{
+    content: 'Tabella';
+    left: 60px;
+    background-color: #9C9C9C;
+}
+
+#switchVisualizzazioneButton-1 .switchVisualizzazioneCheckbox:checked ~ .switchVisualizzazioneLayer
+{
+    background-color: #ccc;
+}
+
+#switchVisualizzazioneButton-1 .switchVisualizzazioneKnobs, #switchVisualizzazioneButton-1 .switchVisualizzazioneKnobs:before, #switchVisualizzazioneButton-1 .switchVisualizzazioneLayer
+{
+    transition: 0.3s ease all;
+}
+/*------------------------------------------*/
+#richiesteListContainer
+{
+    width:100%;
+    height:auto;
+    box-sizing: border-box;
+    padding-top:10px;
+    margin-bottom:50px;
+    float: left;
+    display: block;
+}
+.richiesteListItem
+{
+    width:100%;
+    overflow-x:hidden;
+    min-height:150px;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+    float: left;
+    display: block;
+    margin-top:10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border:1px solid #bbb;
+    /*padding-bottom:10px;*/
+    /*background: linear-gradient(90deg, #DCDCDC 50%, rgba(0,0,0,0.08) 50%);*/
+    background-color: #E1E1E1;
+    /*padding:10px;*/
+}
+.richiesteListItemRow
+{
+    width: 100%;
+    float: left;
+    display: block;
+    /*background-image: url("../images/circuitBg.jpg");
+    background-color: #CDCFD0;
+    background-position: left top;
+    background-repeat-x: repeat;*/
+    background-color: #CDCFD0;
+    /*background-color: #BEC6CD;*/
+}
+.buttonChiusuraRichiesta
+{
+    float: left;
+    display: block;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    height: 25px;
+    margin-top:2.5px;
+    background-color: #ddd;
+    /*border:2px solid transparent;*/
+    border:none;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+    outline:none;
+}
+.buttonChiusuraRichiesta:hover
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.buttonChiusuraRichiesta:active
+{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+}
+#buttonChiusuraRichiestaAccetta
+{
+    margin-right:20px;
+    /*border-bottom:2px solid #70B085;*/
+    color:#70B085
+}
+#buttonChiusuraRichiestaRifiuta
+{
+    /*border-bottom:2px solid #DA6969;*/
+    color:#DA6969
+}
+#buttonChiusuraRichiestaAccetta:hover
+{
+    color:#EBEBEB;
+    background-color: #70B085;
+}
+#buttonChiusuraRichiestaRifiuta:hover
+{
+    color:#EBEBEB;
+    background-color: #DA6969;
+}
+.richiesteListItemBox
+{
+    width:50%;
+    float: left;
+    display: block;
+}
+.richiesteListItemBoxRow
+{
+    width:100%;
+    float:left;
+    display: block;
+    /*border-bottom: 1px solid #bbb;
+    border-left: 1px solid #bbb;*/
+    box-sizing: border-box;
+    padding-bottom:20px;
+}
+.richiesteListItemBoxRowTitle
+{
+    font-weight: bold;
+    color:#4C91CB;
+    width:100%;
+    float: left;
+    display: block;
+    font-family: 'Montserrat',sans-serif;
+    height:30px;
+    line-height: 30px;
+    text-align: left;
+    box-sizing: border-box;
+    padding-left:10px;
+    padding-right: 10px;
+    font-size: 12px;
+    margin-bottom: -10px;
+}
+.richiesteListItemInnerBox
+{
+    width:50%;
+    float: left;
+    display: block;
+}
+.richiesteListItemElementContainer
+{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    float: left;
+    display: block;
+    min-height: 30px;
+    width:calc(100% - 20px);
+    /*line-height: 30px;*/
+}
+.richiesteListItemElementLabel
+{
+    float: left;
+    display: block;
+    text-align: left;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: underline;
+    color:black;
+    width:100%;
+}
+.richiesteListItemElementValue
+{
+    float: left;
+    display: block;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    width:100%;
+}
+.richiesteListItemElementValueAllegato
+{
+    width:70px;
+    height: 70px;
+    max-width:70px;
+    max-height: 70px;
+    overflow:hidden;
+    float: left;
+    display: block;
+    margin-right:10px;
+    margin-top:10px;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.richiesteListItemElementValueAllegatoRow
+{
+    width:100%;
+    float: left;
+    display: block;
+}
+.richiesteListItemElementValueAllegatoButton
+{
+    width:20px;
+    height: 20px;
+    display: block;
+    background-color: transparent;
+    border:none;
+    cursor: pointer;
+    outline: none;
+    color:#ddd;
+}
+.richiesteListItemElementValueAllegato:hover
+{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+}
+.richiesteListItemElementValueTable
+{
+    float: left;
+    display: block;
+    border-collapse: collapse;
+}
+.richiesteListItemElementValueTable td
+{
+	text-align: left;
+	border: none;
+	font-size:12px;
+	font-family:'Montserrat',sans-serif;
+}
+.richiesteListItemElementInput
+{
+    float: left;
+    display: block;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    border-radius: 2px;
+    background-color: white;
+    width:100%;
+    border:1px solid #bbb;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+}
+.richiesteListItemElementInput:hover
+{
+    border: 1px solid gray;
+}
+.richiesteListItemElementInput:disabled
+{
+    background-color: #EFEFEF;
+    color:gray;
+}
+.btnIconRichiesteEfaq
+{
+    background: transparent;
+    border:none;
+    cursor: pointer;
+    outline: none;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+    padding:5px;
+}
+.btnIconRichiesteEfaq:hover
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.btnIconRichiesteEfaq:active
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.buttonGestioneRichiesta
+{
+    float: left;
+    display: block;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    height: 25px;
+    width:100px;
+    margin-top:2.5px;
+    background-color: #ddd;
+    /*border:2px solid transparent;*/
+    border:none;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+    outline:none;
+}
+.buttonGestioneRichiesta:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.buttonGestioneRichiesta:active
+{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+}
+#searchSelectLeTueRichiesteListItem1,#searchSelectLeTueRichiesteListItem2,#selectFiltraMacrocategoriaLeTueRichieste,#selectFiltraCategoriaLeTueRichieste
+{
+    height:18px;
+	width:auto;
+	background-color:transparent;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	float:left;
+	display:block;
+	border:none;
+	outline:none;
+	font-family:'Montserrat',sans-serif;
+    font-size:12px;
+    cursor: pointer;
+}
+#searchSelectLeTueRichiesteListItem1:hover,#searchSelectLeTueRichiesteListItem2:hover,#selectFiltraMacrocategoriaLeTueRichieste:hover,#selectFiltraCategoriaLeTueRichieste:hover
+{
+    background-color: #ccc;
+}
