@@ -3822,7 +3822,7 @@ async function getTutteRichieste()
                             /*----------------------------------------------------------------------------*/
 
                             var id_risposte=getValoriColonnaRisposteById(risposte,id_richiesta,"*","id_risposta");
-                            if(id_risposte.length>0)
+                            /*if(id_risposte.length>0)
                             {
                                 var richiesteListItemElementContainer=document.createElement("div");
                                 richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
@@ -3836,7 +3836,7 @@ async function getTutteRichieste()
                                 richiesteListItemElementContainer.appendChild(buttonRispondiRichiesta);
 
                                 richiesteListItemRow.appendChild(richiesteListItemElementContainer);
-                            }
+                            }*/
                             
                             richiesteListItem.appendChild(richiesteListItemRow);
 
