@@ -2648,7 +2648,8 @@ async function salvaModificheRichiesta(id_richiesta)
         }
         else
         {
-            valoriColonneMacrocategoria.push("["+colonna['colonna']+"]='"+document.getElementById("leTueRichiesteInput"+colonna["colonna"]+id_richiesta).value+"'");colonna['colonna']
+            var colVal=document.getElementById("leTueRichiesteInput"+colonna["colonna"]+id_richiesta).value.replace("'","''");
+            valoriColonneMacrocategoria.push("["+colonna['colonna']+"]='"+colVal+"'");
         }
     });
 

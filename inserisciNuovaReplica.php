@@ -6,6 +6,8 @@
     $descrizione=$_REQUEST['descrizione'];
     $id_richiesta=$_REQUEST['id_richiesta'];
 
+    $descrizione=str_replace("'","''",$descrizione);
+
     $query2="INSERT INTO [dbo].[risposte_richieste_e_faq]
     ([richiesta]
     ,[descrizione]

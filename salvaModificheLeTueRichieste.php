@@ -3,11 +3,11 @@
     include "connessione.php";
 
     $id_richiesta=$_REQUEST['id_richiesta'];
-    $oggetto=$_REQUEST['oggetto'];
-    $descrizione=$_REQUEST['descrizione'];
+    $oggetto=str_replace("'","''",$_REQUEST['oggetto']);
+    $descrizione=str_replace("'","''",$_REQUEST['descrizione']);
     $macrocategoria=$_REQUEST['macrocategoria'];
     $categoria=$_REQUEST['categoria'];
-    $note=$_REQUEST['note'];
+    $note=str_replace("'","''",$_REQUEST['note']);
     $valoriColonneMacrocategoria=json_decode($_REQUEST['JSONvaloriColonneMacrocategoria']);
 
     $query2="UPDATE richieste_e_faq SET oggetto='$oggetto',descrizione='$descrizione',macrocategoria='$macrocategoria',categoria='$categoria',note='$note'";

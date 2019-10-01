@@ -2,7 +2,7 @@
 	include "Session.php";
 	include "connessione.php";
 	
-	$pageName="FAQ & richieste";
+	$pageName="Gestione FAQ & richieste";
 ?>
 <html>
 	<head>
@@ -19,8 +19,8 @@
 		<title><?php echo $pageName; ?></title>
 		<link rel="stylesheet" href="css/styleV33.css" />
 		<script src="struttura.js"></script>
-		<script src="js/richiesteEfaq.js"></script>
-		<link rel="stylesheet" href="css/richiesteEfaq.css" />
+		<script src="js/gestioneRichiesteEfaq.js"></script>
+		<link rel="stylesheet" href="css/gestioneRichiesteEfaq.css" />
 		<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>
@@ -44,26 +44,9 @@
 			}
 		</style>
 	</head>
-	<body onload="getIntro()">
-		<?php include('struttura.php'); ?>
-        <div class="absoluteActionBar2" id="richiesteEfaqAbsoluteActionBar2" style="top:100">
-            <button class="absoluteActionBarButton" data-step="1"  data-intro="Usa questo bottone per inserire una nuova richiesta" onclick="apriPopupNuovaRichiesta()">
-                Nuova richiesta
-                <i class="fad fa-layer-plus" style="margin-left:5px"></i>
-			</button>
-			<button class="absoluteActionBarButton" data-step="2" data-intro="Usa questo bottone per consultare e modificare le tue richieste" onclick="resetStyle(this);getRichiesteUtente()">
-                Le tue richieste
-                <i class="fad fa-user-edit" style="margin-left:5px"></i>
-			</button>
-			<button class="absoluteActionBarButton" data-step="3" data-intro="Usa questo bottone per consultare tutte le richieste" onclick="resetStyle(this);getTutteRichieste()">
-                Tutte le richieste
-                <i class="fad fa-database" style="margin-left:5px"></i>
-			</button>
-			<button class="absoluteActionBarButton" title="Tutorial" onclick="startTutorial()">
-                <i class="far fa-question" ></i>
-			</button>
-        </div>
-        <blob class="absoluteContainer2" style="top:150">
+	<body onload="getRichiesteGestione()">
+        <?php include('struttura.php'); ?>
+        <div class="absoluteContainer2" style="top:100">
 			<div id="viewFunctionBar">
 				<div id="viewTitleContainer"><span id="viewTitle"></span></div>
 				<div class="viewFunctionBarTextContainer" data-step="4" data-intro="Usa questo pulsante per cambiare la visualizzazione, da lista a tabella">
@@ -91,7 +74,7 @@
 					</div>
 					<div class="absoluteActionBarElement">
 						<div style="float:left;display:block">Macrocategoria</div> 
-						<select id="selectFiltraMacrocategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="if(view=='richieste_utente'){getRichiesteUtente()}else{getTutteRichieste()}">
+						<select id="selectFiltraMacrocategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
 							<option value="*">Tutte</option>
 							<?php
 								$queryMacrocategorie="SELECT id_macrocategoria, nome FROM dbo.macrocategorie_richieste";	
@@ -108,7 +91,7 @@
 					</div>
 					<div class="absoluteActionBarElement">
 						<div style="float:left;display:block">Categoria</div> 
-						<select id="selectFiltraCategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="if(view=='richieste_utente'){getRichiesteUtente()}else{getTutteRichieste()}">
+						<select id="selectFiltraCategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
 							<option value="*">Tutte</option>
 							<?php
 								$queryCategorie="SELECT id_categoria, nome FROM dbo.categorie_richieste";	
@@ -154,7 +137,7 @@
 				</div>
 			</div>
 			<div id="richiesteContainer"></div>
-		</blob>
+		</div>
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>

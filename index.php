@@ -99,6 +99,10 @@
 						<i class="fal fa-question-square"></i>
 						<div>FAQ &<br>richieste</div>
 					</div>
+					<div class="homepageLink" data-tooltip="Gestisci e rispondi alle richieste che ti riguardano" onclick="gotopath('gestioneRichiesteEfaq.php')">
+						<i class="fal fa-inbox-in"></i>
+						<div>Gestione FAQ & richieste</div>
+					</div>
 				</div>
 			</div>
 		</div>
