@@ -17,7 +17,7 @@
         }
     }
 
-	$query2="CREATE VIEW tmpViewSommarioProduzione".$x." AS SELECT derivedtbl_1.docnum, CONVERT(decimal(4, 2), derivedtbl_1.mq) AS mq, derivedtbl_1.basi_portalavabo, derivedtbl_1.basi_accostabili, derivedtbl_1.pensili, derivedtbl_1.colonne, derivedtbl_1.Altro, derivedtbl_1.dataConsegna, 
+	$query2="CREATE VIEW tmpViewSommarioProduzione".$x." AS SELECT DISTINCT derivedtbl_1.docnum, CONVERT(decimal(4, 2), derivedtbl_1.mq) AS mq, derivedtbl_1.basi_portalavabo, derivedtbl_1.basi_accostabili, derivedtbl_1.pensili, derivedtbl_1.colonne, derivedtbl_1.Altro, derivedtbl_1.dataConsegna, 
             derivedtbl_1.totale_pezzi, derivedtbl_1.stazione, derivedtbl_1.settimana, derivedtbl_1.stato, dbo.collezione.collezione
             FROM (SELECT docnum, mq, basi_portalavabo, basi_accostabili, pensili, colonne, Altro, dataConsegna, totale_pezzi, stazione, settimana, stato
             FROM dbo.sommario_produzione_montaggio
