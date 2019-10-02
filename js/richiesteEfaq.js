@@ -2750,7 +2750,7 @@ function confermaChiusuraRichiesta(id_richiesta)
     {
         if (result.value)
         {
-            $.post("cambiaStatoRichiesta.php.php",
+            $.post("cambiaStatoRichiesta.php",
             {
                 id_richiesta,
                 stato
@@ -2800,7 +2800,7 @@ function rifiutaChiusuraRichiesta(id_richiesta)
     {
         if (result.value)
         {
-            $.post("cambiaStatoRichiesta.php.php",
+            $.post("cambiaStatoRichiesta.php",
             {
                 id_richiesta,
                 stato
