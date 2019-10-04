@@ -11,17 +11,17 @@
 	if($stazioneVisualizzata=="Punto punto")
 	{
 		svuotaPuntoPunto($conn,$nomeSalvataggio,$stazione,$week);
-		salvaPuntoPunto($conn,$nomeSalvataggio,$stazione);
+		salvaPuntoPunto($conn,$nomeSalvataggio,$stazione,$week);
 	}
 	if($stazioneVisualizzata=="Verniciatura")
 	{
 		svuotaVerniciatura($conn,$nomeSalvataggio,$stazione,$week);
-		salvaVerniciatura($conn,$nomeSalvataggio,$stazione);
+		salvaVerniciatura($conn,$nomeSalvataggio,$stazione,$week);
 	}
 	if($stazioneVisualizzata=="Montaggio")
 	{
 		svuotaMontaggio($conn,$nomeSalvataggio,$stazione,$week);
-		salvaMontaggio($conn,$nomeSalvataggio,$stazione);
+		salvaMontaggio($conn,$nomeSalvataggio,$stazione,$week);
 	}
 	
 	function svuotaPuntoPunto($conn,$nomeSalvataggio,$stazione,$week)
@@ -51,7 +51,7 @@
 			die("error");
 		}
 	}
-	function salvaPuntoPunto($conn,$nomeSalvataggio,$stazione)
+	function salvaPuntoPunto($conn,$nomeSalvataggio,$stazione,$week)
 	{
 		$q="INSERT INTO [dbo].[stato_punto_punto]
 		   ([id_gestione_punto_punto]
@@ -80,7 +80,7 @@
 		   ,[settimana]
 		   ,[dataConsegna]
 		   ,[collezione]
-		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_punto_punto WHERE stazione='$stazione'";
+		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_punto_punto WHERE stazione='$stazione' AND settimana=$week";
 		$r=sqlsrv_query($conn,$q);
 		if($r==FALSE)
 		{
@@ -91,7 +91,7 @@
 			echo "ok";
 		}
 	}
-	function salvaVerniciatura($conn,$nomeSalvataggio,$stazione)
+	function salvaVerniciatura($conn,$nomeSalvataggio,$stazione,$week)
 	{
 		$q="INSERT INTO [dbo].[stato_verniciatura]
 		   ([id_gestione_verniciatura]
@@ -120,7 +120,7 @@
 		   ,[settimana]
 		   ,[dataConsegna]
 		   ,[collezione]
-		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_verniciatura WHERE stazione='$stazione'";
+		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_verniciatura WHERE stazione='$stazione' AND settimana=$week";
 		$r=sqlsrv_query($conn,$q);
 		if($r==FALSE)
 		{
@@ -131,7 +131,7 @@
 			echo "ok";
 		}
 	}
-	function salvaMontaggio($conn,$nomeSalvataggio,$stazione)
+	function salvaMontaggio($conn,$nomeSalvataggio,$stazione,$week)
 	{
 		$q="INSERT INTO [dbo].[stato_montaggio]
 		   ([id_gestione_montaggio]
@@ -158,7 +158,7 @@
 		   ,[Altro]
 		   ,[dataConsegna]
 		   ,[collezione]
-		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_montaggio WHERE stazione='$stazione'";
+		   ,[sigla],'$nomeSalvataggio',getdate(),'".getIdUtente($conn,$_SESSION['Username'])."' FROM gestione_montaggio WHERE stazione='$stazione' AND settimana=$week";
 		$r=sqlsrv_query($conn,$q);
 		if($r==FALSE)
 		{
