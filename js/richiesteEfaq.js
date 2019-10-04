@@ -6,8 +6,26 @@ var view;
 var tmpViewName;
 var richieste=[];
 
+function aggiungiAvvisoCheckboxUrgente(checkbox)
+{
+    if(checkbox.checked)
+    {
+        var divAvviso=document.createElement("div");
+        divAvviso.setAttribute("id","avvisoCheckboxUrgente");
+        divAvviso.setAttribute("style","float:left;display: block;margin-left:10px;height:30px;line-height:30px;color:#DA6969;text-align:left");
+        var iconAvviso=document.createElement("i");
+        iconAvviso.setAttribute("class","fad fa-exclamation-circle");
+        iconAvviso.setAttribute("style","margin-right:5px;");
+        divAvviso.appendChild(iconAvviso);
+        divAvviso.innerHTML+="Verrà inviata una mail agli utenti coinvolti";
+        checkbox.parentElement.appendChild(divAvviso);
+    }
+    else
+        document.getElementById("avvisoCheckboxUrgente").remove();
+}
 async function apriPopupNuovaRichiesta()
 {
+    newMouseSpinner(event);
     try{document.getElementById("colonneMacrocategoriaContainer").remove();}catch(error){}
     colonneMacrocategoriaContainer=document.createElement("div");
     colonneMacrocategoriaContainer.setAttribute("id","colonneMacrocategoriaContainer")
@@ -86,6 +104,28 @@ async function apriPopupNuovaRichiesta()
     var formInput=document.createElement("textarea");
     formInput.setAttribute("class","formNuovaRichiestaInput");
     formInput.setAttribute("id","formNuovaRichiestanote");
+
+    inputContainer.appendChild(formInput);
+
+    fieldsContainer.appendChild(inputContainer);
+    
+    //---------------------------------------------------------------------------------------
+
+    //URGENTE-----------------------------------------------------------------------------------
+
+    var inputContainer=document.createElement("div");
+    inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
+
+    var formInputLabel=document.createElement("div");
+    formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
+    formInputLabel.innerHTML="Urgente";
+
+    inputContainer.appendChild(formInputLabel);
+
+    var formInput=document.createElement("input");
+    formInput.setAttribute("type","checkbox");
+    formInput.setAttribute("id","formNuovaRichiestaurgente");
+    formInput.setAttribute("onchange","aggiungiAvvisoCheckboxUrgente(this)");
 
     inputContainer.appendChild(formInput);
 
@@ -293,7 +333,7 @@ async function apriPopupNuovaRichiesta()
         allowOutsideClick:false,
         onOpen : function()
                 {
-                    
+                    removeMouseSpinner();
                 }
     });
 }
@@ -800,6 +840,11 @@ function inserisciNuovaRichiesta(event)
         data.push(JSON.stringify(column));
 
         var column={};
+        column["name"]="urgente";
+        column["value"]=document.getElementById("formNuovaRichiestaurgente").checked.toString();
+        data.push(JSON.stringify(column));
+
+        var column={};
         column["name"]="macrocategoria";
         column["value"]=document.getElementById("formNuovaRichiestamacrocategoria").value;
         data.push(JSON.stringify(column));
@@ -982,6 +1027,108 @@ function checkUtentiMacrocategorie(utente,id_macrocategoria,id_richiesta,richies
     });
     return utente_macrocateogoria;
 }
+function mainSearchRichieste(input)
+{
+    var searchValue=input.value.toLowerCase();
+    var elements=document.getElementsByClassName("richiesteListItem");
+    if(searchValue!="")
+    {
+        document.getElementById("searchInputLeTueRichiesteListItem1").value="";
+        document.getElementById("searchInputLeTueRichiesteListItem2").value="";
+
+        document.getElementById("searchInputLeTueRichiesteListItem1").disabled=true;
+        document.getElementById("searchSelectLeTueRichiesteListItem1").disabled=true;
+        document.getElementById("searchInputLeTueRichiesteListItem2").disabled=true;
+        document.getElementById("searchSelectLeTueRichiesteListItem2").disabled=true;
+
+        searchLeTueRichieste();
+
+        for (var i = 0; i < elements.length; i++) 
+        {
+            var element=elements[i];
+            var id_richiesta=element.getAttribute("id_richiesta");
+
+            var colValues=[];
+            $('*', $(element)).each(function ()
+            {
+                var elementChild=$(this);
+                var elementChildClass=$(this).attr('class');
+                try
+                {
+                    if(elementChildClass.split(" ")[0]=="richiesteListItemElementInput")
+                    {
+                        if(elementChild.prop("tagName")=="SELECT")
+                        {
+                            var elementChildOptions=$(this).find('option');
+                            var selected=0;
+                            for (var k = 0; k < elementChildOptions.length; k++) 
+                            {
+                                var elementChildOption=elementChildOptions[k];
+                                if(elementChildOption.getAttribute("selected"))
+                                {
+                                    selected++;
+                                    colValues.push(elementChildOption.innerHTML);
+                                }
+                            }
+                            if(selected==0)
+                                colValues.push(elementChildOptions[0].innerHTML)
+                        }
+                        else
+                            colValues.push($(this).val());
+                    }
+                    if(elementChildClass=="richiesteListItemElementValue")
+                    {
+                        if(elementChild.text()==elementChild.html())
+                            colValues.push($(this).text());
+                        else
+                        { 
+                            if(elementChild.children().prop("tagName")=="TABLE")
+                            {
+                                try
+                                {
+                                    var table=elementChild.children();
+                                    table.find('tr').each(function (i, el) {
+                                        var $tds = $(this).find('td'),
+                                            utente = $tds.eq(0).text();
+                                            colValues.push(utente);
+                                    });
+                                }
+                                catch (error2){}
+                                
+                            }
+                            //non cerca tra allegati e risposte
+                        }
+                    }
+                }catch(error){}
+            });
+
+            colValues = colValues.filter(function (el) {return el != null;});
+
+            /*console.log("richiesta: "+id_richiesta);
+            console.log(colValues);
+            console.log("\n\n");*/
+
+            var richiestaDisplay="none";
+
+            colValues.forEach(function(colValue)
+            {
+                if(colValue.toLowerCase().indexOf(searchValue)>-1)
+                    richiestaDisplay="block";
+            });
+            
+            element.style.display=richiestaDisplay;
+        }
+    }
+    else
+    {
+        document.getElementById("searchInputLeTueRichiesteListItem1").disabled=false;
+        document.getElementById("searchSelectLeTueRichiesteListItem1").disabled=false;
+        document.getElementById("searchInputLeTueRichiesteListItem2").disabled=false;
+        document.getElementById("searchSelectLeTueRichiesteListItem2").disabled=false;
+
+        searchLeTueRichieste();
+    }
+}
 function searchLeTueRichieste()
 {
     var searchValue1=document.getElementById("searchInputLeTueRichiesteListItem1").value.toLowerCase()
@@ -1080,6 +1227,8 @@ async function getRichiesteUtente()
     var visualizzazione=getVisualizzazione();
     if(visualizzazione=="tabella")
     {
+        $("#richiesteSearchBarContainer").hide("fast","swing");
+        document.getElementById("btnCollassaEspandiTutteRichieste").style.display="none";
         newCircleSpinner("Caricamento in corso...");
 
         document.getElementById("editableTableElementsRichiesteEfaq").style.display="block";
@@ -1091,6 +1240,8 @@ async function getRichiesteUtente()
     }
     if(visualizzazione=="lista")
     {
+        $("#richiesteSearchBarContainer").show("fast","swing");
+        document.getElementById("btnCollassaEspandiTutteRichieste").style.display="block";
         newCircleSpinner("Caricamento in corso...")
 
         document.getElementById("editableTableElementsRichiesteEfaq").style.display="none";
@@ -1153,7 +1304,7 @@ async function getRichiesteUtente()
         }
         else
         {
-            document.getElementById("viewFunctionBar").style.borderBottom="1px solid #bbb";
+            //document.getElementById("viewFunctionBar").style.borderBottom="1px solid #bbb";
 
             var macrocategorie=await getAllMacrocategorie();
             var categorie=await getAllCategorie();
@@ -1223,6 +1374,7 @@ async function getRichiesteUtente()
                             var categoria=getValoreColonnaRichiesteById(richieste,id_richiesta,"categoria");
                             var descrizione_categoria=getValoreColonnaRichiesteById(richieste,id_richiesta,"descrizione_categoria");
                             var stato=getValoreColonnaRichiesteById(richieste,id_richiesta,"stato");
+                            var urgente=getValoreColonnaRichiesteById(richieste,id_richiesta,"urgente");
                             var data_creazione=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[0];
 
                             var utenti_coinvolti=getValoriColonnaRichiesteById(richieste,id_richiesta,"utente_incaricato");
@@ -1249,12 +1401,29 @@ async function getRichiesteUtente()
                                 case "In attesa di chiusura":richiesteListItemRowBackgroundColor="#E9A93A";break;
                                 case "Chiusa":richiesteListItemRowBackgroundColor="#70B085";break;
                             }
+                            if(urgente=="true" && stato!="Chiusa")
+                            {
+                                var alertUrgenteRow=document.createElement("div");
+                                alertUrgenteRow.setAttribute("class","alertUrgenteRow");
+                                alertUrgenteRow.setAttribute("style","background-color:"+richiesteListItemRowBackgroundColor);
+                                alertUrgenteRow.innerHTML='<i class="fad fa-exclamation-circle" style="margin-right:5px;"></i>Urgente';
+                                richiesteListItem.appendChild(alertUrgenteRow);
+                                richiesteListItem.setAttribute("style","border:4px solid red;animation: flashingBorder 2s linear infinite;")
+                            }
                             richiesteListItemRow.setAttribute("style","min-height:50px;background-color:"+richiesteListItemRowBackgroundColor);
 
                             var richiesteListItemElementContainer=document.createElement("div");
                             richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
                             richiesteListItemElementContainer.setAttribute("style","width:auto;margin:10px");
 
+                            var buttonGestioneRichiesta=document.createElement("button");
+                            buttonGestioneRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                            buttonGestioneRichiesta.setAttribute("style","margin-right:20px;");
+                            buttonGestioneRichiesta.setAttribute("id","buttonToggleRichiesta"+id_richiesta);
+                            buttonGestioneRichiesta.setAttribute("onclick","toggleRichiesta("+id_richiesta+",this)");
+                            buttonGestioneRichiesta.innerHTML='Espandi <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
+                            richiesteListItemElementContainer.appendChild(buttonGestioneRichiesta);
+                            
                             var buttonGestioneRichiesta=document.createElement("button");
                             buttonGestioneRichiesta.setAttribute("class","buttonGestioneRichiesta");
                             buttonGestioneRichiesta.setAttribute("onclick","modificaRichiesta("+id_richiesta+")");
@@ -1447,12 +1616,12 @@ async function getRichiesteUtente()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Descrizione";
 
                             var richiesteListItemElementInput=document.createElement("textarea");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputdescrizione"+id_richiesta);
                             richiesteListItemElementInput.value=descrizione;
@@ -1470,12 +1639,12 @@ async function getRichiesteUtente()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Note";
 
                             var richiesteListItemElementInput=document.createElement("textarea");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputnote"+id_richiesta);
                             richiesteListItemElementInput.value=note;
@@ -1493,12 +1662,12 @@ async function getRichiesteUtente()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Macrocateogoria";
 
                             var richiesteListItemElementInput=document.createElement("select");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("onchange","getColonneMacrocategoriaLeTueRichieste(this.value,"+id_richiesta+")");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputmacrocategoria"+id_richiesta);
@@ -1533,12 +1702,12 @@ async function getRichiesteUtente()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Cateogoria";
 
                             var richiesteListItemElementInput=document.createElement("select");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputcategoria"+id_richiesta);
 
@@ -1576,18 +1745,19 @@ async function getRichiesteUtente()
 
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                                richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                                richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px");
                                 richiesteListItemElementLabel.innerHTML=colonna["label"];
 
                                 var richiesteListItemElementInput=document.createElement(colonna["tipo"]);
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                                
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("required",colonna["required"]);
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInput"+colonna["colonna"]+id_richiesta);
 
                                 if(colonna["tipo"]=="select")
                                 {
+                                    richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                                     var options=colonna["valori"];
                                     options.forEach(function(option)
                                     {
@@ -1603,6 +1773,7 @@ async function getRichiesteUtente()
                                 }
                                 else
                                 {
+                                    richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px);resize:vertical");
                                     richiesteListItemElementInput.value=valoriColonneExtra[colonna["colonna"]];
                                 }
 
@@ -2047,17 +2218,18 @@ async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richi
 
         var richiesteListItemElementLabel=document.createElement("div");
         richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-        richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+        richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
         richiesteListItemElementLabel.innerHTML=colonna["label"];
 
         var richiesteListItemElementInput=document.createElement(colonna["tipo"]);
         richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-        richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+        
         richiesteListItemElementInput.setAttribute("required",colonna["required"]);
         richiesteListItemElementInput.setAttribute("id","leTueRichiesteInput"+colonna["colonna"]+id_richiesta);
 
         if(colonna["tipo"]=="select")
         {
+            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
             var options=colonna["valori"];
             options.forEach(function(option)
             {
@@ -2067,6 +2239,11 @@ async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richi
 
                 richiesteListItemElementInput.appendChild(richiesteListItemElementInputOption);
             });
+        }
+        else
+        {
+            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px);resize:vertical");
+            //richiesteListItemElementInput.value=valoriColonneExtra[colonna["colonna"]];
         }
 
         richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
@@ -2150,6 +2327,8 @@ async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richi
 }
 function apriPopupNuovaReplica(id_richiesta)
 {
+    showRichiesta(id_richiesta);
+
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","nuovaRichiestaOuterContainer");
     outerContainer.setAttribute("id","nuovaReplicaOuterContainer");
@@ -2556,8 +2735,71 @@ function getUtentiCoinvoltiEUtentiMacrocategoria(id_richiesta,id_macrocategoria)
         });
     });
 }
+function showRichiesta(id_richiesta)
+{
+    $("#richiesteListItemBoxRichiestaContainer"+id_richiesta).show("fast","swing");
+    $("#richiesteListItemBoxRisposteContainer"+id_richiesta).show("fast","swing");
+    setTimeout(function()
+    {
+        var height=document.getElementById("richiesteListItemBoxRichiestaContainer"+id_richiesta).offsetHeight+10;
+        document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.maxHeight=height+"px";
+        document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.overflowY="auto";
+    }, 500);
+}
+function hideRichiesta(id_richiesta)
+{
+    $("#richiesteListItemBoxRichiestaContainer"+id_richiesta).hide("fast","swing");
+    $("#richiesteListItemBoxRisposteContainer"+id_richiesta).hide("fast","swing");
+}
+function toggleRichiesta(id_richiesta,button)
+{
+    if($("#richiesteListItemBoxRichiestaContainer"+id_richiesta).is(":hidden"))
+    {
+        showRichiesta(id_richiesta);
+        button.innerHTML='Collassa <i class="fas fa-caret-up" style="margin-left:5px;"></i>';
+    }
+    else
+    {
+        hideRichiesta(id_richiesta);
+        button.innerHTML='Espandi <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
+    }
+}
+var collaplsedAll=true;
+function toggleAllRichieste(buttonAll)
+{
+    var id_richieste=[];
+
+    richieste.forEach(function(richiesta)
+    {
+        if(!id_richieste.includes(richiesta.id_richiesta))
+        {
+            id_richieste.push(richiesta.id_richiesta);
+        }
+    });
+    if(collaplsedAll)
+    {
+        id_richieste.forEach(function(id_richiesta)
+        {
+            showRichiesta(id_richiesta);
+            document.getElementById("buttonToggleRichiesta"+id_richiesta).innerHTML='Collassa <i class="fas fa-caret-up" style="margin-left:5px;"></i>';
+        });
+        buttonAll.innerHTML='Collassa tutte <i class="fas fa-caret-up" style="margin-left:5px;"></i>';
+    }
+    else
+    {
+        id_richieste.forEach(function(id_richiesta)
+        {
+            hideRichiesta(id_richiesta);
+            document.getElementById("buttonToggleRichiesta"+id_richiesta).innerHTML='Espandi <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
+        });
+        buttonAll.innerHTML='Espandi tutte <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
+    }
+    collaplsedAll=!collaplsedAll;
+}
 function modificaRichiesta(id_richiesta)
 {
+    showRichiesta(id_richiesta);
+
     document.getElementById("buttonSalvaModificheRichiesta"+id_richiesta).style.display="block";
     document.getElementById("buttonAnnullaModificheRichiesta"+id_richiesta).style.display="block";
 
@@ -2697,6 +2939,8 @@ async function salvaModificheRichiesta(id_richiesta)
                         title: 'Modifiche salvate',
                     }).then(function()
                     {
+                        hideRichiesta(id_richiesta);
+
                         document.getElementById("buttonSalvaModificheRichiesta"+id_richiesta).style.display="none";
                         document.getElementById("buttonAnnullaModificheRichiesta"+id_richiesta).style.display="none";
 
@@ -2727,6 +2971,8 @@ async function salvaModificheRichiesta(id_richiesta)
 }
 function annullaModificheRichiesta(id_richiesta)
 {
+    hideRichiesta(id_richiesta);
+
     document.getElementById("buttonSalvaModificheRichiesta"+id_richiesta).style.display="none";
     document.getElementById("buttonAnnullaModificheRichiesta"+id_richiesta).style.display="none";
 
@@ -3470,6 +3716,8 @@ async function getTutteRichieste()
     var visualizzazione=getVisualizzazione();
     if(visualizzazione=="tabella")
     {
+        $("#richiesteSearchBarContainer").hide("fast","swing");
+        document.getElementById("btnCollassaEspandiTutteRichieste").style.display="none";
         newCircleSpinner("Caricamento in corso...");
 
         document.getElementById("editableTableElementsRichiesteEfaq").style.display="block";
@@ -3481,6 +3729,8 @@ async function getTutteRichieste()
     }
     if(visualizzazione=="lista")
     {
+        $("#richiesteSearchBarContainer").show("fast","swing");
+        document.getElementById("btnCollassaEspandiTutteRichieste").style.display="block";
         newCircleSpinner("Caricamento in corso...")
 
         document.getElementById("editableTableElementsRichiesteEfaq").style.display="none";
@@ -3543,7 +3793,7 @@ async function getTutteRichieste()
         }
         else
         {
-            document.getElementById("viewFunctionBar").style.borderBottom="1px solid #bbb";
+            //document.getElementById("viewFunctionBar").style.borderBottom="1px solid #bbb";
 
             var macrocategorie=await getAllMacrocategorie();
             var categorie=await getAllCategorie();
@@ -3614,6 +3864,7 @@ async function getTutteRichieste()
                             var categoria=getValoreColonnaRichiesteById(richieste,id_richiesta,"categoria");
                             var descrizione_categoria=getValoreColonnaRichiesteById(richieste,id_richiesta,"descrizione_categoria");
                             var stato=getValoreColonnaRichiesteById(richieste,id_richiesta,"stato");
+                            var urgente=getValoreColonnaRichiesteById(richieste,id_richiesta,"urgente");
                             var data_creazione=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[0];
 
                             var utenti_coinvolti=getValoriColonnaRichiesteById(richieste,id_richiesta,"utente_incaricato");
@@ -3640,7 +3891,29 @@ async function getTutteRichieste()
                                 case "In attesa di chiusura":richiesteListItemRowBackgroundColor="#E9A93A";break;
                                 case "Chiusa":richiesteListItemRowBackgroundColor="#70B085";break;
                             }
+                            if(urgente=="true" && stato!="Chiusa")
+                            {
+                                var alertUrgenteRow=document.createElement("div");
+                                alertUrgenteRow.setAttribute("class","alertUrgenteRow");
+                                alertUrgenteRow.setAttribute("style","background-color:"+richiesteListItemRowBackgroundColor);
+                                alertUrgenteRow.innerHTML='<i class="fad fa-exclamation-circle" style="margin-right:5px;"></i>Urgente';
+                                richiesteListItem.appendChild(alertUrgenteRow);
+                                richiesteListItem.setAttribute("style","border:4px solid red;animation: flashingBorder 2s linear infinite;")
+                            }
                             richiesteListItemRow.setAttribute("style","min-height:50px;background-color:"+richiesteListItemRowBackgroundColor);
+
+                            var richiesteListItemElementContainer=document.createElement("div");
+                            richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
+                            richiesteListItemElementContainer.setAttribute("style","width:auto;margin:10px");
+
+                            var buttonGestioneRichiesta=document.createElement("button");
+                            buttonGestioneRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                            buttonGestioneRichiesta.setAttribute("id","buttonToggleRichiesta"+id_richiesta);
+                            buttonGestioneRichiesta.setAttribute("onclick","toggleRichiesta("+id_richiesta+",this)");
+                            buttonGestioneRichiesta.innerHTML='Espandi <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
+                            richiesteListItemElementContainer.appendChild(buttonGestioneRichiesta);
+
+                            richiesteListItemRow.appendChild(richiesteListItemElementContainer);
 
                             /*var richiesteListItemElementContainer=document.createElement("div");
                             richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
@@ -3859,12 +4132,12 @@ async function getTutteRichieste()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Descrizione";
 
                             var richiesteListItemElementInput=document.createElement("textarea");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputdescrizione"+id_richiesta);
                             richiesteListItemElementInput.value=descrizione;
@@ -3882,12 +4155,12 @@ async function getTutteRichieste()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Note";
 
                             var richiesteListItemElementInput=document.createElement("textarea");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputnote"+id_richiesta);
                             richiesteListItemElementInput.value=note;
@@ -3905,12 +4178,12 @@ async function getTutteRichieste()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Macrocateogoria";
 
                             var richiesteListItemElementInput=document.createElement("select");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("onchange","getColonneMacrocategoriaLeTueRichieste(this.value,"+id_richiesta+")");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputmacrocategoria"+id_richiesta);
@@ -3945,12 +4218,12 @@ async function getTutteRichieste()
 
                             var richiesteListItemElementLabel=document.createElement("div");
                             richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                            richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                            richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                             richiesteListItemElementLabel.innerHTML="Cateogoria";
 
                             var richiesteListItemElementInput=document.createElement("select");
                             richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                             richiesteListItemElementInput.setAttribute("disabled","disabled");
                             richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputcategoria"+id_richiesta);
 
@@ -3988,18 +4261,19 @@ async function getTutteRichieste()
 
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-                                richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+                                richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
                                 richiesteListItemElementLabel.innerHTML=colonna["label"];
 
                                 var richiesteListItemElementInput=document.createElement(colonna["tipo"]);
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+                                
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("required",colonna["required"]);
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInput"+colonna["colonna"]+id_richiesta);
 
                                 if(colonna["tipo"]=="select")
                                 {
+                                    richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
                                     var options=colonna["valori"];
                                     options.forEach(function(option)
                                     {
@@ -4015,6 +4289,7 @@ async function getTutteRichieste()
                                 }
                                 else
                                 {
+                                    richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
                                     richiesteListItemElementInput.value=valoriColonneExtra[colonna["colonna"]];
                                 }
 
@@ -4457,17 +4732,18 @@ async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richi
 
         var richiesteListItemElementLabel=document.createElement("div");
         richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
-        richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
+        richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
         richiesteListItemElementLabel.innerHTML=colonna["label"];
 
         var richiesteListItemElementInput=document.createElement(colonna["tipo"]);
         richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-        richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;");
+        
         richiesteListItemElementInput.setAttribute("required",colonna["required"]);
         richiesteListItemElementInput.setAttribute("id","leTueRichiesteInput"+colonna["colonna"]+id_richiesta);
 
         if(colonna["tipo"]=="select")
         {
+            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
             var options=colonna["valori"];
             options.forEach(function(option)
             {
@@ -4477,6 +4753,10 @@ async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richi
 
                 richiesteListItemElementInput.appendChild(richiesteListItemElementInputOption);
             });
+        }
+        else
+        {
+            richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px);resize:vertical");
         }
 
         richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);

@@ -20,7 +20,7 @@
 		<link rel="stylesheet" href="css/styleV33.css" />
 		<script src="struttura.js"></script>
 		<script src="js/gestioneRichiesteEfaq.js"></script>
-		<link rel="stylesheet" href="css/gestioneRichiesteEfaq.css" />
+		<link rel="stylesheet" href="css/gestioneRichiesteEfaqV2.css" />
 		<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>
@@ -46,95 +46,106 @@
 	</head>
 	<body onload="getRichiesteGestione()">
         <?php include('struttura.php'); ?>
-        <div class="absoluteContainer2" style="top:100">
+		<div class="absoluteContainer2" style="top:100">
+			<!----------------------------------------------------------------------------------------------------------------------------------------------------------------->
 			<div id="viewFunctionBar">
-				<div id="viewTitleContainer"><span id="viewTitle"></span></div>
-				<div class="viewFunctionBarTextContainer" data-step="4" data-intro="Usa questo pulsante per cambiare la visualizzazione, da lista a tabella">
-					<span style="float:left;display:block;margin-right:5px;">Visualizzazione</span>
-					<div class="switchVisualizzazioneButton switchVisualizzazioneR" id="switchVisualizzazioneButton-1">
-						<input type="checkbox" id="switchVisualizzazioneCheckbox" class="switchVisualizzazioneCheckbox" onchange="toggleVisualizzazione()">
-						<div class="switchVisualizzazioneKnobs"></div>
-						<div class="switchVisualizzazioneLayer"></div>
+				<div class="viewFunctionBarRow">
+					<div id="viewTitleContainer"><span id="viewTitle"></span></div>
+					<div class="viewFunctionBarTextContainer" data-step="4" data-intro="Usa questo pulsante per cambiare la visualizzazione, da lista a tabella">
+						<span style="float:left;display:block;margin-right:5px;">Visualizzazione</span>
+						<div class="switchVisualizzazioneButton switchVisualizzazioneR" id="switchVisualizzazioneButton-1">
+							<input type="checkbox" id="switchVisualizzazioneCheckbox" class="switchVisualizzazioneCheckbox" onchange="toggleVisualizzazione()">
+							<div class="switchVisualizzazioneKnobs"></div>
+							<div class="switchVisualizzazioneLayer"></div>
+						</div>
+					</div>
+					<button class="absoluteActionBarButton" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
+					<button class="absoluteActionBarButton"  id="btnCollassaEspandiTutteRichieste" style="margin-top:5px;margin-left:10px" onclick="toggleAllRichieste(this)">Espandi tutte <i style="margin-left:5px;" class="fas fa-caret-down"></i></button>
+				</div>
+				<div class="viewFunctionBarRow" id="viewFunctionBarRowFiltri" style="display:none">
+					<div id="editableTableElementsRichiesteEfaq" style="display:none">
+						<div class="absoluteActionBarElement">Righe: <span id="rowsNumEditableTable"></span></div>
+						<button class="absoluteActionBarButton" onclick="scaricaExcel('richiesteContainer')">Esporta <i style="margin-left:5px;color:green" class="far fa-file-excel"></i></button>
+						<button class="absoluteActionBarButton" onclick="resetFilters();getTable(selectetTable)">Ripristina <i style="margin-left:5px" class="fal fa-filter"></i></button>
+					</div>
+					<div id="listViewElementsRichiesteEfaq" style="display:none">
+						<div class="absoluteActionBarElement">
+							Stato: 
+							<select id="selectStatoLeTueRichieste" multiple>
+								<option value="In attesa di chiusura" selected>Richieste in attesa di chiusura</option>
+								<option value="Presa in carico" selected>Richieste prese in carico</option>
+								<option value="Aperta" selected>Richieste aperte</option>
+								<option value="Chiusa">Richieste chiuse</option>
+							</select>
+						</div>
+						<div class="absoluteActionBarElement">
+							<div style="float:left;display:block">Macrocategoria</div> 
+							<select id="selectFiltraMacrocategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
+								<option value="*">Tutte</option>
+								<?php
+									$queryMacrocategorie="SELECT id_macrocategoria, nome FROM dbo.macrocategorie_richieste";	
+									$resultMacrocategorie=sqlsrv_query($conn,$queryMacrocategorie);
+									if($resultMacrocategorie==TRUE)
+									{
+										while($rowMacrocategorie=sqlsrv_fetch_array($resultMacrocategorie))
+										{
+											echo '<option value="'.$rowMacrocategorie['id_macrocategoria'].'">'.$rowMacrocategorie['nome'].'</option>';
+										}
+									}
+								?>
+							</select>
+						</div>
+						<div class="absoluteActionBarElement">
+							<div style="float:left;display:block">Categoria</div> 
+							<select id="selectFiltraCategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
+								<option value="*">Tutte</option>
+								<?php
+									$queryCategorie="SELECT id_categoria, nome FROM dbo.categorie_richieste";	
+									$resultCategorie=sqlsrv_query($conn,$queryCategorie);
+									if($resultCategorie==TRUE)
+									{
+										while($rowCategorie=sqlsrv_fetch_array($resultCategorie))
+										{
+											echo '<option value="'.$rowCategorie['id_categoria'].'">'.$rowCategorie['nome'].'</option>';
+										}
+									}
+								?>
+							</select>
+						</div>
+						<div class="absoluteActionBarElement">
+							<div style="float:left;display:block">Cerca</div> 
+							<select id="searchSelectLeTueRichiesteListItem1" onchange="searchLeTueRichieste()">
+								<option value="oggetto">nell' oggetto</option>
+								<option value="id_richiesta">nel codice</option>
+								<option value="descrizione">nella descrizione</option>
+								<option value="data_creazione">nella data creazione</option>
+								<option id="searchSelectLeTueRichiesteListItem1OptionUtente" value="utente_creazione">nell' utente</option>
+							</select>
+							<input class="absoluteActionBarInput" style="width:120px" id="searchInputLeTueRichiesteListItem1" onkeyup="searchLeTueRichieste()">
+						</div>
+						<div class="absoluteActionBarElement">
+							<div style="float:left;display:block">Cerca nella colonna</div> 
+							<select id="searchSelectLeTueRichiesteListItem2" onchange="searchLeTueRichieste()">
+								<?php
+									$queryColonneMacrocategorie="SELECT DISTINCT colonna,label FROM dbo.colonne_richieste_macrocategorie";	
+									$resultColonneMacrocategorie=sqlsrv_query($conn,$queryColonneMacrocategorie);
+									if($resultColonneMacrocategorie==TRUE)
+									{
+										while($rowColonneMacrocategorie=sqlsrv_fetch_array($resultColonneMacrocategorie))
+										{
+											echo '<option value="'.$rowColonneMacrocategorie["colonna"].'">'.$rowColonneMacrocategorie["label"].'</option>';
+										}
+									}
+								?>
+							</select>
+							<input class="absoluteActionBarInput"  style="width:120px" id="searchInputLeTueRichiesteListItem2" onkeyup="searchLeTueRichieste()">
+						</div>
 					</div>
 				</div>
-				<div id="editableTableElementsRichiesteEfaq" style="display:none">
-					<div class="absoluteActionBarElement">Righe: <span id="rowsNumEditableTable"></span></div>
-					<button class="absoluteActionBarButton" onclick="scaricaExcel('richiesteContainer')">Esporta <i style="margin-left:5px;color:green" class="far fa-file-excel"></i></button>
-					<button class="absoluteActionBarButton" onclick="resetFilters();getTable(selectetTable)">Ripristina <i style="margin-left:5px" class="fal fa-filter"></i></button>
-				</div>
-				<div id="listViewElementsRichiesteEfaq" style="display:none">
-					<div class="absoluteActionBarElement">
-						Stato: 
-						<select id="selectStatoLeTueRichieste" multiple>
-							<option value="In attesa di chiusura" selected>Richieste in attesa di chiusura</option>
-							<option value="Presa in carico" selected>Richieste prese in carico</option>
-							<option value="Aperta" selected>Richieste aperte</option>
-							<option value="Chiusa">Richieste chiuse</option>
-						</select>
-					</div>
-					<div class="absoluteActionBarElement">
-						<div style="float:left;display:block">Macrocategoria</div> 
-						<select id="selectFiltraMacrocategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
-							<option value="*">Tutte</option>
-							<?php
-								$queryMacrocategorie="SELECT id_macrocategoria, nome FROM dbo.macrocategorie_richieste";	
-								$resultMacrocategorie=sqlsrv_query($conn,$queryMacrocategorie);
-								if($resultMacrocategorie==TRUE)
-								{
-									while($rowMacrocategorie=sqlsrv_fetch_array($resultMacrocategorie))
-									{
-										echo '<option value="'.$rowMacrocategorie['id_macrocategoria'].'">'.$rowMacrocategorie['nome'].'</option>';
-									}
-								}
-							?>
-						</select>
-					</div>
-					<div class="absoluteActionBarElement">
-						<div style="float:left;display:block">Categoria</div> 
-						<select id="selectFiltraCategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="getRichiesteGestione()">
-							<option value="*">Tutte</option>
-							<?php
-								$queryCategorie="SELECT id_categoria, nome FROM dbo.categorie_richieste";	
-								$resultCategorie=sqlsrv_query($conn,$queryCategorie);
-								if($resultCategorie==TRUE)
-								{
-									while($rowCategorie=sqlsrv_fetch_array($resultCategorie))
-									{
-										echo '<option value="'.$rowCategorie['id_categoria'].'">'.$rowCategorie['nome'].'</option>';
-									}
-								}
-							?>
-						</select>
-					</div>
-					<div class="absoluteActionBarElement">
-						<div style="float:left;display:block">Cerca</div> 
-						<select id="searchSelectLeTueRichiesteListItem1" onchange="searchLeTueRichieste()">
-							<option value="oggetto">nell' oggetto</option>
-							<option value="id_richiesta">nel codice</option>
-							<option value="descrizione">nella descrizione</option>
-							<option value="data_creazione">nella data creazione</option>
-							<option id="searchSelectLeTueRichiesteListItem1OptionUtente" value="utente_creazione">nell' utente</option>
-						</select>
-						<input class="absoluteActionBarInput" style="width:120px" id="searchInputLeTueRichiesteListItem1" onkeyup="searchLeTueRichieste()">
-					</div>
-					<div class="absoluteActionBarElement">
-						<div style="float:left;display:block">Cerca nella colonna</div> 
-						<select id="searchSelectLeTueRichiesteListItem2" onchange="searchLeTueRichieste()">
-							<?php
-								$queryColonneMacrocategorie="SELECT DISTINCT colonna,label FROM dbo.colonne_richieste_macrocategorie";	
-								$resultColonneMacrocategorie=sqlsrv_query($conn,$queryColonneMacrocategorie);
-								if($resultColonneMacrocategorie==TRUE)
-								{
-									while($rowColonneMacrocategorie=sqlsrv_fetch_array($resultColonneMacrocategorie))
-									{
-										echo '<option value="'.$rowColonneMacrocategorie["colonna"].'">'.$rowColonneMacrocategorie["label"].'</option>';
-									}
-								}
-							?>
-						</select>
-						<input class="absoluteActionBarInput"  style="width:120px" id="searchInputLeTueRichiesteListItem2" onkeyup="searchLeTueRichieste()">
-					</div>
-				</div>
+			</div>
+			<!----------------------------------------------------------------------------------------------------------------------------------------------------------------->
+			<div id="richiesteSearchBarContainer">
+				<input type="text" id="richiesteMainSearchInput" onkeyup="mainSearchRichieste(this)"  placeholder="Cerca tra le richieste...">
 			</div>
 			<div id="richiesteContainer"></div>
 		</div>
