@@ -59,35 +59,48 @@
 
     $extraColumnsSelect="[".implode("],[",$extraColumns)."]";
 
-    $query2="SELECT * FROM richieste_e_faq_view WHERE utente_incaricato='".$_SESSION['Username']."' AND stato IN ('$filtroStato_in') $filtroMacrocategoria $filtroCategoria OPTION ( QUERYTRACEON 9481 )";	
-    $result2=sqlsrv_query($conn,$query2);
-    if($result2==TRUE)
+    $query5="SELECT DISTINCT id_richiesta FROM richieste_e_faq_view WHERE utente_incaricato='".$_SESSION['Username']."' AND stato IN ('$filtroStato_in') $filtroMacrocategoria $filtroCategoria OPTION ( QUERYTRACEON 9481 )";	
+    $result5=sqlsrv_query($conn,$query5);
+    if($result5==TRUE)
     {
-        while($row2=sqlsrv_fetch_array($result2))
+        while($row5=sqlsrv_fetch_array($result5))
         {
-            foreach ($columns as $column) 
+            $query2="SELECT * FROM richieste_e_faq_view WHERE id_richiesta=".$row5['id_richiesta']." OPTION ( QUERYTRACEON 9481 )";	
+            $result2=sqlsrv_query($conn,$query2);
+            if($result2==TRUE)
             {
-                $richiesta[$column]=$row2[$column];
-            }
-            $query4="SELECT $extraColumnsSelect FROM richieste_e_faq WHERE id_richiesta=".$row2['id_richiesta']." OPTION ( QUERYTRACEON 9481 )";	
-            $result4=sqlsrv_query($conn,$query4);
-            if($result4==FALSE)
-            {
-                die("error3".$query4);
+                while($row2=sqlsrv_fetch_array($result2))
+                {
+                    foreach ($columns as $column) 
+                    {
+                        $richiesta[$column]=$row2[$column];
+                    }
+                    $query4="SELECT $extraColumnsSelect FROM richieste_e_faq WHERE id_richiesta=".$row2['id_richiesta']." OPTION ( QUERYTRACEON 9481 )";	
+                    $result4=sqlsrv_query($conn,$query4);
+                    if($result4==FALSE)
+                    {
+                        die("error3".$query4);
+                    }
+                    else
+                    {
+                        while($row4=sqlsrv_fetch_array($result4))
+                        {
+                            foreach ($extraColumns as $extraColumn) 
+                            {
+                                $richiesta[$extraColumn]=$row4[$extraColumn];
+                            }
+                        }
+                    }
+                    array_push($richieste,$richiesta);
+                }
             }
             else
             {
-                while($row4=sqlsrv_fetch_array($result4))
-                {
-                    foreach ($extraColumns as $extraColumn) 
-                    {
-                        $richiesta[$extraColumn]=$row4[$extraColumn];
-                    }
-                }
+                die("error5".$query5);
             }
-            array_push($richieste,$richiesta);
         }
     }
+
 
     echo json_encode($richieste);
 

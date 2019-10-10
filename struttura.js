@@ -337,4 +337,5 @@
                     reject({status});
             });
         });
-    }
+	}
+	function getUsernameSession(){return document.getElementById("username").innerHTML}
