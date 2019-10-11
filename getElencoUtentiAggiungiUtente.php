@@ -9,7 +9,7 @@
 
     $query2="SELECT id_utente, username
             FROM dbo.utenti
-            WHERE (id_utente NOT IN
+            WHERE  eliminato='false' AND (id_utente NOT IN
             (SELECT utenti_1.id_utente
             FROM dbo.utenti_incaricati_macrocategorie INNER JOIN
             dbo.utenti AS utenti_1 ON dbo.utenti_incaricati_macrocategorie.utente = utenti_1.id_utente

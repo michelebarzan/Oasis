@@ -1426,6 +1426,7 @@
     {
         getSearchAnswerInterval();
         event.preventDefault();
+		console.log(id_richiesta);
             
         var descrizione=document.getElementById("formNuovaReplicadescrizione").value;
 
@@ -1457,6 +1458,7 @@
                     var allegati_risposte=[];
 
                     var files = document.getElementById("formNuovaReplicaInputScegliFile").files;
+					
                     if(files.length>0)
                     {
                         var uploadedFiles=0;
@@ -1497,14 +1499,14 @@
                                         type:'POST',
                                         success:function(response)
                                             {
-                                                //console.log(response);
+                                                console.log(response);
                                                 if(response.indexOf("ok")>-1)
                                                 {
                                                     var fileNameResponse=response.split("|")[0];
                                                     document.getElementById("statusUpload"+fileNameResponse).innerHTML='<i style="color:green" class="far fa-check-circle"></i>';
                                                     uploadedFiles++;
 
-                                                    allegati_risposte.push("C:\\xampp\\htdocs\\\\OasisAllegatiRichieste\\"+id_risposta+"_R"+id_richiesta+fileNameResponse);
+                                                    allegati_risposte.push("C:\\xampp\\htdocs\\OasisAllegatiRichieste\\\\"+id_risposta+"_R"+id_richiesta+"_"+fileNameResponse);
                                                     
                                                     if(uploadedFiles==fileNum)
                                                     {

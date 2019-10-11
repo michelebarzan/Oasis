@@ -10,7 +10,7 @@
     $query2="SELECT dbo.utenti.id_utente,dbo.utenti.username
             FROM dbo.utenti_incaricati_macrocategorie INNER JOIN
             dbo.utenti ON dbo.utenti_incaricati_macrocategorie.utente = dbo.utenti.id_utente
-            WHERE (dbo.utenti_incaricati_macrocategorie.macrocategoria = $id_macrocategoria)";	
+            WHERE (dbo.utenti_incaricati_macrocategorie.macrocategoria = $id_macrocategoria) AND eliminato='false'";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

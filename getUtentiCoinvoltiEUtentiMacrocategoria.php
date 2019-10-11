@@ -7,9 +7,9 @@
     
     $utenti=[];
 
-    $query2="select username,'false' AS utente_macrocategoria from utenti_incaricati_richieste,utenti where utenti_incaricati_richieste.utente=utenti.id_utente AND richiesta=$id_richiesta
+    $query2="select username,'false' AS utente_macrocategoria from utenti_incaricati_richieste,utenti where utenti_incaricati_richieste.utente=utenti.id_utente AND richiesta=$id_richiesta  AND eliminato='false'
             union
-            select username,'true' AS utente_macrocategoria from utenti_incaricati_macrocategorie,utenti where utenti_incaricati_macrocategorie.utente=utenti.id_utente AND macrocategoria=$id_macrocategoria";
+            select username,'true' AS utente_macrocategoria from utenti_incaricati_macrocategorie,utenti where utenti_incaricati_macrocategorie.utente=utenti.id_utente AND macrocategoria=$id_macrocategoria  AND eliminato='false'";
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

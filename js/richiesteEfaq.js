@@ -952,6 +952,28 @@
                     }
                     else
                     {
+                        if(document.getElementById("formNuovaRichiestaurgente").checked)
+                        {
+                            var oggettoMail=document.getElementById("formNuovaRichiestaoggetto").value;
+                            $.post("sendMailRichiestaUrgente.php",
+                            {
+                                JSONutentiExtra,
+                                oggettoMail
+                            },
+                            function(response, status)
+                            {
+                                if(status=="success")
+                                {
+                                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                                    {
+                                        window.alert("Attenzione! \nLa richiesta è stata inserita, ma non è stato possibile inviare l' email di notifica. Se il problema persiste contatta l' amministratore.\n\nPrendi nota del codice di errore: "+response);
+                                        console.log(response);
+                                    }
+                                }
+                                else
+                                    console.log(status)
+                            });
+                        }
                         var files = document.getElementById("formNuovaRichiestaInputScegliFile").files;
                         if(files.length>0)
                         {
@@ -2617,7 +2639,7 @@
                                                     document.getElementById("statusUpload"+fileNameResponse).innerHTML='<i style="color:green" class="far fa-check-circle"></i>';
                                                     uploadedFiles++;
 
-                                                    allegati_risposte.push("C:\\xampp\\htdocs\\\\OasisAllegatiRichieste\\"+id_risposta+"_R"+id_richiesta+fileNameResponse);
+                                                    allegati_risposte.push("C:\\xampp\\htdocs\\OasisAllegatiRichieste\\\\"+id_risposta+"_R"+id_richiesta+"_"+fileNameResponse);
                                                     
                                                     if(uploadedFiles==fileNum)
                                                     {

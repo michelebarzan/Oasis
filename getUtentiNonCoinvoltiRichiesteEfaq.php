@@ -8,7 +8,7 @@
 
     $utenti_non_coinvolti=[];
 
-    $query2="SELECT * FROM utenti  WHERE username NOT IN ('".$utenti_coinvolti_in."')";	
+    $query2="SELECT * FROM utenti  WHERE username NOT IN ('".$utenti_coinvolti_in."') AND eliminato='false'";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
