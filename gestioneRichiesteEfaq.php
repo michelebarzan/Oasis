@@ -7,7 +7,9 @@
 <html>
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link href="js_libraries/bootstrap-tour/bootstrap-tour-standalone.min.css" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+		<script src="js_libraries/bootstrap-tour/bootstrap-tour-standalone.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Graduate&display=swap" rel="stylesheet">
@@ -51,7 +53,7 @@
 			<div id="viewFunctionBar">
 				<div class="viewFunctionBarRow">
 					<div id="viewTitleContainer"><span id="viewTitle"></span></div>
-					<div class="viewFunctionBarTextContainer" data-step="4" data-intro="Usa questo pulsante per cambiare la visualizzazione, da lista a tabella">
+					<div class="viewFunctionBarTextContainer" id="bootstrap-tour-btnVisualizzazione">
 						<span style="float:left;display:block;margin-right:5px;">Visualizzazione</span>
 						<div class="switchVisualizzazioneButton switchVisualizzazioneR" id="switchVisualizzazioneButton-1">
 							<input type="checkbox" id="switchVisualizzazioneCheckbox" class="switchVisualizzazioneCheckbox" onchange="toggleVisualizzazione()">
@@ -59,8 +61,11 @@
 							<div class="switchVisualizzazioneLayer"></div>
 						</div>
 					</div>
-					<button class="absoluteActionBarButton" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
-					<button class="absoluteActionBarButton"  id="btnCollassaEspandiTutteRichieste" style="margin-top:5px;margin-left:10px" onclick="toggleAllRichieste(this)">Espandi tutte <i style="margin-left:5px;" class="fas fa-caret-down"></i></button>
+					<button class="absoluteActionBarButton" id="bootstrap-tour-btnFiltri" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
+					<button class="absoluteActionBarButton" id="btnCollassaEspandiTutteRichieste" style="margin-top:5px;margin-left:10px" onclick="toggleAllRichieste(this)">Espandi tutte <i style="margin-left:5px;" class="fas fa-caret-down"></i></button>
+					<button class="absoluteActionBarButton" style="margin-top:5px;margin-left:10px" id="bootstrap-tour-btnTutorial" title="Tutorial" onclick="startTutorial()">
+						<i class="far fa-question" ></i>
+					</button>
 				</div>
 				<div class="viewFunctionBarRow" id="viewFunctionBarRowFiltri" style="display:none">
 					<div id="editableTableElementsRichiesteEfaq" style="display:none">

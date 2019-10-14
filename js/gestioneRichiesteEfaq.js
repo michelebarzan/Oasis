@@ -484,6 +484,7 @@
                                 var buttonRispondiRichiesta=document.createElement("button");
                                 buttonRispondiRichiesta.setAttribute("class","buttonGestioneRichiesta");
                                 buttonRispondiRichiesta.setAttribute("style","float:right");
+                                buttonRispondiRichiesta.setAttribute("id","buttonReplicaRichiesta"+id_richiesta);
                                 buttonRispondiRichiesta.setAttribute("onclick","apriPopupNuovaReplica("+id_richiesta+")");
                                 buttonRispondiRichiesta.innerHTML='Replica<i class="fad fa-reply-all" style="margin-left:10px"></i>';
                                 richiesteListItemElementContainer.appendChild(buttonRispondiRichiesta);
@@ -492,6 +493,7 @@
                                 {
                                     var buttonChiudiRichiesta=document.createElement("button");
                                     buttonChiudiRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                    buttonChiudiRichiesta.setAttribute("id","buttonModificaRichiesta"+id_richiesta);
                                     buttonChiudiRichiesta.setAttribute("style","float:right;margin-right:20px");
                                     buttonChiudiRichiesta.setAttribute("onclick","modificaStatoRichiesta('In attesa di chiusura',"+id_richiesta+")");
                                     buttonChiudiRichiesta.innerHTML='Chiudi<i class="far fa-check-circle" style="margin-left:10px"></i>';
@@ -501,6 +503,7 @@
                                 {
                                     var buttonPrendiInCaricoRichiesta=document.createElement("button");
                                     buttonPrendiInCaricoRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                    buttonPrendiInCaricoRichiesta.setAttribute("id","buttonModificaRichiesta"+id_richiesta);
                                     buttonPrendiInCaricoRichiesta.setAttribute("style","float:right;margin-right:20px;width:140px");
                                     buttonPrendiInCaricoRichiesta.setAttribute("onclick","modificaStatoRichiesta('Presa in carico',"+id_richiesta+")");
                                     buttonPrendiInCaricoRichiesta.innerHTML='Prendi in carico<i class="far fa-cogs" style="margin-left:10px"></i>';
@@ -726,6 +729,7 @@
                                 var aggiungiUtenteButton=document.createElement("button");
                                 aggiungiUtenteButton.setAttribute("class","btnIconRichiesteEfaq");
                                 aggiungiUtenteButton.setAttribute("title","Aggiungi utente");
+                                aggiungiUtenteButton.setAttribute("id","btnIconRichiesteEfaqAggiungiUtente"+id_richiesta);
                                 aggiungiUtenteButton.setAttribute("style","margin-left:10px");
                                 aggiungiUtenteButton.setAttribute("onclick","apriPopupAggiungiUtente('"+utenti_coinvolti.toString()+"',"+id_richiesta+")");
                                 aggiungiUtenteButton.appendChild(aggiungiUtenteIcon);
@@ -1105,6 +1109,8 @@
                             });
 
                             removeCircleSpinner();
+                            checkTutorial();
+
                         }
                     }
                     else
@@ -2239,4 +2245,99 @@
             else
                 console.log(status);
         });
+    }
+    /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+    function startTutorial()
+    {
+        getCompleteTour();
+    }
+    async function checkTutorial()
+    {
+        if(await getCookie("completeTourGestioneRichiesteEfaq")!="true")
+        {
+            getCompleteTour();
+            setCookie('completeTourGestioneRichiesteEfaq','true');
+        }
+    }
+    var completeTour=false;
+    function getCompleteTour()
+    {
+        completeTour=true;
+        getGestioneRichiesteTour();
+    }
+    var gestioneRichiesteTourAsk=false;
+    function getGestioneRichiesteTour()
+    {
+        var gestioneRichiesteTour = new Tour
+        ({
+            backdrop:true,
+            onEnd: function (tour)
+                {
+                    gestioneRichiesteTourAsk=false;
+                    completeTour=false;
+                },
+            steps: [
+                {
+                    element: "#bootstrap-tour-btnVisualizzazione",
+                    title: "Visualizzazione",
+                    content: "Usa questo pulsante per cambiare la visualizzazione, da lista a tabella" 
+                },
+                {
+                    element: "#bootstrap-tour-btnFiltri",
+                    title: "Filtri",
+                    content: "Usa questo pulsante per aprire il menù dei filtri avanzati"
+                },
+                {
+                    element: "#btnCollassaEspandiTutteRichieste",
+                    title: "Espandi/collassa tutte",
+                    content: "Usa questo pulsante per espandere o collassare tutte le richieste"
+                },
+                {
+                    element: "#bootstrap-tour-btnTutorial",
+                    title: "Tutorial",
+                    content: "Usa questo bottone per avviare il tutorial di tutta l' applicazione"
+                },
+                {
+                    element: "#richiesteSearchBarContainer",
+                    placement: "bottom",
+                    title: "Ricerca semplice",
+                    content: "Effettua una ricerca su tutti i campi delle richieste visualizzate. La ricerca avviene anche sugli utenti coinvolti e sulle risposte" ,
+                    onNext: function (tour) 
+                    {
+                        $("#btnCollassaEspandiTutteRichieste").click()
+                        if(richieste.length==0)
+                        {
+                            tour.end();
+                        }
+                    }
+                },
+                {
+                    element: "[id_richiesta="+richieste[0].id_richiesta+"]",
+                    title: "Richiesta",
+                    placement: "bottom",
+                    content: "Le richieste appariranno in questa forma. Il colore indica lo stato della richiesta, che può essere:<ul style='padding-left:15px'><li style='color:#DA6969'>Aperta</li><li style='color:#4C91CB'>Presa in carico</li><li style='color:#70B085'>Chiusa</li><li style='color:#E9A93A'>In attesa di chiusura</li></ul>Una richiesta viene proposta come chiusa da uno degli utenti incaricati di rispondere (stato <b>In attesa di chiusura</b>). Sarà poi compito di chi ha aperto la richiesta di confermarne la chiusura o la riapertura, in base alle risposte ricevute"
+                },
+                {
+                    element: "#buttonModificaRichiesta"+richieste[0].id_richiesta,
+                    title: "Modifica stato",
+                    content: "Usa questo pulsante per modificare lo stato della richiesta, prendendola in carico o proponendone la chiusura"
+                },
+                {
+                    element: "#btnIconRichiesteEfaqAggiungiUtente"+richieste[0].id_richiesta,
+                    title: "Aggiungi utente",
+                    content: "Usa questo pulsante per aggiungere altri utenti all' elenco degli utenti convolti"
+                },
+                {
+                    element: "#richiesteListItemBoxRisposteContainer"+richieste[0].id_richiesta,
+                    title: "Risposte",
+                    content: "Su questo lato compariranno le risposte degli utenti coinvolti"
+                },
+                {
+                    element: "#buttonReplicaRichiesta"+richieste[0].id_richiesta,
+                    title: "Replica",
+                    content: "Usa questo pulsante per aggiungere una nuova risposta. Puoi allegare dei file alla tua risposta"
+                }
+            ]});
+        gestioneRichiesteTour.init();
+        gestioneRichiesteTour.restart();
     }

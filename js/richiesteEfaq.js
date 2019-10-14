@@ -94,7 +94,8 @@
         newMouseSpinner(event);
         try{document.getElementById("colonneMacrocategoriaContainer").remove();}catch(error){}
         colonneMacrocategoriaContainer=document.createElement("div");
-        colonneMacrocategoriaContainer.setAttribute("id","colonneMacrocategoriaContainer")
+        colonneMacrocategoriaContainer.setAttribute("style","float:left");
+        colonneMacrocategoriaContainer.setAttribute("id","colonneMacrocategoriaContainer");
 
         try{document.getElementById("utentiMacrocategoriaContainer").remove();}catch(error){}
         utentiMacrocategoriaContainer=document.createElement("div");
@@ -181,6 +182,7 @@
 
         var inputContainer=document.createElement("div");
         inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
+        inputContainer.setAttribute("id","formNuovaRichiestaInputContainerUrgente");
 
         var formInputLabel=document.createElement("div");
         formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
@@ -203,6 +205,7 @@
 
         var inputContainer=document.createElement("div");
         inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
+        inputContainer.setAttribute("class","formNuovaRichiestaInputContainerAllegati");
 
         var formInputLabel=document.createElement("div");
         formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
@@ -258,6 +261,7 @@
 
         var inputContainer=document.createElement("div");
         inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
+        inputContainer.setAttribute("style","margin-top:10px");
 
         var formInputLabel=document.createElement("div");
         formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
@@ -400,6 +404,8 @@
             onOpen : function()
                     {
                         removeMouseSpinner();
+                        if(nuovaRichiestaTourAsk)
+                            getNuovaRichiestaTour();
                     }
         });
     }
@@ -632,6 +638,7 @@
 
                         var inputContainer=document.createElement("div");
                         inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
+                        inputContainer.setAttribute("id","formNuovaRichiestaInputContainerUtenti");
 
                         var formInputLabel=document.createElement("div");
                         formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
@@ -1523,6 +1530,7 @@
                                 
                                 var buttonGestioneRichiesta=document.createElement("button");
                                 buttonGestioneRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                buttonGestioneRichiesta.setAttribute("id","buttonModificaRichiesta"+id_richiesta);
                                 buttonGestioneRichiesta.setAttribute("onclick","modificaRichiesta("+id_richiesta+")");
                                 buttonGestioneRichiesta.innerHTML='Modifica <i class="fad fa-edit" style="margin-left:5px"></i>';
                                 richiesteListItemElementContainer.appendChild(buttonGestioneRichiesta);
@@ -1545,6 +1553,7 @@
 
                                 var buttonGestioneRichiesta=document.createElement("button");
                                 buttonGestioneRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                buttonGestioneRichiesta.setAttribute("id","buttonEliminaRichiesta"+id_richiesta);
                                 buttonGestioneRichiesta.setAttribute("onclick","eliminaRichiesta("+id_richiesta+")");
                                 buttonGestioneRichiesta.setAttribute("style","margin-left:20px;");
                                 buttonGestioneRichiesta.innerHTML='Elimina <i class="fad fa-trash" style="margin-left:5px"></i>';
@@ -1685,6 +1694,7 @@
 
                                     var buttonRispondiRichiesta=document.createElement("button");
                                     buttonRispondiRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                    buttonRispondiRichiesta.setAttribute("id","buttonReplicaRichiesta"+id_richiesta);
                                     buttonRispondiRichiesta.setAttribute("style","float:right");
                                     buttonRispondiRichiesta.setAttribute("onclick","apriPopupNuovaReplica("+id_richiesta+")");
                                     buttonRispondiRichiesta.innerHTML='Replica<i class="fad fa-reply-all" style="margin-left:10px"></i>';
@@ -1911,6 +1921,7 @@
                                 var aggiungiUtenteButton=document.createElement("button");
                                 aggiungiUtenteButton.setAttribute("class","btnIconRichiesteEfaq richiesteListItemElementInputEditable"+id_richiesta);
                                 aggiungiUtenteButton.setAttribute("title","Aggiungi utente");
+                                aggiungiUtenteButton.setAttribute("id","btnIconRichiesteEfaqAggiungiUtente"+id_richiesta);
                                 aggiungiUtenteButton.setAttribute("disabled","disabled");
                                 aggiungiUtenteButton.setAttribute("style","margin-left:10px");
                                 aggiungiUtenteButton.setAttribute("onclick","apriPopupAggiungiUtente('"+utenti_coinvolti.toString()+"',"+id_richiesta+")");
@@ -1985,6 +1996,7 @@
                                 var aggiungiAllegatoButton=document.createElement("button");
                                 aggiungiAllegatoButton.setAttribute("class","btnIconRichiesteEfaq richiesteListItemElementInputEditable"+id_richiesta);
                                 aggiungiAllegatoButton.setAttribute("title","Aggiungi allegati");
+                                aggiungiAllegatoButton.setAttribute("id","btnIconRichiesteEfaqAggiungiAllegati"+id_richiesta);
                                 aggiungiAllegatoButton.setAttribute("disabled","disabled");
                                 aggiungiAllegatoButton.setAttribute("style","margin-left:10px");
                                 aggiungiAllegatoButton.setAttribute("onclick","document.getElementById('inputAggiungiAllegatiLeTueRichieste"+id_richiesta+"').click()");
@@ -2292,6 +2304,8 @@
                             });
 
                             removeCircleSpinner();
+                            if(leTueRichiesteTourAsk)
+                                getLeTueRichiesteTour();
                         }
                     }
                     else
@@ -2299,8 +2313,6 @@
                 });
             }
         }
-        /*if(await getCookie("into1RichiesteEfaq")!="true")
-            getLeTueRichiesteTutorial();*/
     }
     async function getColonneMacrocategoriaLeTueRichieste(id_macrocategoria,id_richiesta)
     {
@@ -4962,29 +4974,222 @@
         document.getElementById("utentiMacrocategoriaContainerLeTueRichieste"+id_richiesta).appendChild(richiesteListItemElementContainer);
     }
     /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-    async function startTutorial()
+    function startTutorial()
     {
-        await setCookie('into1RichiesteEfaq','false');getIntro();
-        getIntro();
+        getCompleteTour();
     }
-    async function getIntro()
+    async function checkTutorial()
     {
-        /*if(await getCookie("into1RichiesteEfaq")!="true")
+        if(await getCookie("completeTourRichiesteEfaq")!="true")
         {
-            getActionBarTutorial();
-            
-            
-            
-            //$("[data-step=1]").click();
-
-            //introJs().setOption('showProgress', true).oncomplete(function() {setCookie("into1RichiesteEfaq","true")}).onexit(function() {setCookie("into1RichiesteEfaq","true")}).start();
-        }*/
+            getCompleteTour();
+            setCookie('completeTourRichiesteEfaq','true');
+        }
     }
-    function getActionBarTutorial()
+    var completeTour=false;
+    function getCompleteTour()
     {
-        introJs().setOption({'showBullets': false}).goToStepNumber(1).oncomplete(function() {$("[data-step=2]").click();}).start();
+        completeTour=true;
+        getFunctionBarTour();
     }
-    function getLeTueRichiesteTutorial()
+    function getFunctionBarTour()
     {
-        introJs().setOption({'showBullets': false}).goToStepNumber(4).start();
+        var mainTour = new Tour
+        ({
+            backdrop:true,
+            onEnd: function (tour)
+                {
+                    if(completeTour)
+                    {
+                        nuovaRichiestaTourAsk=true;
+                        $("#bootstrap-tour-btnNuovaRichiesta").click();
+                    }
+                },
+            steps: [
+            {
+                element: "#bootstrap-tour-btnNuovaRichiesta",
+                title: "Nuova richiesta",
+                content: "Usa questo bottone per inserire una nuova richiesta"
+            },
+            {
+                element: "#bootstrap-tour-btnLeTueRichieste",
+                title: "Le tue richieste",
+                content: "Usa questo bottone per consultare e modificare le tue richieste"
+            },
+            {
+                element: "#bootstrap-tour-btnTutteLeRichieste",
+                title: "Tutte le richieste",
+                content: "Usa questo bottone per consultare tutte le richieste"
+            },
+            {
+                element: "#bootstrap-tour-btnTutorial",
+                title: "Tutorial",
+                content: "Usa questo bottone per avviare il tutorial di tutta l' applicazione"
+            }
+        ]});
+        mainTour.init();
+        mainTour.restart();
+    }
+    var nuovaRichiestaTourAsk=false;
+    function getNuovaRichiestaTour()
+    {
+        var nuovaRichiestaTour = new Tour
+        ({
+            backdrop:true,
+            onEnd: function (tour)
+                {
+                    if(completeTour)
+                    {
+                        nuovaRichiestaTourAsk=false;
+                        swal.close();
+                        leTueRichiesteTourAsk=true;
+                        $("#bootstrap-tour-btnLeTueRichieste").click();
+                    }
+                },
+            steps: [
+            {
+                element: "#nuovaRichiestaOuterContainer",
+                title: "Compila i campi",
+                content: "Compila i campi e inserisci una nuova richiesta. Alcuni campi, come l' oggetto, la descrizione, la macrocategoria e la categoria, sono obbligatori" 
+            },
+            {
+                element: "#formNuovaRichiestaInputContainerUrgente",
+                title: "Richiesta urgente",
+                content: "Puoi segnalare una richiesta come urgente. Questo comporterà l' invio di una mail alle persone coinvolte, e sposterà sempre la tua richiesta in cima, finchè non verrà chiusa"
+            },
+            {
+                element: "#formNuovaRichiestaInputContainerAllegati",
+                title: "Allegati",
+                content: "Puoi allegare fino a 10 file, per una dimensione massima di 90MB l' uno. Non esiste alcuna limitazione sul formato accettato"
+            },
+            {
+                element: "#colonneMacrocategoriaContainer",
+                title: "Macrocategoria",
+                content: "L' elenco di campi da compilare dipende dalla macrocategoria scelta. Scegliendo una diversa macrocategoria sarà necessario compilare diversi campi"
+            },
+            {
+                element: "#formNuovaRichiestaInputContainerUtenti",
+                title: "Utenti coinvolti",
+                content: "Gli utenti coinvolti vedranno la tua richiesta nella loro bacheca e avranno il compito di gestirla (prenderla in carico, rispondere ecc.). Alcuni utenti verranno inclusi sulla base della macrocateogira scelta. Puoi aggiungere e rimuovere altri utenti che intendi incaricare per gestire la tua richiesta"
+            }
+        ]});
+        nuovaRichiestaTour.init();
+        nuovaRichiestaTour.restart();
+    }
+    var leTueRichiesteTourAsk=false;
+    function getLeTueRichiesteTour()
+    {
+        var leTueRichiesteTour = new Tour
+        ({
+            backdrop:true,
+            onEnd: function (tour)
+                {
+                    if(completeTour)
+                    {
+                        leTueRichiesteTourAsk=false;
+                        completeTour=false;
+                    }
+                },
+            steps: [
+            {
+                element: "#bootstrap-tour-btnVisualizzazione",
+                title: "Visualizzazione",
+                content: "Usa questo pulsante per cambiare la visualizzazione, da lista a tabella" 
+            },
+            {
+                element: "#bootstrap-tour-btnFiltri",
+                title: "Filtri",
+                content: "Usa questo pulsante per aprire il menù dei filtri avanzati"
+            },
+            {
+                element: "#btnCollassaEspandiTutteRichieste",
+                title: "Espandi/collassa tutte",
+                content: "Usa questo pulsante per espandere o collassare tutte le richieste"
+            },
+            {
+                element: "#richiesteSearchBarContainer",
+                placement: "bottom",
+                title: "Ricerca semplice",
+                content: "Effettua una ricerca su tutti i campi delle richieste visualizzate. La ricerca avviene anche sugli utenti coinvolti e sulle risposte" ,
+                onNext: function (tour) 
+                {
+                    $("#btnCollassaEspandiTutteRichieste").click()
+                    if(richieste.length==0)
+                    {
+                        tour.end();
+                    }
+                }
+            },
+            {
+                element: "[id_richiesta="+richieste[0].id_richiesta+"]",
+                title: "Richiesta",
+                placement: "bottom",
+                content: "Le richieste appariranno in questa forma. Il colore indica lo stato della richiesta, che può essere:<ul style='padding-left:15px'><li style='color:#DA6969'>Aperta</li><li style='color:#4C91CB'>Presa in carico</li><li style='color:#70B085'>Chiusa</li><li style='color:#E9A93A'>In attesa di chiusura</li></ul>Una richiesta viene proposta come chiusa da uno degli utenti incaricati di rispondere (stato <b>In attesa di chiusura</b>). Sarà poi compito di chi ha aperto la richiesta di confermarne la chiusura o la riapertura, in base alle risposte ricevute.<br>Qualora una richiesta sia in attesa di chiusura, compariranno due pulsanti per chiuderla o riaprirla, imparte allo stato"
+            },
+            {
+                element: "#buttonModificaRichiesta"+richieste[0].id_richiesta,
+                title: "Modifica",
+                content: "Usa questo pulsante per rendere i campi della richiesta editabili.<br><br><b>Nota: </b>il programma non salva le modifiche automaticamente",
+                onNext: function (tour) 
+                {
+                    $("#buttonModificaRichiesta"+richieste[0].id_richiesta).click();
+                }
+            },
+            {
+                element: "#buttonSalvaModificheRichiesta"+richieste[0].id_richiesta,
+                title: "Salva",
+                content: "Usa questo pulsante per salvare le modifiche"
+            },
+            {
+                element: "#buttonAnnullaModificheRichiesta"+richieste[0].id_richiesta,
+                title: "Indietro",
+                content: "Usa questo pulsante per chiudere l' interfaccia di modifica della richiesta.<br><br><b>Nota: </b>le modifiche non salvate non andranno perse finchè non si esce dalla pagina",
+                onNext: function (tour) 
+                {
+                    //$("#buttonAnnullaModificheRichiesta"+richieste[0].id_richiesta).click();
+                    //$("#buttonToggleRichiesta"+richieste[0].id_richiesta).click();
+                }
+            },
+            {
+                element: "#buttonEliminaRichiesta"+richieste[0].id_richiesta,
+                title: "Elimina",
+                content: "Usa questo pulsante per eliminare la richiesta"
+            },
+            {
+                element: "#btnIconRichiesteEfaqAggiungiUtente"+richieste[0].id_richiesta,
+                title: "Aggiungi utente",
+                content: "Usa questo pulsante per aggiungere altri utenti all' elenco degli utenti convolti"
+            },
+            {
+                element: "#btnIconRichiesteEfaqAggiungiAllegati"+richieste[0].id_richiesta,
+                title: "Aggiungi allegati",
+                content: "Usa questo pulsante per aggiungere degli allegati alla richiesta"
+            },
+            {
+                element: "#richiesteListItemBoxRisposteContainer"+richieste[0].id_richiesta,
+                title: "Risposte",
+                content: "Su questo lato compariranno le risposte degli utenti coinvolti. Qualora qualcuno abbia risposto alla tua richiesta, puoi replicare alla/e risposta/e. Le risposte possono contenere degli allegati",
+                onNext: function (tour) 
+                {
+                    $("#buttonAnnullaModificheRichiesta"+richieste[0].id_richiesta).click();
+                    var hasRisposte=false;
+                    risposte.forEach(function(risposta)
+                    {
+                        if(risposta.richiesta==richieste[0].id_richiesta)
+                            hasRisposte=true;
+                    })
+                    if(!hasRisposte)
+                    {
+                        tour.end();
+                    }
+                }
+            },
+            {
+                element: "#buttonReplicaRichiesta"+richieste[0].id_richiesta,
+                title: "Replica",
+                content: "Usa questo pulsante per replicare ad una o piu risposte. Puoi allegare dei file alla tua replica"
+            }
+        ]});
+        leTueRichiesteTour.init();
+        leTueRichiesteTour.restart();
     }

@@ -7,7 +7,9 @@
 <html>
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link href="js_libraries/bootstrap-tour/bootstrap-tour-standalone.min.css" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+		<script src="js_libraries/bootstrap-tour/bootstrap-tour-standalone.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Graduate&display=swap" rel="stylesheet">
@@ -21,9 +23,9 @@
 		<script src="struttura.js"></script>
 		<script src="js/richiesteEfaq.js"></script>
 		<link rel="stylesheet" href="css/richiesteEfaqV2.css" />
-		<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">
+		<!--<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">-->
 		<script src="js_libraries/jquery.table2excel.js"></script>
-		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>
+		<!--<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>-->
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
 		<!--<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>-->
 		<style>
@@ -44,22 +46,22 @@
 			}
 		</style>
 	</head>
-	<body onload="getIntro()">
+	<body onload="checkTutorial()">
 		<?php include('struttura.php'); ?>
         <div class="absoluteActionBar2" id="richiesteEfaqAbsoluteActionBar2" style="top:100">
-            <button class="absoluteActionBarButton" data-step="1"  data-intro="Usa questo bottone per inserire una nuova richiesta" onclick="apriPopupNuovaRichiesta()">
+            <button class="absoluteActionBarButton" id="bootstrap-tour-btnNuovaRichiesta" onclick="apriPopupNuovaRichiesta()">
                 Nuova richiesta
                 <i class="fad fa-layer-plus" style="margin-left:5px"></i>
 			</button>
-			<button class="absoluteActionBarButton" data-step="2" data-intro="Usa questo bottone per consultare e modificare le tue richieste" onclick="resetStyle(this);getRichiesteUtente()">
+			<button class="absoluteActionBarButton" id="bootstrap-tour-btnLeTueRichieste" onclick="resetStyle(this);getRichiesteUtente()">
                 Le tue richieste
                 <i class="fad fa-user-edit" style="margin-left:5px"></i>
 			</button>
-			<button class="absoluteActionBarButton" data-step="3" data-intro="Usa questo bottone per consultare tutte le richieste" onclick="resetStyle(this);getTutteRichieste()">
+			<button class="absoluteActionBarButton" id="bootstrap-tour-btnTutteLeRichieste" onclick="resetStyle(this);getTutteRichieste()">
                 Tutte le richieste
                 <i class="fad fa-database" style="margin-left:5px"></i>
 			</button>
-			<button class="absoluteActionBarButton" title="Tutorial" onclick="startTutorial()">
+			<button class="absoluteActionBarButton" id="bootstrap-tour-btnTutorial" title="Tutorial" onclick="startTutorial()">
                 <i class="far fa-question" ></i>
 			</button>
         </div>
@@ -68,7 +70,7 @@
 			<div id="viewFunctionBar">
 				<div class="viewFunctionBarRow">
 					<div id="viewTitleContainer"><span id="viewTitle"></span></div>
-					<div class="viewFunctionBarTextContainer" data-step="4" data-intro="Usa questo pulsante per cambiare la visualizzazione, da lista a tabella">
+					<div class="viewFunctionBarTextContainer" id="bootstrap-tour-btnVisualizzazione">
 						<span style="float:left;display:block;margin-right:5px;">Visualizzazione</span>
 						<div class="switchVisualizzazioneButton switchVisualizzazioneR" id="switchVisualizzazioneButton-1">
 							<input type="checkbox" id="switchVisualizzazioneCheckbox" class="switchVisualizzazioneCheckbox" onchange="toggleVisualizzazione()">
@@ -76,7 +78,7 @@
 							<div class="switchVisualizzazioneLayer"></div>
 						</div>
 					</div>
-					<button class="absoluteActionBarButton" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
+					<button class="absoluteActionBarButton" id="bootstrap-tour-btnFiltri" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
 					<button class="absoluteActionBarButton" id="btnCollassaEspandiTutteRichieste" style="margin-top:5px;margin-left:10px" onclick="toggleAllRichieste(this)">Espandi tutte <i style="margin-left:5px;" class="fas fa-caret-down"></i></button>
 				</div>
 				<div class="viewFunctionBarRow" id="viewFunctionBarRowFiltri" style="display:none">
@@ -169,7 +171,7 @@
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>
-    	<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
+		<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
 	</body>
 </html>
 
