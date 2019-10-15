@@ -46,7 +46,7 @@
 		</div>
 		<div class="absoluteActionBarSommarioArchivi">
 			<div class="absoluteActionBarSommarioArchiviElement">Righe: <span id="rowsNumEditableTable"></span></div>
-			<button class="absoluteActionBarSommarioArchiviButton" onclick="excelExport('containerSommarioArchivi')">Esporta <i style="margin-left:5px;color:green" class="far fa-file-excel"></i></button>
+			<button class="absoluteActionBarSommarioArchiviButton" onclick="scaricaExcel('containerSommarioArchivi')">Esporta <i style="margin-left:5px;color:green" class="far fa-file-excel"></i></button>
 			<button class="absoluteActionBarSommarioArchiviButton" onclick="resetFilters();getTable(selectetTable)">Ripristina <i style="margin-left:5px" class="fal fa-filter"></i></button>
 		</div>
 		<div id="containerSommarioArchivi"></div>

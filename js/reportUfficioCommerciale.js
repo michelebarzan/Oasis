@@ -37,6 +37,11 @@
             var data1DefaultValueCorrectFormat=data1;
         }
 
+        var columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note','area_manager','ragg_stat','slp_name','finitura','doc_total'];
+        var JSONcolumns=JSON.stringify(columns);
+
+        /*-----------------------------------------------------------------*/
+
         var input1Container=document.createElement("div");
         input1Container.setAttribute("class","cointainerDataReportUfficioCommerciale");
         input1Container.setAttribute("style","margin-top:15px;");
@@ -53,7 +58,7 @@
         
         var input2Container=document.createElement("div");
         input2Container.setAttribute("class","cointainerDataReportUfficioCommerciale");
-        input2Container.setAttribute("style","margin-bottom:15px;");
+        //input2Container.setAttribute("style","margin-bottom:15px;");
         
         var label2=document.createElement("div");
         label2.setAttribute("class","labelDateReportUfficioCommerciale");
@@ -70,12 +75,64 @@
         
         input2Container.appendChild(label2);
         input2Container.appendChild(input2);
+
+        /*-----------------------------------------------------------------*/
+
+        var input3Container=document.createElement("div");
+        input3Container.setAttribute("class","cointainerDataReportUfficioCommerciale");
+        //input3Container.setAttribute("style","margin-top:15px;");
+        
+        var label3=document.createElement("div");
+        label3.setAttribute("class","labelDateReportUfficioCommerciale");
+        label3.innerHTML="Ordina per";
+        
+        var input3=document.createElement("select");
+        input3.setAttribute("class","inputDateReportUfficioCommerciale");
+        input3.setAttribute("id","orderByReportUfficioCommerciale");
+
+        columns.forEach(function (column)
+        {
+            var option3=document.createElement("option");
+            option3.setAttribute("value",column);
+            option3.innerHTML=column;
+            input3.appendChild(option3);
+        });
+        
+        var input4Container=document.createElement("div");
+        input4Container.setAttribute("class","cointainerDataReportUfficioCommerciale");
+        input4Container.setAttribute("style","margin-bottom:15px;");
+        
+        var label4=document.createElement("div");
+        label4.setAttribute("class","labelDateReportUfficioCommerciale");
+        label4.innerHTML="Tipo ord.";
+        
+        var input4=document.createElement("select");
+        input4.setAttribute("class","inputDateReportUfficioCommerciale");
+        input4.setAttribute("id","orderTypeReportUfficioCommerciale");
+
+        var option4=document.createElement("option");
+        option4.setAttribute("value","ASC");
+        option4.innerHTML="Crescente";
+        input4.appendChild(option4);
+
+        var option4=document.createElement("option");
+        option4.setAttribute("value","DESC");
+        option4.innerHTML="Decrescente";
+        input4.appendChild(option4);
+        
+        input3Container.appendChild(label3);
+        input3Container.appendChild(input3);
+        
+        input4Container.appendChild(label4);
+        input4Container.appendChild(input4);
+
+        /*-----------------------------------------------------------------*/
         
         Swal.fire
         ({
             type: 'question',
-            title: "Seleziona intervallo date",
-            html : input1Container.outerHTML+input2Container.outerHTML,
+            title: "Origine dati",
+            html : input1Container.outerHTML+input2Container.outerHTML+input3Container.outerHTML+input4Container.outerHTML,
             showCancelButton:true,
             cancelButtonText: "Annulla",
             confirmButtonText : "Conferma"
@@ -87,6 +144,8 @@
                 swal.close();
                 data1=document.getElementById("data1ReportUfficioCommerciale").value;
                 data2=document.getElementById("data2ReportUfficioCommerciale").value;
+                var orderBy=document.getElementById("orderByReportUfficioCommerciale").value;
+                var orderType=document.getElementById("orderTypeReportUfficioCommerciale").value;
                 if(data1!=null && data1!='' && data2!=null && data2!='')
                 {
                     if(data2<data1)
@@ -111,7 +170,10 @@
                         $.post("getReportUfficioCommercialeView.php",
                         {
                             data1,
-                            data2
+                            data2,
+                            orderBy,
+                            orderType,
+                            JSONcolumns
                         },
                         function(response, status)
                         {
@@ -130,7 +192,7 @@
                                 }
                                 else
                                 {
-                                    var responseArray=[];
+                                    /*var responseArray=[];
                                     var responseArrayObj = JSON.parse(response);
                                     for (var key in responseArrayObj)
                                     {
@@ -144,6 +206,12 @@
                                     }
                                     var data=[];
                                     var rowsObj = JSON.parse(responseArray[1]);
+                                    for (var key in rowsObj)
+                                    {
+                                        data.push(rowsObj[key]);							
+                                    }*/
+                                    var data=[];
+                                    var rowsObj = JSON.parse(response);
                                     for (var key in rowsObj)
                                     {
                                         data.push(rowsObj[key]);							
@@ -482,11 +550,44 @@
         exportDiv.appendChild(exportTable);
         document.body.appendChild(exportDiv);
 
-        $("#hotExportTable").table2excel
+        /*$("#hotExportTable").table2excel
         ({
             exclude: ".noExl",
             filename
-        });
+        });*/
+        exportTableToExcel("hotExportTable", filename);
 
         document.getElementById("hotExportTable").remove();
     }
+    function exportTableToExcel(tableID, filename = '')
+    {
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        
+        // Specify file name
+        filename = filename?filename+'.xls':'excel_data.xls';
+        
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob, filename);
+        }else{
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
+        }
+    }
+    

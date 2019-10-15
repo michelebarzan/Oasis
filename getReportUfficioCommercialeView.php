@@ -5,6 +5,9 @@
 	
 	$data1=$_REQUEST["data1"];	
 	$data2=$_REQUEST["data2"];
+	$orderBy=$_REQUEST["orderBy"];	
+	$orderType=$_REQUEST["orderType"];
+	$columns=json_decode($_REQUEST['JSONcolumns']);
 	
 	$data1Array=[];
 	$data1Array['day']=explode("-",$data1)[2];
@@ -18,11 +21,10 @@
 	$data2Array['year']=explode("-",$data2)[0];
 	$data2Int=intval($data2Array['year'].$data2Array['month'].$data2Array['day']);
 	
-	$columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note','area_manager','ragg_stat','slp_name','finitura','doc_total'];
+	//$columns=['data_creazione','numero_documento','data_scadenza','codice_cliente_fornitore','nome_cliente_fornitore','causale','linea_business','collezione','standard_fuori_standard','note','area_manager','ragg_stat','slp_name','finitura','doc_total'];
 	$rows=[];
 	
-	$query2="SELECT * FROM report_ufficio_vendite_view WHERE annoMeseGiorno BETWEEN $data1Int AND $data2Int ORDER BY numero_documento";	
-	//echo $query2;
+	$query2="SELECT * FROM report_ufficio_vendite_view WHERE annoMeseGiorno BETWEEN $data1Int AND $data2Int ORDER BY $orderBy $orderType";	
 	$result2=sqlsrv_query($conn,$query2);
 	if($result2==FALSE)
 	{
@@ -41,11 +43,13 @@
 			
 		}
 	}
-	$response=[];
+	//$response=[];
 	
-	array_push($response,json_encode($columns));
-	array_push($response,json_encode($rows));
+	//array_push($response,json_encode($columns));
+	//array_push($response,json_encode($rows));
 
-	echo json_encode($response);
+	//echo json_encode($response);
+
+	echo json_encode($rows);
 	
 ?>
