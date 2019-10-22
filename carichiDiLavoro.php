@@ -354,7 +354,7 @@
 	<head>
 		<title><?php echo $pageName; ?></title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-			<link rel="stylesheet" href="css/styleV33.css" />
+			<link rel="stylesheet" href="css/styleV34.css" />
 			<script src="struttura.js"></script>
 			<script>
 				var tipoG;

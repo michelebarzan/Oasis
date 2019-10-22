@@ -55,6 +55,18 @@ html
     background:#171717;
 	text-align: right;
 }
+.logoHeader
+{
+	position: absolute;
+	height:40px;
+	width:40px;
+	top:5;
+	left:calc(50% - 20px);
+	background-image: url("../images/logo-white.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
 #pageName
 {
 	padding-left:30px;

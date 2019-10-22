@@ -7,8 +7,10 @@
     var richieste=[];
     var risposte=[];
     var searchAnswerInterval;
+    var checkStatoInterval;
 
-    getSearchAnswerInterval();
+    /*getSearchAnswerInterval();
+    getCheckStatoInterval();*/
     
     function getSearchAnswerInterval()
     {
@@ -19,7 +21,7 @@
             switch(view)
             {
                 case "richieste_utente":risposteInterval=await getRisposteUtente();break;
-                case "tutte_le_richieste":risposteInterval=await getTutteLeRisposte();break;
+                //case "tutte_le_richieste":risposteInterval=await getTutteLeRisposte();break;
             }
             if(risposteInterval.length>0)
             {
@@ -53,12 +55,17 @@
                             var ora_risposta=data_ora_risposta_eng.split(" ")[1];
                             var data_risposta=data_risposta_ita+" "+ora_risposta;
 
+                            document.getElementById("buttonReplicaRichiesta"+rispostaInterval.richiesta).style.display="block";
+
                             //console.log(allegati_risposte);
-    
-                            if(document.getElementById("richiesteListItemBoxRisposteContainer"+rispostaInterval.richiesta).childNodes[0].className=="richiesteListItemElementContainer")
-                                document.getElementById("richiesteListItemBoxRisposteContainer"+rispostaInterval.richiesta).innerHTML="";
+                                                        
+                            /*if(document.getElementById("richiesteListItemBoxRisposteContainer"+rispostaInterval.richiesta).childNodes[0].className=="richiesteListItemElementContainer")
+                                document.getElementById("richiesteListItemBoxRisposteContainer"+rispostaInterval.richiesta).innerHTML="";*/
     
                             appendNuovaReplica(rispostaInterval.username_risposta,data_risposta,rispostaInterval.richiesta,rispostaInterval.descrizione,allegati_risposte,false);
+
+                            $("#bellNuovaReplicaContainer"+rispostaInterval.richiesta).show("fast","swing");
+
                             risposte=[];
                             risposte=risposteInterval;
                         }
@@ -70,7 +77,122 @@
                     //console.log("nessuna risposta nuova");
                 }
             }
-        }, 5000);
+        }, 35000);
+    }
+    function getCheckStatoInterval()
+    {
+        console.log("eccomi,inizio a cercare");
+        checkStatoInterval=setInterval(async function()
+        {
+            var richiesteInterval=[];
+            switch(view)
+            {
+                case "richieste_utente":
+                        /*var filtroStato=$('#selectStatoLeTueRichieste').multipleSelect('getSelects');
+                        var filtroMacrocategoria=document.getElementById("selectFiltraMacrocategoriaLeTueRichieste").value;
+                        var filtroCategoria=document.getElementById("selectFiltraCategoriaLeTueRichieste").value;*/
+                        var filtroStato=["In attesa di chiusura","Presa in carico","Aperta","Chiusa"];
+                        var filtroMacrocategoria="*";
+                        var filtroCategoria="*";
+
+                        richiesteInterval=await getRichiesteUtenteArray(filtroStato,filtroMacrocategoria,filtroCategoria);break;
+            }
+            if(richiesteInterval.length>0)
+            {
+                console.log("cerco...");
+                var id_richiesteInterval=[];
+                richiesteInterval.forEach(function(richiestaInterval)
+                {
+                    if(!id_richiesteInterval.includes(richiestaInterval.id_richiesta))
+                    {
+                        id_richiesteInterval.push(richiestaInterval.id_richiesta);
+                    }
+                });
+                id_richiesteInterval.forEach(function(id_richiestaInterval)
+                {
+                    var stato=getValoreColonnaRichiesteById(richieste,id_richiestaInterval,"stato");
+                    var statoInterval=getValoreColonnaRichiesteById(richiesteInterval,id_richiestaInterval,"stato");
+
+                    if(stato!=statoInterval && stato!=undefined)
+                    {
+                        console.log("Cambio stato per la richiesta "+id_richiestaInterval);
+                        console.log("Stato attuale: "+stato);
+                        console.log("Nuovo stato: "+statoInterval);
+
+                        if(statoInterval=="Presa in carico" || statoInterval=="In attesa di chiusura")
+                        {
+                            var iconStato;
+                            var richiesteListItemRowBackgroundColor;
+
+                            switch(statoInterval)
+                            {
+                                case "Aperta":richiesteListItemRowBackgroundColor="#DA6969";iconStato="far fa-exclamation-circle";break;
+                                case "Presa in carico":richiesteListItemRowBackgroundColor="#4C91CB";iconStato="far fa-cogs";break;
+                                case "In attesa di chiusura":richiesteListItemRowBackgroundColor="#E9A93A";iconStato="far fa-hourglass-half";break;
+                                case "Chiusa":richiesteListItemRowBackgroundColor="#70B085";iconStato="far fa-check-circle";break;
+                            }
+                            document.getElementById("richiesteListItemRow"+id_richiestaInterval).style.backgroundColor=richiesteListItemRowBackgroundColor;
+                            try {
+                                document.getElementById("alertUrgenteRow"+id_richiestaInterval).style.backgroundColor=richiesteListItemRowBackgroundColor;
+                            } catch (error) {}
+                            document.getElementById("richiesteListItemElementValuestato"+id_richiestaInterval).innerHTML=statoInterval+'<i class="'+iconStato+'" style="margin-left:5px"></i>';
+
+                            if(statoInterval=="In attesa di chiusura")
+                            {
+                                var richiesteListItemElementContainer=document.createElement("div");
+                                richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
+                                richiesteListItemElementContainer.setAttribute("style","width:auto;margin:10px");
+                                
+                                var buttonChiusuraRichiesta=document.createElement("button");
+                                buttonChiusuraRichiesta.setAttribute("class","buttonChiusuraRichiesta");
+                                buttonChiusuraRichiesta.setAttribute("id","buttonChiusuraRichiestaAccetta");
+                                buttonChiusuraRichiesta.setAttribute("onclick","confermaChiusuraRichiesta("+id_richiestaInterval+")");
+                                buttonChiusuraRichiesta.innerHTML='Chiudi richiesta<i class="fad fa-comment-check" style="margin-left:10px"></i>';
+                                richiesteListItemElementContainer.appendChild(buttonChiusuraRichiesta);
+
+                                var buttonChiusuraRichiesta=document.createElement("button");
+                                buttonChiusuraRichiesta.setAttribute("class","buttonChiusuraRichiesta");
+                                buttonChiusuraRichiesta.setAttribute("id","buttonChiusuraRichiestaRifiuta");
+                                buttonChiusuraRichiesta.setAttribute("onclick","rifiutaChiusuraRichiesta("+id_richiestaInterval+")");
+                                buttonChiusuraRichiesta.innerHTML='Riapri richiesta<i class="fad fa-comment-times" style="margin-left:10px"></i>';
+                                richiesteListItemElementContainer.appendChild(buttonChiusuraRichiesta);
+
+                                document.getElementById("richiesteListItemRow"+id_richiestaInterval).appendChild(richiesteListItemElementContainer);
+                            }
+                            
+                            richieste=richiesteInterval;
+                        }
+                    }
+                });
+            }
+        }, 15000);
+    }
+    function getRichiesteUtenteArray(filtroStato,filtroMacrocategoria,filtroCategoria)
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getRichiesteUtente.php",
+            {
+                filtroStato,
+                filtroMacrocategoria,
+                filtroCategoria
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                    {
+                        console.log(response);
+                        reject({response});
+                    }
+                    else
+                        resolve(JSON.parse(response));
+                }
+                else
+                    reject({status});
+            });
+        });
     }
     function aggiungiAvvisoCheckboxUrgente(checkbox)
     {
@@ -265,7 +387,7 @@
 
         var formInputLabel=document.createElement("div");
         formInputLabel.setAttribute("class","formNuovaRichiestaInputLabel");
-        formInputLabel.innerHTML="Macrocategoria";
+        formInputLabel.innerHTML="Area di competenza";
 
         inputContainer.appendChild(formInputLabel);
 
@@ -1343,6 +1465,9 @@
         }
         if(visualizzazione=="lista")
         {
+            clearInterval(searchAnswerInterval);
+            clearInterval(checkStatoInterval);
+            
             $("#richiesteSearchBarContainer").show("fast","swing");
             document.getElementById("btnCollassaEspandiTutteRichieste").style.display="block";
             newCircleSpinner("Caricamento in corso...")
@@ -1497,6 +1622,7 @@
 
                                 var richiesteListItemRow=document.createElement("div");
                                 richiesteListItemRow.setAttribute("class","richiesteListItemRow");
+                                richiesteListItemRow.setAttribute("id","richiesteListItemRow"+id_richiesta);
 
                                 switch(stato)
                                 {
@@ -1510,11 +1636,20 @@
                                     var alertUrgenteRow=document.createElement("div");
                                     alertUrgenteRow.setAttribute("class","alertUrgenteRow");
                                     alertUrgenteRow.setAttribute("style","background-color:"+richiesteListItemRowBackgroundColor);
+                                    alertUrgenteRow.setAttribute("id","alertUrgenteRow"+id_richiesta);
                                     alertUrgenteRow.innerHTML='<i class="fad fa-exclamation-circle" style="margin-right:5px;"></i>Urgente';
                                     richiesteListItem.appendChild(alertUrgenteRow);
                                     richiesteListItem.setAttribute("style","border:4px solid red;animation: flashingBorder 2s linear infinite;")
                                 }
                                 richiesteListItemRow.setAttribute("style","min-height:50px;background-color:"+richiesteListItemRowBackgroundColor);
+
+                                var bellNuovaReplicaContainer=document.createElement("div");
+                                bellNuovaReplicaContainer.setAttribute("class","bellNuovaReplicaContainer");
+                                bellNuovaReplicaContainer.setAttribute("id","bellNuovaReplicaContainer"+id_richiesta);
+                                var bellNuovaReplica=document.createElement("i");
+                                bellNuovaReplica.setAttribute("class","fad fa-bell-exclamation bellNuovaReplica");
+                                bellNuovaReplicaContainer.appendChild(bellNuovaReplica);
+                                richiesteListItemRow.appendChild(bellNuovaReplicaContainer);
 
                                 var richiesteListItemElementContainer=document.createElement("div");
                                 richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
@@ -1569,7 +1704,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:auto;margin-right: 10px;");
-                                richiesteListItemElementLabel.innerHTML="Codice richiesta:";
+                                richiesteListItemElementLabel.innerHTML="#";
 
                                 var richiesteListItemElementValue=document.createElement("div");
                                 richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
@@ -1608,12 +1743,12 @@
                                 /*DATA CREAZIONE--------------------------------------------------------------*/
                                 var richiesteListItemElementContainer=document.createElement("div");
                                 richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-                                richiesteListItemElementContainer.setAttribute("style","width:220px;margin:10px");
+                                richiesteListItemElementContainer.setAttribute("style","width:160px;margin:10px");
 
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:auto;margin-right: 10px;");
-                                richiesteListItemElementLabel.innerHTML="Data creazione";
+                                richiesteListItemElementLabel.innerHTML="Data";
 
                                 var richiesteListItemElementInput=document.createElement("div");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementValue");
@@ -1644,6 +1779,7 @@
 
                                 var richiesteListItemElementValue=document.createElement("div");
                                 richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
+                                richiesteListItemElementValue.setAttribute("id","richiesteListItemElementValuestato"+id_richiesta);
                                 var colorStato;
                                 var iconStato;
                                 switch(stato)
@@ -1686,22 +1822,24 @@
                                 /*----------------------------------------------------------------------------*/
 
                                 var id_risposte=getValoriColonnaRisposteById(risposte,id_richiesta,"*","id_risposta");
+                                var richiesteListItemElementContainer=document.createElement("div");
+                                richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
+                                richiesteListItemElementContainer.setAttribute("style","width:auto;margin:10px;float:right");
+
+                                var buttonRispondiRichiesta=document.createElement("button");
+                                buttonRispondiRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                buttonRispondiRichiesta.setAttribute("id","buttonReplicaRichiesta"+id_richiesta);
+                                buttonRispondiRichiesta.setAttribute("onclick","apriPopupNuovaReplica("+id_richiesta+")");
+                                
                                 if(id_risposte.length>0)
-                                {
-                                    var richiesteListItemElementContainer=document.createElement("div");
-                                    richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-                                    richiesteListItemElementContainer.setAttribute("style","width:auto;margin:10px;float:right");
+                                    buttonRispondiRichiesta.setAttribute("style","float:right;");
+                                else
+                                    buttonRispondiRichiesta.setAttribute("style","float:right;display:none");
 
-                                    var buttonRispondiRichiesta=document.createElement("button");
-                                    buttonRispondiRichiesta.setAttribute("class","buttonGestioneRichiesta");
-                                    buttonRispondiRichiesta.setAttribute("id","buttonReplicaRichiesta"+id_richiesta);
-                                    buttonRispondiRichiesta.setAttribute("style","float:right");
-                                    buttonRispondiRichiesta.setAttribute("onclick","apriPopupNuovaReplica("+id_richiesta+")");
-                                    buttonRispondiRichiesta.innerHTML='Replica<i class="fad fa-reply-all" style="margin-left:10px"></i>';
-                                    richiesteListItemElementContainer.appendChild(buttonRispondiRichiesta);
+                                buttonRispondiRichiesta.innerHTML='Replica<i class="fad fa-reply-all" style="margin-left:10px"></i>';
+                                richiesteListItemElementContainer.appendChild(buttonRispondiRichiesta);
 
-                                    richiesteListItemRow.appendChild(richiesteListItemElementContainer);
-                                }
+                                richiesteListItemRow.appendChild(richiesteListItemElementContainer);
                                 
                                 richiesteListItem.appendChild(richiesteListItemRow);
 
@@ -1770,7 +1908,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
-                                richiesteListItemElementLabel.innerHTML="Macrocateogoria";
+                                richiesteListItemElementLabel.innerHTML="Area di competenza";
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
@@ -2304,6 +2442,8 @@
                             });
 
                             removeCircleSpinner();
+                            getSearchAnswerInterval();
+                            getCheckStatoInterval();
                             if(leTueRichiesteTourAsk)
                                 getLeTueRichiesteTour();
                         }
@@ -2436,7 +2576,6 @@
     }
     function apriPopupNuovaReplica(id_richiesta)
     {
-        clearInterval(searchAnswerInterval);
         showRichiesta(id_richiesta);
 
         var outerContainer=document.createElement("div");
@@ -2534,7 +2673,7 @@
         confirmButton.setAttribute("id","nuovaRichiestaConfirmButton");
         confirmButton.setAttribute("type","submit");
         confirmButton.setAttribute("style","margin-left:15%;float:left");
-        confirmButton.innerHTML='Conferma <i class="fad fa-layer-plus" style="margin-left:10px"></i>';
+        confirmButton.innerHTML='Conferma <i class="fad fa-reply-all" style="margin-left:10px"></i>';
 
         buttonContainer.appendChild(confirmButton);
 
@@ -2567,11 +2706,10 @@
                     {
                         
                     }
-        }).then(function(){getSearchAnswerInterval()});
+        });
     }
     function inserisciNuovaReplica(event,id_richiesta)
     {
-        getSearchAnswerInterval();
         event.preventDefault();
             
         var descrizione=document.getElementById("formNuovaReplicadescrizione").value;
@@ -2642,7 +2780,7 @@
                                         processData:false,
                                         contentType:false,
                                         type:'POST',
-                                        success:function(response)
+                                        success:async function(response)
                                             {
                                                 //console.log(response);
                                                 if(response.indexOf("ok")>-1)
@@ -2683,18 +2821,20 @@
                 reject({status});
         });
     }
-    function appendNuovaReplica(username_risposta,data_risposta,id_richiesta,descrizione,allegati_risposte,successMessage)
+    async function appendNuovaReplica(username_risposta,data_risposta,id_richiesta,descrizione,allegati_risposte,successMessage)
     {
         if(document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).childNodes[0].className=="richiesteListItemElementContainer")
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).innerHTML="";
 
         if(successMessage)
         {
-            Swal.fire
+            /*Swal.fire
             ({
                 type: 'success',
                 title: 'Replica inserita'
-            });
+            });*/
+            Swal.close();
+            risposte=await getTutteLeRisposte();
         }
         
         var richiesteListItemBoxRow=document.createElement("div");
@@ -2855,6 +2995,7 @@
     }
     function showRichiesta(id_richiesta)
     {
+        $("#bellNuovaReplicaContainer"+id_richiesta).hide("fast","swing");
         $("#richiesteListItemBoxRichiestaContainer"+id_richiesta).show("fast","swing");
         $("#richiesteListItemBoxRisposteContainer"+id_richiesta).show("fast","swing");
         setTimeout(function()
@@ -2862,12 +3003,14 @@
             var height=document.getElementById("richiesteListItemBoxRichiestaContainer"+id_richiesta).offsetHeight+10;
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.maxHeight=height+"px";
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.overflowY="auto";
+            //$( "[id_richiesta="+id_richiesta+"]" ).resizable();
         }, 500);
     }
     function hideRichiesta(id_richiesta)
     {
         $("#richiesteListItemBoxRichiestaContainer"+id_richiesta).hide("fast","swing");
         $("#richiesteListItemBoxRisposteContainer"+id_richiesta).hide("fast","swing");
+        //$( "[id_richiesta="+id_richiesta+"]" ).resizable("destroy");
     }
     function toggleRichiesta(id_richiesta,button)
     {
@@ -4093,7 +4236,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:auto;margin-right: 10px;");
-                                richiesteListItemElementLabel.innerHTML="Codice richiesta:";
+                                richiesteListItemElementLabel.innerHTML="#";
 
                                 var richiesteListItemElementValue=document.createElement("div");
                                 richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
@@ -4153,12 +4296,12 @@
                                 /*DATA CREAZIONE--------------------------------------------------------------*/
                                 var richiesteListItemElementContainer=document.createElement("div");
                                 richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-                                richiesteListItemElementContainer.setAttribute("style","width:220px;margin:10px");
+                                richiesteListItemElementContainer.setAttribute("style","width:160px;margin:10px");
 
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:auto;margin-right: 10px;");
-                                richiesteListItemElementLabel.innerHTML="Data creazione";
+                                richiesteListItemElementLabel.innerHTML="Data";
 
                                 var richiesteListItemElementInput=document.createElement("div");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementValue");
@@ -4314,7 +4457,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
-                                richiesteListItemElementLabel.innerHTML="Macrocateogoria";
+                                richiesteListItemElementLabel.innerHTML="Area di competenza";
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
@@ -5050,7 +5193,7 @@
             {
                 element: "#nuovaRichiestaOuterContainer",
                 title: "Compila i campi",
-                content: "Compila i campi e inserisci una nuova richiesta. Alcuni campi, come l' oggetto, la descrizione, la macrocategoria e la categoria, sono obbligatori" 
+                content: "Compila i campi e inserisci una nuova richiesta. Alcuni campi, come l' oggetto, la descrizione, l' 'area di competenza e la categoria, sono obbligatori" 
             },
             {
                 element: "#formNuovaRichiestaInputContainerUrgente",
@@ -5064,13 +5207,13 @@
             },
             {
                 element: "#colonneMacrocategoriaContainer",
-                title: "Macrocategoria",
-                content: "L' elenco di campi da compilare dipende dalla macrocategoria scelta. Scegliendo una diversa macrocategoria sarà necessario compilare diversi campi"
+                title: "Area di competenza",
+                content: "L' elenco di campi da compilare dipende dall' area di competenza scelta. Scegliendo una diversa area di competenza sarà necessario compilare diversi campi"
             },
             {
                 element: "#formNuovaRichiestaInputContainerUtenti",
                 title: "Utenti coinvolti",
-                content: "Gli utenti coinvolti vedranno la tua richiesta nella loro bacheca e avranno il compito di gestirla (prenderla in carico, rispondere ecc.). Alcuni utenti verranno inclusi sulla base della macrocateogira scelta. Puoi aggiungere e rimuovere altri utenti che intendi incaricare per gestire la tua richiesta"
+                content: "Gli utenti coinvolti vedranno la tua richiesta nella loro bacheca e avranno il compito di gestirla (prenderla in carico, rispondere ecc.). Alcuni utenti verranno inclusi sulla base dell' area di competenza scelta. Puoi aggiungere e rimuovere altri utenti che intendi incaricare per gestire la tua richiesta"
             }
         ]});
         nuovaRichiestaTour.init();

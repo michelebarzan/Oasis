@@ -11,7 +11,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV33.css" />
+			<link rel="stylesheet" href="css/styleV34.css" />
 			<script src="struttura.js"></script>
 			<script>
 				/*function getPopup(titolo,descrizione)

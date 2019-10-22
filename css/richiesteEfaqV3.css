@@ -563,8 +563,9 @@ textarea.formNuovaRichiestaInput
     border:1px solid #bbb;
     /*padding-bottom:10px;*/
     /*background: linear-gradient(90deg, #DCDCDC 50%, rgba(0,0,0,0.08) 50%);*/
-    background-color: #E1E1E1;
+    /*background-color: #E1E1E1;*/
     /*padding:10px;*/
+    background: linear-gradient(90deg, #EBEBEB 25%, #E1E1E1 25%), linear-gradient(90deg, #E1E1E1 25%, #E1E1E1 25%)
 }
 .alertUrgenteRow
 {
@@ -848,4 +849,24 @@ textarea.formNuovaRichiestaInput
 #searchSelectLeTueRichiesteListItem1:hover,#searchSelectLeTueRichiesteListItem2:hover,#selectFiltraMacrocategoriaLeTueRichieste:hover,#selectFiltraCategoriaLeTueRichieste:hover
 {
     background-color: #ccc;
+}
+.bellNuovaReplicaContainer
+{
+    height:50px;
+    width: 50px;
+    background: #EBEBEB;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12), 0 2px 5px rgba(0,0,0,0.24);
+    border-radius: 25px;
+    margin-left:-25px;
+    margin-top:-25px;
+    margin-right:10px;
+    float:left;
+    display: none;
+}
+.bellNuovaReplica
+{
+    float:right;
+    display: block;
+    margin-top:28px;
+    margin-right:9px;
 }

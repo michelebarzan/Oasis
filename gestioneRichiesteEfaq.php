@@ -19,10 +19,10 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV33.css" />
+		<link rel="stylesheet" href="css/styleV34.css" />
 		<script src="struttura.js"></script>
 		<script src="js/gestioneRichiesteEfaq.js"></script>
-		<link rel="stylesheet" href="css/gestioneRichiesteEfaqV2.css" />
+		<link rel="stylesheet" href="css/gestioneRichiesteEfaqV3.css" />
 		<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>

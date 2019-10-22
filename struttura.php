@@ -8,6 +8,7 @@
 		<!--<input type="button" id="nascondi" value="" onclick="nascondi()" data-toggle='tooltip' title='Apri menu' />-->
 		<button class="main-nav-bar-open-button" onclick="mainNavBarOpen()" title="Apri"><i class="fal fa-list fa-2x"></i></button>
 		<div id="pageName" class="pageName"><?php echo $pageName; ?></div>
+		<div class="logoHeader"></div>
 		<div id="user" class="user">
 			<div id="username"><?php echo $_SESSION['Username']; ?></div>
 			<input type="button" value="" id="btnUser">

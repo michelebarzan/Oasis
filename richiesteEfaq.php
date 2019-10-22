@@ -19,10 +19,10 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV33.css" />
+		<link rel="stylesheet" href="css/styleV34.css" />
 		<script src="struttura.js"></script>
 		<script src="js/richiesteEfaq.js"></script>
-		<link rel="stylesheet" href="css/richiesteEfaqV2.css" />
+		<link rel="stylesheet" href="css/richiesteEfaqV3.css" />
 		<!--<link href="js_libraries/intro.js/introjs.css" rel="stylesheet">-->
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<!--<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>-->
@@ -172,6 +172,7 @@
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>
 		<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	</body>
 </html>
 
