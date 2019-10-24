@@ -16,8 +16,18 @@
 		}
 		else
 		{
-			echo '<i class="fal fa-check" style="font-size:140%;margin-right:20px;"></i>Allegati sincronizzati';
-			die();
+			$query2="INSERT INTO sincronizzazione_foto_ordini (utente,[data]) VALUES (".$_SESSION['id_utente'].",GETDATE())";	
+			$result2=sqlsrv_query($conn,$query2);
+			if($result2==FALSE)
+			{
+				echo 'ERRORE';
+				die();
+			}
+			else
+			{
+				echo '<i class="fal fa-check" style="font-size:140%;margin-right:20px;"></i>Allegati sincronizzati';
+				die();
+			}
 		}
 		
 		echo 'ERRORE';
