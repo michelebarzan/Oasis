@@ -8,7 +8,7 @@
 	<head>
 		<title><?php echo $pageName; ?></title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-			<link rel="stylesheet" href="css/styleV34.css" />
+			<link rel="stylesheet" href="css/styleV35.css" />
 			<link href="https://fonts.googleapis.com/css?family=Libre+Barcode+39+Text" rel="stylesheet">
 			<script src="struttura.js"></script>
 			<script>

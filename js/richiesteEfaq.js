@@ -1948,7 +1948,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
-                                richiesteListItemElementLabel.innerHTML="Cateogoria";
+                                richiesteListItemElementLabel.innerHTML="Categoria";
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
@@ -4497,7 +4497,7 @@
                                 var richiesteListItemElementLabel=document.createElement("div");
                                 richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                 richiesteListItemElementLabel.setAttribute("style","height:30px;line-height:30px;width:150px;");
-                                richiesteListItemElementLabel.innerHTML="Cateogoria";
+                                richiesteListItemElementLabel.innerHTML="Categoria";
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);

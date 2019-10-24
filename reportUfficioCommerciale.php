@@ -18,7 +18,7 @@
 		<script type="text/javascript" src="js_libraries/handsontable/languages/it-IT.js"></script>
 		<script src="jquery.table2excel.js"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV34.css" />
+		<link rel="stylesheet" href="css/styleV35.css" />
 		<script src="js_libraries/jquery.table2excel.js"></script>
 		<script src="struttura.js"></script>
 		<script src="js/reportUfficioCommerciale.js"></script>

@@ -11,39 +11,42 @@
 		<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 		<title><?php echo $pageName; ?></title>
-			<link rel="stylesheet" href="css/styleV34.css" />
-			<script src="struttura.js"></script>
-			<script>
-				/*function getPopup(titolo,descrizione)
-				{
-					document.getElementById("popup").style.display="inline-block";
-					document.getElementById("titoloPopupTutorialTicket").innerHTML=titolo;
-					document.getElementById("descrizionePopupTutorialTicket").innerHTML=descrizione;
-				}
-				function chiudiPopup()
-				{
-					document.getElementById("popup").style.display="none";
-				}*/
-			</script>
-			<style>
-				@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
-				@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
-			</style>
+		<link rel="stylesheet" href="css/styleV35.css" />
+		<script src="struttura.js"></script>
+		<script src="js/index.js"></script>
+		<link rel="stylesheet" href="js_libraries/spinners/spinner.css" />
+		<script src="js_libraries/spinners/spinner.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+		<style>
+		.logoHeader{display:none}
+		.swal2-title
+			{
+				font-family:'Montserrat',sans-serif;
+				font-size:18px;
+			}
+			.swal2-content
+			{
+				font-family:'Montserrat',sans-serif;
+				font-size:13px;
+			}
+			.swal2-confirm,.swal2-cancel
+			{
+				font-family:'Montserrat',sans-serif;
+				font-size:13px;
+			}
+			.swal2-container
+			{
+				z-index: 98;
+			}
+		</style>
 	</head>
-	<body>
+	<body onload="getPagineHomepage()">
 		<?php include('struttura.php'); ?>
-		<!--<div id="popup" style="display:none">
-			<b><u id="titoloPopupTutorialTicket"></u></b><br><br>
-			<span id="descrizionePopupTutorialTicket"></span>
-		</div>
-		<script>
-			getPopup('Aggiornamento ticket<i class="fal fa-window-close" style="float:right;font-size:150%;cursor:pointer" onclick="chiudiPopup()"></i>','E stato implementato un sistema di assistenza mediante ticket.<br>Consulta la pagina <a href="ticketAssistenza.php" id="linkHistory">Ticket assistenza</a> per iniziare ad usare i ticket.');
-		</script>-->
-		<div id="container">
-			<div id="content">
+		<div id="container" style="width:1500px">
+			<div id="content" style="width:1500px">
 				<div id="immagineLogo" class="immagineLogo" ></div>
 				<div class="homepageLinkContainer">
-					<div class="homepageLink" data-tooltip="Apri, consulta, modifica o elimina un ticket" onclick="gotopath('ticketAssistenza.php')">
+					<!--<div class="homepageLink" data-tooltip="Apri, consulta, modifica o elimina un ticket" onclick="gotopath('ticketAssistenza.php')">
 						<i class="fal fa-question-circle"></i>
 						<div>Ticket Assistenza</div>
 					</div>
@@ -102,7 +105,7 @@
 					<div class="homepageLink" data-tooltip="Gestisci e rispondi alle richieste che ti riguardano" onclick="gotopath('gestioneRichiesteEfaq.php')">
 						<i class="fal fa-inbox-in"></i>
 						<div>Gestione FAQ & richieste</div>
-					</div>
+					</div>-->
 				</div>
 			</div>
 		</div>

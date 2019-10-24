@@ -7,8 +7,10 @@
     $pagine_preferite=[];
     $sezioni=[];
 
-    $qPreferiti="SELECT dbo.pagine_preferite_utenti.id_pagina_preferita_utente, dbo.pagine_preferite_utenti.utente, dbo.elenco_pagine.id_pagina, dbo.elenco_pagine.pagina, dbo.elenco_pagine.nomePagina, dbo.elenco_pagine.applicazione, dbo.elenco_pagine.icona
-                FROM dbo.pagine_preferite_utenti INNER JOIN dbo.elenco_pagine ON dbo.pagine_preferite_utenti.pagina = dbo.elenco_pagine.id_pagina
+    $qPreferiti="SELECT dbo.pagine_preferite_utenti.id_pagina_preferita_utente, dbo.pagine_preferite_utenti.utente, dbo.elenco_pagine.id_pagina, dbo.elenco_pagine.pagina, dbo.elenco_pagine.nomePagina, dbo.elenco_pagine.applicazione, 
+                dbo.elenco_pagine.icona, dbo.elenco_pagine.descrizione AS descrizionePagina
+                FROM dbo.pagine_preferite_utenti INNER JOIN
+                dbo.elenco_pagine ON dbo.pagine_preferite_utenti.pagina = dbo.elenco_pagine.id_pagina
                 WHERE (dbo.pagine_preferite_utenti.utente = ".$_SESSION['id_utente'].") AND (dbo.elenco_pagine.applicazione = 'Oasis')";
     $rPreferiti=sqlsrv_query($conn,$qPreferiti);
     if($rPreferiti==FALSE)
@@ -22,12 +24,14 @@
             $id_pagina=$rowPreferiti['id_pagina'];
             $pagina=$rowPreferiti['pagina'];
             $nomePagina=$rowPreferiti['nomePagina'];
+            $descrizionePagina=$rowPreferiti['descrizionePagina'];
             $icona=$rowPreferiti['icona'];
             $id_pagina_preferita_utente=$rowPreferiti['id_pagina_preferita_utente'];
 
             $obj_pagina['id_pagina']=$id_pagina;
             $obj_pagina['pagina']=$pagina;
             $obj_pagina['nomePagina']=$nomePagina;
+            $obj_pagina['descrizionePagina']=$descrizionePagina;
             $obj_pagina['icona']=$icona;
             $obj_pagina['id_pagina_preferita_utente']=$id_pagina_preferita_utente;
 
@@ -68,11 +72,13 @@
                         $id_pagina=$rowPagine['id_pagina'];
                         $pagina=$rowPagine['pagina'];
                         $nomePagina=$rowPagine['nomePagina'];
+                        $descrizionePagina=$rowPagine['descrizione'];
                         $icona=$rowPagine['icona'];
 
                         $obj_pagina['id_pagina']=$id_pagina;
                         $obj_pagina['pagina']=$pagina;
                         $obj_pagina['nomePagina']=$nomePagina;
+                        $obj_pagina['descrizionePagina']=$descrizionePagina;
                         $obj_pagina['icona']=$icona;
 
                         array_push($pagine_sezioni,$obj_pagina);

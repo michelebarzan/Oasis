@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<title><?php echo $pageName; ?></title>
-		<link rel="stylesheet" href="css/styleV34.css" />
+		<link rel="stylesheet" href="css/styleV35.css" />
 		<script src="struttura.js"></script>
 		<script src="js/richiesteEfaq.js"></script>
 		<link rel="stylesheet" href="css/richiesteEfaqV3.css" />
@@ -98,7 +98,7 @@
 							</select>
 						</div>
 						<div class="absoluteActionBarElement">
-							<div style="float:left;display:block">Macrocategoria</div> 
+							<div style="float:left;display:block">Area di competenza</div> 
 							<select id="selectFiltraMacrocategoriaLeTueRichieste" style="margin-left:5px;width:80px" onchange="if(view=='richieste_utente'){getRichiesteUtente()}else{getTutteRichieste()}">
 								<option value="*">Tutte</option>
 								<?php
