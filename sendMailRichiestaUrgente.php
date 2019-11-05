@@ -28,7 +28,7 @@
             {
                 $mail=$row3["mail"];
                 if($mail!="nomail")
-                    echo shell_exec('C:\cmail\cmail.exe -host:noreply@oasisgroup.it:Serglo123@smtp.office365.com -to:'.$mail.' -from:noreply@oasisgroup.it "-subject:Richiesta urgente di '.$_SESSION["Username"].', codice: '.$id_richiesta.'" "-body:Oggetto richiesta: '.$oggetto.'" 2>&1');
+                    echo shell_exec('C:\cmail\cmail.exe -host:noreply2@oasisgroup.it:Serglo1234@smtp.office365.com:587 -starttls -to:'.$mail.' -from:noreply2@oasisgroup.it "-subject:Richiesta urgente di '.$_SESSION["Username"].', codice: '.$id_richiesta.'" "-body:Oggetto richiesta: '.$oggetto.'" 2>&1');
             }
         }
         else
