@@ -22,7 +22,6 @@
 		<script src="js/interventiDiManutenzione.js"></script>
 		<link rel="stylesheet" href="css/interventiDiManutenzione.css" />
 		<script src="js_libraries/jquery.table2excel.js"></script>
-		
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
 		<style>
 			.swal2-title
@@ -63,6 +62,8 @@
 		</div>
 		<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="js_libraries/selectize/selectize.min.js"></script>
+		<link rel="stylesheet" href="js_libraries/selectize/selectize.css" />
 	</body>
 </html>
 

@@ -6,7 +6,7 @@ include "connessione.php";
 
 $fornitori=[];
 
-$query2="SELECT * FROM anagrafica_fornitori ORDER BY nome_fornitore";	
+$query2="SELECT * FROM anagrafica_fornitori";	
 $result2=sqlsrv_query($conn,$query2);
 if($result2==TRUE)
 {

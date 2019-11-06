@@ -38,6 +38,7 @@
 
         var inputContainer=document.createElement("div");
         inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+        inputContainer.setAttribute("id","formNuovoInterventoInputContainerTipologia");
 
         var formInputLabel=document.createElement("div");
         formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
@@ -47,39 +48,25 @@
 
         var formInput=document.createElement("select");
         formInput.setAttribute("class","formNuovoInterventoInput");
-        formInput.setAttribute("id","formNuovoInterventotipo");
+        formInput.setAttribute("id","formNuovoInterventotipologia");
+        formInput.setAttribute("onchange","checkNuovaTipologiaIntervento(this)");
 
-        var tipologieInterventi=[
-            {
-                value:"manutenzione_automezzi",
-                label:"Manutenzione automezzi"
-            },
-            {
-                value:"manutenzione_caldaie",
-                label:"Manutenzione caldaie"
-            },
-            {
-                value:"manutenzione_macchinari",
-                label:"Manutenzione macchinari"
-            },
-            {
-                value:"idraulica",
-                label:"Idraulica"
-            },
-            {
-                value:"altro",
-                label:"Altro"
-            }
-        ];
+        var tipologieInterventi=await getTipologieInterventi();
 
         tipologieInterventi.forEach(function(tipo)
         {
             var formInputOption=document.createElement("option");
-            formInputOption.setAttribute("value",tipo["value"]);
+            formInputOption.setAttribute("value",tipo["id_tipologia"]);
             formInputOption.innerHTML=tipo["label"];
 
             formInput.appendChild(formInputOption);
-        })
+        });
+
+        var formInputOption=document.createElement("option");
+        formInputOption.setAttribute("value","new");
+        formInputOption.innerHTML="Aggiungi tipologia";
+
+        formInput.appendChild(formInputOption);
 
         inputContainer.appendChild(formInput);
 
@@ -99,8 +86,14 @@
         inputContainer.appendChild(formInputLabel);
 
         var formInput=document.createElement("select");
-        formInput.setAttribute("class","formNuovoInterventoInput");
+        //formInput.setAttribute("class","formNuovoInterventoInput");
         formInput.setAttribute("id","formNuovoInterventofornitore");
+
+        /*var formInputOption=document.createElement("option");
+        formInputOption.setAttribute("value","NULL");
+        formInputOption.innerHTML="Nessuno";
+
+        formInput.appendChild(formInputOption);*/
 
         var fornitori=await getFornitori();
 
@@ -108,10 +101,183 @@
         {
             var formInputOption=document.createElement("option");
             formInputOption.setAttribute("value",fornitore["codice_fornitore"]);
+            if(fornitore["codice_fornitore"]=="NESSUNO")
+                formInputOption.setAttribute("selected","selected");
             formInputOption.innerHTML=fornitore["nome_fornitore"];
 
             formInput.appendChild(formInputOption);
         })
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //TARGA/N. DI SERIE----------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Targa/N. di serie";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("textarea");
+        formInput.setAttribute("class","formNuovoInterventoInput");
+        formInput.setAttribute("id","formNuovoInterventotargandiserie");
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //UTENTE TRATTATIVA----------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Utente trattativa";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("select");
+        formInput.setAttribute("class","formNuovoInterventoInput");
+        formInput.setAttribute("id","formNuovoInterventoutentetrattativa");
+
+        var formInputOption=document.createElement("option");
+        formInputOption.setAttribute("value","NULL");
+        formInputOption.innerHTML="Nessuno";
+
+        formInput.appendChild(formInputOption);
+
+        var utenti=await getArrayUtenti();
+
+        utenti.forEach(function(utente)
+        {
+            var formInputOption=document.createElement("option");
+            formInputOption.setAttribute("value",utente["id_utente"]);
+            formInputOption.innerHTML=utente["username"];
+
+            formInput.appendChild(formInputOption);
+        })
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //IMPORTO PREVISTO-----------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Importo previsto";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("textarea");
+        formInput.setAttribute("class","formNuovoInterventoInput");
+        formInput.setAttribute("id","formNuovoInterventoimportoprevisto");
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //CHIUSO---------------------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Chiuso";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("input");
+        formInput.setAttribute("type","checkbox");
+        formInput.setAttribute("id","formNuovoInterventochiuso");
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //FATTURATO------------------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Fatturato";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("input");
+        formInput.setAttribute("type","checkbox");
+        formInput.setAttribute("id","formNuovoInterventofatturato");
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //ORDINARIO------------------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Ordinario";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("input");
+        formInput.setAttribute("type","radio");
+        formInput.setAttribute("value","ordinario");
+        formInput.setAttribute("checked","checked");
+        formInput.setAttribute("name","straordinarioordinario");
+        formInput.setAttribute("id","formNuovoInterventoordinario");
+        formInput.setAttribute("class","formNuovoInterventostraordinarioordinario");
+
+        inputContainer.appendChild(formInput);
+
+        fieldsContainer.appendChild(inputContainer);
+
+        //---------------------------------------------------------------------------------------
+
+        //STRAORDINARIO--------------------------------------------------------------------------
+
+        var inputContainer=document.createElement("div");
+        inputContainer.setAttribute("class","formNuovoInterventoInputContainer");
+
+        var formInputLabel=document.createElement("div");
+        formInputLabel.setAttribute("class","formNuovoInterventoInputLabel");
+        formInputLabel.innerHTML="Straordinario";
+
+        inputContainer.appendChild(formInputLabel);
+
+        var formInput=document.createElement("input");
+        formInput.setAttribute("type","radio");
+        formInput.setAttribute("value","straordinario");
+        formInput.setAttribute("name","straordinarioordinario");
+        formInput.setAttribute("id","formNuovoInterventostraordinario");
+        formInput.setAttribute("class","formNuovoInterventostraordinarioordinario");
 
         inputContainer.appendChild(formInput);
 
@@ -273,8 +439,135 @@
                         $('.ms-drop').css({"text-align":"left"});
                         $('.ms-drop').find("label").css({"height":"25px"});
                         $('.ms-parent').hide();
+
+                        $('#formNuovoInterventofornitore').selectize({
+                            create: false,
+                            sortField: 'text'
+                        });
+                        $('.selectize-control').css
+                        ({
+                            "width": "calc(100% - 190px)",
+                            "float": "left",
+                            "display": "block",
+                            "height": "30px",
+                            "margin-left": "20px"
+                        });
+                        $('.selectize-input').css
+                        ({
+                            "padding": "0",
+                            "height": "30px",
+                            "line-height": "30px",
+                            "border": "1px solid #aaa",
+                            "border-radius": "2px",
+                            "text-align": "left",
+                            "padding-left": "8px"
+                        });
+                        $('.selectize-dropdown').css
+                        ({
+                            "text-align": "left"
+                        });
                     }
         });
+    }
+    function checkNuovaTipologiaIntervento(select)
+    {
+        var value=select.value;
+        if(value=="new")
+        {
+            select.style.display="none";
+            document.getElementById("nuovoInterventoConfirmButton").disabled =true;
+
+            var nuovaTipologiaContainer=document.createElement("div");
+            nuovaTipologiaContainer.setAttribute("id","formNuovoInterventoNuovaTipologiaContainer");
+
+            var inputNomeNuovaTipologia=document.createElement("textarea");
+            inputNomeNuovaTipologia.setAttribute("class","formNuovoInterventoInput");
+            inputNomeNuovaTipologia.setAttribute("style","width:calc(100% - 150px);margin-left:0px;resize:none");
+            inputNomeNuovaTipologia.setAttribute("id","formNuovoInterventoInputNomeNuovaTipologia");
+            inputNomeNuovaTipologia.setAttribute("placeholder","Nome nuova tipologia...");
+
+            nuovaTipologiaContainer.appendChild(inputNomeNuovaTipologia);
+            
+            var buttonInserisciNuovaTipologia=document.createElement("button");
+            buttonInserisciNuovaTipologia.setAttribute("onclick","inserisciNuovaTipologia()");
+            buttonInserisciNuovaTipologia.setAttribute("class","formNuovoInterventoButtonNuovaTipologia");
+            buttonInserisciNuovaTipologia.setAttribute("style","background-color:#2196F3");
+            buttonInserisciNuovaTipologia.setAttribute("type","button");
+            buttonInserisciNuovaTipologia.innerHTML='Inserisci <i style="margin-left:10px;" class="fad fa-plus"></i>';
+
+            nuovaTipologiaContainer.appendChild(buttonInserisciNuovaTipologia);
+
+            var inputDescrizioneNuovaTipologia=document.createElement("textarea");
+            inputDescrizioneNuovaTipologia.setAttribute("class","formNuovoInterventoInput");
+            inputDescrizioneNuovaTipologia.setAttribute("style","width:calc(100% - 150px);margin-left:0px;margin-top:10px;resize:none");
+            inputDescrizioneNuovaTipologia.setAttribute("id","formNuovoInterventoInputDescrizioneNuovaTipologia");
+            inputDescrizioneNuovaTipologia.setAttribute("placeholder","Descrizione nuova tipologia...");
+
+            nuovaTipologiaContainer.appendChild(inputDescrizioneNuovaTipologia);
+
+            var buttonAnnullaNuovaTipologia=document.createElement("button");
+            buttonAnnullaNuovaTipologia.setAttribute("onclick","annullaNuovaTipologia()");
+            buttonAnnullaNuovaTipologia.setAttribute("class","formNuovoInterventoButtonNuovaTipologia");
+            buttonAnnullaNuovaTipologia.setAttribute("style","background-color:#d43f3a;margin-top:10px;");
+            buttonAnnullaNuovaTipologia.setAttribute("type","button");
+            buttonAnnullaNuovaTipologia.innerHTML='Annulla <i style="margin-left:10px;" class="fad fa-undo-alt"></i>';
+
+            nuovaTipologiaContainer.appendChild(buttonAnnullaNuovaTipologia);
+
+            document.getElementById("formNuovoInterventoInputContainerTipologia").appendChild(nuovaTipologiaContainer);
+        }
+    }
+    function inserisciNuovaTipologia()
+    {
+        var tipologia=document.getElementById("formNuovoInterventoInputNomeNuovaTipologia").value;
+        var descrizione=document.getElementById("formNuovoInterventoInputDescrizioneNuovaTipologia").value;
+        if(tipologia!=null && tipologia!='')
+        {
+            $.post("inserisciNuovaTipologiaInterventoDiManutenzione.php",
+            {
+                tipologia,
+                descrizione
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                    {
+                        window.alert("Errore\nSe il problema persiste contatta l' amministratore")
+                        console.log(response);
+                    }
+                    else
+                    {
+                        var id_tipologia=response;
+
+                        var formInputOption=document.createElement("option");
+                        formInputOption.setAttribute("value",id_tipologia);
+                        formInputOption.innerHTML=tipologia;
+
+                        document.getElementById("formNuovoInterventotipologia").appendChild(formInputOption);
+
+                        document.getElementById("formNuovoInterventotipologia").value=id_tipologia;
+
+                        document.getElementById("formNuovoInterventoNuovaTipologiaContainer").remove();
+                        document.getElementById("formNuovoInterventotipologia").style.display="block";
+                        document.getElementById("nuovoInterventoConfirmButton").disabled =false;
+                    }
+                }
+                else
+                    console.log(status);
+            });
+        }
+        else
+        {
+            window.alert("Inserisci un nome per la categoria valido");
+        }
+    }
+    function annullaNuovaTipologia()
+    {
+        document.getElementById("formNuovoInterventoNuovaTipologiaContainer").remove();
+        document.getElementById("formNuovoInterventotipologia").style.display="block";
+        document.getElementById("nuovoInterventoConfirmButton").disabled =false;
     }
     function getAllegatoPreventivo(input)
     {
@@ -297,6 +590,38 @@
     function rimuoviAllegatoPreventivo()
     {
         document.getElementById("inputAllegaPreventivo").value='';
+    }
+    function getArrayUtenti()
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getArrayUtenti.php",
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    resolve(JSON.parse(response));
+                }
+                else
+                    reject({status});
+            });
+        });
+    }
+    function getTipologieInterventi()
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getTipologieInterventiDiManutenzione.php",
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    resolve(JSON.parse(response));
+                }
+                else
+                    reject({status});
+            });
+        });
     }
     function getFornitori()
     {
@@ -335,8 +660,15 @@
         event.preventDefault();
 
         var titolo=document.getElementById("formNuovoInterventotitolo").value;
-        var tipo=document.getElementById("formNuovoInterventotipo").value;
+        var tipologia=document.getElementById("formNuovoInterventotipologia").value;
         var fornitore=document.getElementById("formNuovoInterventofornitore").value;
+        var targa_n_di_serie=document.getElementById("formNuovoInterventotargandiserie").value;
+        var utente_trattativa=document.getElementById("formNuovoInterventoutentetrattativa").value;
+        var importo_previsto=document.getElementById("formNuovoInterventoimportoprevisto").value;
+        var chiuso=document.getElementById("formNuovoInterventochiuso").checked.toString();
+        var fatturato=document.getElementById("formNuovoInterventofatturato").checked.toString();
+        var ordinario=document.getElementById("formNuovoInterventoordinario").checked.toString();
+        var straordinario=document.getElementById("formNuovoInterventostraordinario").checked.toString();
         if(document.getElementById("formNuovoInterventocheckboxinviomail").checked)
         {
             var utentiInvioMail=$('#formNuovoInterventoinviomail').multipleSelect('getSelects');
@@ -348,18 +680,32 @@
         var note=document.getElementById("formNuovoInterventonote").value;
 
         /*console.log(titolo);
-        console.log(tipo);
+        console.log(tipologia);
         console.log(fornitore);
         console.log(utentiInvioMail);
         console.log(allegato);
-        console.log(note);*/
+        console.log(note);
+        console.log(targa_n_di_serie);
+        console.log(utente_trattativa);
+        console.log(importo_previsto);
+        console.log(chiuso);
+        console.log(fatturato);
+        console.log(ordinario);
+        console.log(straordinario);*/
 
         $.post("inserisciNuovoInterventoDiManutenzione.php",
         {
             titolo,
-            tipo,
+            tipologia,
             fornitore,
-            note
+            note,
+            targa_n_di_serie,
+            utente_trattativa,
+            importo_previsto,
+            chiuso,
+            fatturato,
+            ordinario,
+            straordinario
         },
         function(response, status)
         {
@@ -437,19 +783,20 @@
     }
     function getInterventiDiManutenzione()
     {
-        getTable("interventi_di_manutenzione","data","DESC");
+        getTable("interventi_di_manutenzione_view","data","DESC");
     }
     function getTable(table,orderBy,orderType)
     {
         getEditableTable
         ({
             table,
+            primaryKey:"id_intervento",
             editable: true,
             container:'interventiDiManutenzioneContainer',
-            noFilterColumns:['note','data'],
-            readOnlyColumns: ["id_intervento","data","utente","fornitore","tipo"],
-            noInsertColumns: ["id_intervento","data","utente","fornitore","tipo"],
-            foreignKeys:[['utente','utenti','id_utente','username'],['fornitore','anagrafica_fornitori','codice_fornitore','nome_fornitore']],
+            noFilterColumns:['note','data','utente_trattativa'],
+            readOnlyColumns: ["id_intervento","data","utente","fornitore","tipo","utente_trattativa","chiuso","fatturato","ordinario","straordinario","tipologia"],
+            noInsertColumns: ["id_intervento","data","utente","fornitore","tipo","utente_trattativa","chiuso","fatturato","ordinario","straordinario","tipologia"],
+            foreignKeys:[['tipologia','tipologie_interventi_di_manutenzione','id_tipologia','label'],['utente','utenti','id_utente','username'],['fornitore','anagrafica_fornitori','codice_fornitore','nome_fornitore'],['utente_trattativa','utenti','id_utente','username']],
             orderBy:orderBy,
             orderType:orderType
         });
@@ -463,23 +810,27 @@
         var row = table.rows[0];
         var th=document.createElement("th");
 
-        var buttonCell=table.rows[0].cells[14];
-        table.rows[0].cells[14].remove();
+        var headerColNum=row.cells.length-1;
+        var buttonCell=table.rows[0].cells[headerColNum];
+        table.rows[0].cells[headerColNum].remove();
 
         th.innerHTML="Preventivo";
         row.appendChild(th);
 
         row.appendChild(buttonCell);
 
+        var bodyColNum=table.rows[1].cells.length-1;
+
         for (var i = 1, row; row = table.rows[i]; i++)
         {
             var id_intervento=row.cells[0].innerText;
 
-            var buttonCell=row.cells[7];
-            row.cells[7].remove();
+            var buttonCell=row.cells[bodyColNum];
+            row.cells[bodyColNum].remove();
 
             var td=document.createElement("td");
             td.setAttribute("style","text-align:left");
+            td.setAttribute("added","true");
 
             var fileName=await getFileNameIntervento(id_intervento);
 
@@ -490,13 +841,15 @@
                 linkPdf.setAttribute("target","blank");
                 linkPdf.setAttribute("style","text-decoration:none");
                 linkPdf.setAttribute("class","linkPdfEditableTable");
-                linkPdf.setAttribute("title","Link al PDF");
+                linkPdf.setAttribute("title","Link al PDF ("+fileName+")");
                 var pdfIcon=document.createElement("i");
                 pdfIcon.setAttribute("class","fad fa-file-pdf iconPdfEditableTable");
                 linkPdf.appendChild(pdfIcon);
-                linkPdf.innerHTML+="<span style='margin-left:10px;color:gray;font-size:10px;'>"+fileName+"</span>";
+                //linkPdf.innerHTML+="<span style='margin-left:10px;color:gray;font-size:10px;'>"+fileName+"</span>";
                 td.appendChild(linkPdf);
             }
+            else
+                td.innerHTML="NO";
             
             row.appendChild(td);
 

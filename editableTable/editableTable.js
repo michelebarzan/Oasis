@@ -232,28 +232,32 @@ function setRowEditable(primaryKey,index,table,primaryKeyValue)
 	{
 		var colName=editableTableHeaders[j];
 		var colValue=col.innerHTML;
-		rowCells.push(colValue);
-		if(!readOnlyColumns.includes(colName))
+		var added=col.getAttribute("added");
+		if(added!="true")
 		{
-			if(j<(colNum-1))
+			rowCells.push(colValue);
+			if(!readOnlyColumns.includes(colName))
 			{
-				col.innerHTML="<textarea class='textareaEditEditableTable'>"+colValue+"</textarea>";
-			}
-			else
-			{
-				var oldRowButtons=col.innerHTML;
-				col.innerHTML="";
-				var btnConfirm=document.createElement("i");
-				btnConfirm.setAttribute("class","far fa-save btnConfirmEditableTable");
-				btnConfirm.setAttribute("onclick","confirmUpdate("+index+",'"+table+"','"+oldRowButtons+"','"+primaryKey+"','"+primaryKeyValue+"')");
-				btnConfirm.setAttribute("title","Salva modifiche");
-				var btnCancel=document.createElement("i");
-				btnCancel.setAttribute("class","far fa-undo-alt btnCancelEditableTable");
-				btnCancel.setAttribute("onclick","cancelUpdate("+index+",'"+table+"','"+oldRowButtons+"')");
-				btnCancel.setAttribute("title","Annulla");
-				
-				col.appendChild(btnConfirm);
-				col.appendChild(btnCancel);
+				if(j<(colNum-1))
+				{
+					col.innerHTML="<textarea class='textareaEditEditableTable'>"+colValue+"</textarea>";
+				}
+				else
+				{
+					var oldRowButtons=col.innerHTML;
+					col.innerHTML="";
+					var btnConfirm=document.createElement("i");
+					btnConfirm.setAttribute("class","far fa-save btnConfirmEditableTable");
+					btnConfirm.setAttribute("onclick","confirmUpdate("+index+",'"+table+"','"+oldRowButtons+"','"+primaryKey+"','"+primaryKeyValue+"')");
+					btnConfirm.setAttribute("title","Salva modifiche");
+					var btnCancel=document.createElement("i");
+					btnCancel.setAttribute("class","far fa-undo-alt btnCancelEditableTable");
+					btnCancel.setAttribute("onclick","cancelUpdate("+index+",'"+table+"','"+oldRowButtons+"')");
+					btnCancel.setAttribute("title","Annulla");
+					
+					col.appendChild(btnConfirm);
+					col.appendChild(btnCancel);
+				}
 			}
 		}
 	} 

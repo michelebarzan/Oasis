@@ -4,24 +4,46 @@
     include "connessione.php";
 
     $titolo=str_replace("'","''",$_REQUEST['titolo']);
-    $tipo=$_REQUEST['tipo'];
+    $tipologia=$_REQUEST['tipologia'];
     $fornitore=$_REQUEST['fornitore'];
     $note=str_replace("'","''",$_REQUEST['note']);
 
+    $targa_n_di_serie=str_replace("'","''",$_REQUEST['targa_n_di_serie']);
+    $importo_previsto=str_replace("'","''",$_REQUEST['importo_previsto']);
+    $utente_trattativa=$_REQUEST['utente_trattativa'];
+    $chiuso=$_REQUEST['chiuso'];
+    $fatturato=$_REQUEST['fatturato'];
+    $ordinario=$_REQUEST['ordinario'];
+    $straordinario=$_REQUEST['straordinario'];
+
     $query2="INSERT INTO [dbo].[interventi_di_manutenzione]
             ([titolo]
-            ,[tipo]
+            ,[tipologia]
             ,[fornitore]
             ,[note]
             ,[utente]
-            ,[data])
+            ,[data]
+            ,[targa_n_di_serie]
+            ,[importo_previsto]
+            ,[utente_trattativa]
+            ,[chiuso]
+            ,[fatturato]
+            ,[ordinario]
+            ,[straordinario])
             VALUES
             ('$titolo'
-            ,'$tipo'
+            ,'$tipologia'
             ,'$fornitore'
             ,'$note'
             ,".$_SESSION['id_utente']."
-            ,GETDATE())";
+            ,GETDATE()
+            ,'$targa_n_di_serie'
+            ,'$importo_previsto'
+            ,$utente_trattativa
+            ,'$chiuso'
+            ,'$fatturato'
+            ,'$ordinario'
+            ,'$straordinario')";
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
