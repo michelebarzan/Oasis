@@ -8,6 +8,7 @@
     var risposte=[];
     var searchAnswerInterval;
     var checkStatoInterval;
+    var utentiMacrocategoria=[];
 
     /*getSearchAnswerInterval();
     getCheckStatoInterval();*/
@@ -740,6 +741,7 @@
                 {
                     try{document.getElementById("utentiMacrocategoriaContainer").innerHTML="";}catch(error){}
                     utentiExtra=[];
+                    utentiMacrocategoria=[];
                     
                     if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
                     {
@@ -756,7 +758,7 @@
                     {
                         resolve("ok");
 
-                        var utentiMacrocategoria= JSON.parse(response);
+                        utentiMacrocategoria= JSON.parse(response);
 
                         var inputContainer=document.createElement("div");
                         inputContainer.setAttribute("class","formNuovaRichiestaInputContainer");
@@ -1060,6 +1062,20 @@
             var JSONdata=JSON.stringify(data);
             var JSONutentiExtra=JSON.stringify(utentiExtra);
 
+            var utentiInvioMail=[];
+
+            utentiMacrocategoria.forEach(function(utente)
+            {
+                utentiInvioMail.push(utente["id_utente"]);
+            });
+            utentiExtra.forEach(function(utente)
+            {
+                utentiInvioMail.push(utente);
+            });
+            var JSONutentiInvioMail=JSON.stringify(utentiInvioMail);
+
+            //console.log(utentiInvioMail);
+
             $.post("inserisciNuovaRichiesta.php",
             {
                 JSONdata,
@@ -1086,13 +1102,13 @@
                             var oggettoMail=document.getElementById("formNuovaRichiestaoggetto").value;
                             $.post("sendMailRichiestaUrgente.php",
                             {
-                                JSONutentiExtra,
+                                JSONutentiInvioMail,
                                 oggettoMail
                             },
                             function(response, status)
                             {
                                 if(status=="success")
-                                {
+                                {console.log(response);
                                     if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
                                     {
                                         window.alert("Attenzione! \nLa richiesta è stata inserita, ma non è stato possibile inviare l' email di notifica. Se il problema persiste contatta l' amministratore.\n\nPrendi nota del codice di errore: "+response);

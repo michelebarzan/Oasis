@@ -3,8 +3,10 @@
     include "Session.php";
     include "connessione.php";
 
-    $utentiExtra=json_decode($_REQUEST['JSONutentiExtra']);
+    $utentiInvioMail=json_decode($_REQUEST['JSONutentiInvioMail']);
     $oggetto=$_REQUEST['oggettoMail'];
+
+    set_time_limit(240);
 
     $query2="SELECT MAX(id_richiesta) AS id_richiesta FROM richieste_e_faq WHERE utente_creazione=".$_SESSION['id_utente'];	
     $result2=sqlsrv_query($conn,$query2);
@@ -18,7 +20,9 @@
     else
         die("error1");
 
-    foreach ($utentiExtra as $id_utente)
+    $mail_insert="";
+
+    foreach ($utentiInvioMail as $id_utente)
     {
         $query3="SELECT ISNULL(mail,'nomail') as mail FROM utenti WHERE id_utente=$id_utente";	
         $result3=sqlsrv_query($conn,$query3);
@@ -28,12 +32,31 @@
             {
                 $mail=$row3["mail"];
                 if($mail!="nomail")
-                    echo shell_exec('C:\cmail\cmail.exe -host:noreply2@oasisgroup.it:Serglo1234@smtp.office365.com:587 -starttls -to:'.$mail.' -from:noreply2@oasisgroup.it "-subject:Richiesta urgente di '.$_SESSION["Username"].', codice: '.$id_richiesta.'" "-body:Oggetto richiesta: '.$oggetto.'" 2>&1');
+                {
+                    $mail_insert=$mail_insert.$mail.";";
+                    //echo shell_exec('C:\cmail\cmail.exe -host:noreply2@oasisgroup.it:Serglo1234@smtp.office365.com:587 -starttls -to:'.$mail.' -from:noreply2@oasisgroup.it "-subject:Richiesta urgente di '.$_SESSION["Username"].', codice: '.$id_richiesta.'" "-body:Oggetto richiesta: '.$oggetto.'" 2>&1');
+                }
             }
         }
         else
         {
-            echo "error";
+            die("error2");
         }
     }
+    $mail_insert = rtrim($mail_insert, ";");
+    $query5="DELETE FROM [dbo].[InvioMail]";	
+    $result5=sqlsrv_query($conn,$query5);
+    if($result5==TRUE)
+    {
+        $query4="INSERT INTO [dbo].[InvioMail] ([Mail1],[Subject],[Body]) VALUES ('$mail_insert','Richiesta urgente di ".$_SESSION['Username'].", codice: $id_richiesta','Oggetto richiesta: $oggetto')";	
+        $result4=sqlsrv_query($conn,$query4);
+        if($result4==TRUE)
+        {
+            echo shell_exec('"C:\\Oasis_mail\\inviooutlook.accdb" 2>&1');
+        }
+        else
+            die("error4");
+    }
+    else
+        die("error5");
 ?>
