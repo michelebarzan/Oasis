@@ -22,7 +22,8 @@
         $result4=sqlsrv_query($conn,$query4);
         if($result4==TRUE)
         {
-            echo shell_exec('"C:\\Oasis_mail\\inviooutlook.accdb" 2>&1');
+            exec('"C:\Oasis_mail\invio.bat"');
+			die("ok");
         }
         else
             die("error4");

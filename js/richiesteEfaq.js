@@ -1108,8 +1108,8 @@
                             function(response, status)
                             {
                                 if(status=="success")
-                                {console.log(response);
-                                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                                {
+                                    if(response.indexOf("queryerror")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
                                     {
                                         window.alert("Attenzione! \nLa richiesta è stata inserita, ma non è stato possibile inviare l' email di notifica. Se il problema persiste contatta l' amministratore.\n\nPrendi nota del codice di errore: "+response);
                                         console.log(response);
