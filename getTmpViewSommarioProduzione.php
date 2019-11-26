@@ -32,7 +32,7 @@
 	$result2=sqlsrv_query($conn,$query2);
 	if($result2==FALSE)
 	{
-		die("error");
+		die("error\n\nQuery: ".$query2);
 	}
 	else
 	{
