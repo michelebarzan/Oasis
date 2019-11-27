@@ -17,8 +17,19 @@
 		<link rel="stylesheet" href="css/styleV35.css" />
 		<script src="struttura.js"></script>
 		<script>
-			function getTable(table,orderBy,orderType)
+			async function getTable(table,orderBy,orderType)
 			{
+				var responseCheckOrdiniChiusi = await checkOrdiniChiusi();
+				if(responseCheckOrdiniChiusi.toLowerCase().indexOf("error")>-1 || responseCheckOrdiniChiusi.toLowerCase().indexOf("notice")>-1 || responseCheckOrdiniChiusi.toLowerCase().indexOf("warning")>-1)
+				{
+					Swal.fire
+					({
+						type: 'warning',
+						title: 'Impossibile verificare la chiusura degli ordini',
+						text: "Puoi continuare a lavorare, ma potresti trovare alcuni ordini che in realtà sono stati chiusi. Se il problema persiste contatta l' amministratore"
+					});
+					console.log(responseCheckOrdiniChiusi);
+				}
 				if(table=="riepilogo_registrazioni_ricevimento_merci")
 				{
 					getEditableTable
@@ -36,6 +47,22 @@
 			function editableTableLoad()
 			{
 			
+			}
+			function checkOrdiniChiusi()
+			{
+				return new Promise(function (resolve, reject) 
+				{
+					$.post("checkOrdiniChiusi.php",
+					function(response, status)
+					{
+						if(status=="success")
+						{
+							resolve(response);
+						}
+						else
+							reject({status});
+					});
+				});
 			}
 		</script>
 		<style>
