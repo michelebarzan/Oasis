@@ -101,7 +101,7 @@ function getPagineHomepage()
                 homepageSectionContainerHeights.push(homepageSectionContainer.offsetHeight);
             }
 
-            var maxHeight = Math.max.apply(null, homepageSectionContainerHeights);
+            var maxHeight = Math.max.apply(null, homepageSectionContainerHeights)-10;
 
             $(".homepageSectionContainer").height(maxHeight);
         }
