@@ -58,36 +58,41 @@
 			}
 			else
 			{
-				$oldDataCreazione=$row2['start_date_stazione'];
+				//cosi non si blocca ma compaiono stazioni come elementni quindi qualocsa non va. Sarebbe da capire perche start_date_stazione diventa null, e se non si può risolvere rimuovere quell oridne dalla lista
+				if($row2['start_date_stazione']!="")
+				{
+					$oldDataCreazione=$row2['start_date_stazione'];
 
-				$giornoCreazione=explode("/",$oldDataCreazione)[0];
-				$meseCreazione=explode("/",$oldDataCreazione)[1];
-				$annoCreazione=explode("/",$oldDataCreazione)[2];
+					$giornoCreazione=explode("/",$oldDataCreazione)[0];
+					$meseCreazione=explode("/",$oldDataCreazione)[1];
+					$annoCreazione=explode("/",$oldDataCreazione)[2];
 
-				$newDataCreazione=$annoCreazione."-".$meseCreazione."-".$giornoCreazione;
+					$newDataCreazione=$annoCreazione."-".$meseCreazione."-".$giornoCreazione;
 
-				$oldDataScadenza=$row2['end_date_stazione'];
+					$oldDataScadenza=$row2['end_date_stazione'];
 
-				$giornoScadenza=explode("/",$oldDataScadenza)[0];
-				$meseScadenza=explode("/",$oldDataScadenza)[1];
-				$annoScadenza=explode("/",$oldDataScadenza)[2];
+					$giornoScadenza=explode("/",$oldDataScadenza)[0];
+					$meseScadenza=explode("/",$oldDataScadenza)[1];
+					$annoScadenza=explode("/",$oldDataScadenza)[2];
 
-				$newDataScadenza=$annoScadenza."-".$meseScadenza."-".$giornoScadenza;
+					$newDataScadenza=$annoScadenza."-".$meseScadenza."-".$giornoScadenza;
+					
+					$ordine["start_date"]=$newDataCreazione;
+					$ordine["end_date"]=$newDataScadenza;
+
+					$ordine["parent"]=$row2['parent'];
+
+					//LINKS
+					$link["id"]=$i;
+					$link["source"]=$row2['parent'];
+					$link["target"]=$row2['id'];
+					$link["type"]=1;
+
+					array_push($links,$link);
+
+					$i++;
+				}
 				
-				$ordine["start_date"]=$newDataCreazione;
-				$ordine["end_date"]=$newDataScadenza;
-
-				$ordine["parent"]=$row2['parent'];
-
-				//LINKS
-				$link["id"]=$i;
-				$link["source"]=$row2['parent'];
-				$link["target"]=$row2['id'];
-				$link["type"]=1;
-
-				array_push($links,$link);
-
-				$i++;
 			}
             $ordine["progress"]=0;
 			$ordine["open"]=true;

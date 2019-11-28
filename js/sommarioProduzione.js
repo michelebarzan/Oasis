@@ -5,6 +5,7 @@
 
     async function getTable(vuoto,orderBy,orderType)
     {
+        document.getElementById("totaliContainer").innerHTML="";
         document.getElementById("containerSommarioProduzione").style.display="block";
         newCircleSpinner("Caricamento in corso...");
         settimana=document.getElementById('selectSalvataggioSommarioProduzione').value;
@@ -103,6 +104,8 @@
                     col.style.color=color;
                 }
             }
+            //aggiungi totali
+            getTotali();
         }
         $.post("dropTmpViewSommarioProduzione.php",{viewName});
     }
@@ -256,4 +259,37 @@
             //triggering the function
             downloadLink.click();
         }
+    }
+    function getTotali()
+    {
+        var settimana=document.getElementById('selectSalvataggioSommarioProduzione').value;
+        var stazione=document.getElementById('selectStazioneSommarioProduzione').value;
+
+        $.get("getTotaliSommarioProduzione.php",
+        {
+            settimana,
+            stazione
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                console.log(response);
+                if(stazione=="CAB_LAC" || stazione=="CAB_ACR")
+                {
+                    var um="mq";
+                }
+                if(stazione=="PTO_PTO")
+                {
+                    var um="pezzi";
+                }
+                if(stazione=="MNT_MAST" || stazione=="MNT_ACA" || stazione=="MNT_HOME" || stazione=="MNT_LUT")
+                {
+                    var um="pezzi";
+                }
+                document.getElementById("totaliContainer").innerHTML="<b><u>Totale</u>: </b>"+response+" "+um;
+            }
+            else
+                console.log(status);
+        });
     }

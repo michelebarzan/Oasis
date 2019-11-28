@@ -58,7 +58,7 @@
 			}
 		</style>
 	</head>
-	<body onload="getTable()">
+	<body onload="getTable();">
 		<?php include('struttura.php'); ?>
 		<div id="container">
 			<div id="content">
@@ -101,6 +101,7 @@
 					</div>
 				</div>
 				<div id='chartContainer'></div>
+				<div id='totaliContainer' style="float:left;display:block;text-align:left;font-family:'Montserrat',sans-serif;font-size:12px;margin-top:20px;margin-bottom:20px"></div>
 				<div id="containerSommarioProduzione"></div>
 			</div>
 		</div>

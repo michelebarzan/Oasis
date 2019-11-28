@@ -66,7 +66,7 @@
             {
                 if(status=="success")
                 {
-                    //console.log(response);
+                    console.log(response);
                     var responseArray = JSON.parse(response);
                     var data=JSON.parse(responseArray[0]);
                     var links=JSON.parse(responseArray[1]);
