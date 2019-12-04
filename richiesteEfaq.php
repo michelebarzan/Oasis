@@ -44,6 +44,15 @@
 				font-family:'Montserrat',sans-serif;
 				font-size:13px;
 			}
+			#bootstrap-tour-btnGestioneRichieste
+			{
+				text-decoration:none;
+				color:black;
+			}
+			#bootstrap-tour-btnGestioneRichieste:visited
+			{
+				color:black;
+			}
 		</style>
 	</head>
 	<body onload="checkTutorial()">
@@ -61,6 +70,10 @@
                 Tutte le richieste
                 <i class="fad fa-database" style="margin-left:5px"></i>
 			</button>
+			<a class="absoluteActionBarButton" id="bootstrap-tour-btnGestioneRichieste" href="gestioneRichiesteEfaq.php">
+                Gestione richieste
+                <i class="fad fa-inbox-in" style="margin-left:5px"></i>
+			</a>
 			<button class="absoluteActionBarButton" id="bootstrap-tour-btnTutorial" title="Tutorial" onclick="startTutorial()">
                 <i class="far fa-question" ></i>
 			</button>
@@ -175,4 +188,3 @@
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	</body>
 </html>
-

@@ -13,6 +13,27 @@
     /*getSearchAnswerInterval();
     getCheckStatoInterval();*/
     
+    function textareaNumOfLines(textArea, lineHeight) {
+        var h0 = textArea.style.height;
+        textArea.style.height = 'auto';
+        var h1 = textArea.scrollHeight;
+        textArea.style.height = h0;
+        return Math.ceil(h1 / lineHeight);
+    }
+    function resizeTextareaRichiesta(id_richiesta)
+    {
+        var textareaDescrizione=document.getElementById("leTueRichiesteInputdescrizione"+id_richiesta);
+        var lineNum=textareaNumOfLines(textareaDescrizione, "25");
+        var style=textareaDescrizione.getAttribute("style");
+        var height=lineNum*25;
+        textareaDescrizione.setAttribute("style","height:"+height+"px;"+style);
+
+        /*var textareaOggetto=document.getElementById("leTueRichiesteInputoggetto"+id_richiesta);
+        var lineNum=textareaNumOfLines(textareaOggetto, "25");
+        var style=textareaOggetto.getAttribute("style");
+        var height=lineNum*25;
+        textareaOggetto.setAttribute("style","height:"+height+"px;"+style)*/
+    }
     function getSearchAnswerInterval()
     {
         //console.log("eccomi,inizio a cercare");
@@ -82,7 +103,7 @@
     }
     function getCheckStatoInterval()
     {
-        console.log("eccomi,inizio a cercare");
+        console.log("Start checking...");
         checkStatoInterval=setInterval(async function()
         {
             var richiesteInterval=[];
@@ -100,7 +121,7 @@
             }
             if(richiesteInterval.length>0)
             {
-                console.log("cerco...");
+                console.log("Checking...");
                 var id_richiesteInterval=[];
                 richiesteInterval.forEach(function(richiestaInterval)
                 {
@@ -1745,7 +1766,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("textarea");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:250px;resize:both");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;width:250px;height:30px;resize:both");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputoggetto"+id_richiesta);
                                 richiesteListItemElementInput.value=oggetto;
@@ -1882,7 +1903,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("textarea");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;resize:vertical;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputdescrizione"+id_richiesta);
                                 richiesteListItemElementInput.value=descrizione;
@@ -1905,7 +1926,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("textarea");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;resize:vertical;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputnote"+id_richiesta);
                                 richiesteListItemElementInput.value=note;
@@ -1928,7 +1949,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("onchange","getColonneMacrocategoriaLeTueRichieste(this.value,"+id_richiesta+")");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputmacrocategoria"+id_richiesta);
@@ -1968,7 +1989,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputcategoria"+id_richiesta);
 
@@ -2315,7 +2336,8 @@
                                     var data_risposta_mese=data_risposta_eng.split("-")[1];
                                     var data_risposta_giorno=data_risposta_eng.split("-")[2];
                                     var data_risposta_ita=data_risposta_giorno+"/"+data_risposta_mese+"/"+data_risposta_anno;
-                                    richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0];
+                                    //richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0];
+                                    richiesteListItemBoxRowTitle.innerHTML="<b style='color:#4C91CB;float:left;display:block'>"+username_risposta+"</b><span style='color:black;float:right;display:block;font-weight:normal'>"+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0]+"</span>";
                                     richiesteListItemBoxRow.appendChild(richiesteListItemBoxRowTitle);
 
                                     /*INIZIO COLONNE----------------------------------------------------------------------------------------------------------------------------------*/
@@ -2324,17 +2346,17 @@
                                     richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
                                     richiesteListItemElementContainer.setAttribute("style","");
 
-                                    var richiesteListItemElementLabel=document.createElement("div");
+                                    /*var richiesteListItemElementLabel=document.createElement("div");
                                     richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                     richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-                                    richiesteListItemElementLabel.innerHTML="Testo";
+                                    richiesteListItemElementLabel.innerHTML="Testo";*/
 
                                     var richiesteListItemElementvalue=document.createElement("div");
                                     richiesteListItemElementvalue.setAttribute("class","richiesteListItemElementvalue");
                                     richiesteListItemElementvalue.setAttribute("style","");
                                     richiesteListItemElementvalue.innerHTML=descrizione;
 
-                                    richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+                                    //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
                                     richiesteListItemElementContainer.appendChild(richiesteListItemElementvalue);
 
                                     richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);
@@ -2344,12 +2366,12 @@
 
                                     var richiesteListItemElementContainer=document.createElement("div");
                                     richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-                                    richiesteListItemElementContainer.setAttribute("style","");
+                                    richiesteListItemElementContainer.setAttribute("style","margin-top:-10px");
 
-                                    var richiesteListItemElementLabel=document.createElement("div");
+                                    /*var richiesteListItemElementLabel=document.createElement("div");
                                     richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                     richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-                                    richiesteListItemElementLabel.innerHTML="Allegati";
+                                    richiesteListItemElementLabel.innerHTML="Allegati";*/
 
                                     var richiesteListItemElementValue=document.createElement("div");
                                     richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
@@ -2427,7 +2449,7 @@
                                         richiesteListItemElementValue.appendChild(richiesteListItemElementValueAllegato);
                                     })
 
-                                    richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+                                    //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
                                     richiesteListItemElementContainer.appendChild(richiesteListItemElementValue);
 
                                     richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);
@@ -2458,6 +2480,7 @@
                             });
 
                             removeCircleSpinner();
+
                             getSearchAnswerInterval();
                             getCheckStatoInterval();
                             if(leTueRichiesteTourAsk)
@@ -2866,7 +2889,8 @@
         
         var richiesteListItemBoxRowTitle=document.createElement("div");
         richiesteListItemBoxRowTitle.setAttribute("class","richiesteListItemBoxRowTitle");
-        richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta;
+        //richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta;
+        richiesteListItemBoxRowTitle.innerHTML="<b style='color:#4C91CB;float:left;display:block'>"+username_risposta+"</b><span style='color:black;float:right;display:block;font-weight:normal'>"+data_risposta+"</span>";
         richiesteListItemBoxRow.appendChild(richiesteListItemBoxRowTitle);
 
         /*INIZIO COLONNE----------------------------------------------------------------------------------------------------------------------------------*/
@@ -2875,17 +2899,17 @@
         richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
         richiesteListItemElementContainer.setAttribute("style","");
 
-        var richiesteListItemElementLabel=document.createElement("div");
+        /*var richiesteListItemElementLabel=document.createElement("div");
         richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
         richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-        richiesteListItemElementLabel.innerHTML="Testo";
+        richiesteListItemElementLabel.innerHTML="Testo";*/
 
         var richiesteListItemElementvalue=document.createElement("div");
         richiesteListItemElementvalue.setAttribute("class","richiesteListItemElementvalue");
         richiesteListItemElementvalue.setAttribute("style","");
         richiesteListItemElementvalue.innerHTML=descrizione;
 
-        richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+        //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
         richiesteListItemElementContainer.appendChild(richiesteListItemElementvalue);
 
         richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);
@@ -2895,12 +2919,12 @@
 
         var richiesteListItemElementContainer=document.createElement("div");
         richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-        richiesteListItemElementContainer.setAttribute("style","");
+        richiesteListItemElementContainer.setAttribute("style","margin-top:-10px");
 
-        var richiesteListItemElementLabel=document.createElement("div");
+        /*var richiesteListItemElementLabel=document.createElement("div");
         richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
         richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-        richiesteListItemElementLabel.innerHTML="Allegati";
+        richiesteListItemElementLabel.innerHTML="Allegati";*/
 
         var richiesteListItemElementValue=document.createElement("div");
         richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
@@ -2978,7 +3002,7 @@
             richiesteListItemElementValue.appendChild(richiesteListItemElementValueAllegato);
         })
 
-        richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+        //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
         richiesteListItemElementContainer.appendChild(richiesteListItemElementValue);
 
         richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);
@@ -3016,9 +3040,12 @@
         $("#richiesteListItemBoxRisposteContainer"+id_richiesta).show("fast","swing");
         setTimeout(function()
         {
+            resizeTextareaRichiesta(id_richiesta);
+
             var height=document.getElementById("richiesteListItemBoxRichiestaContainer"+id_richiesta).offsetHeight+10;
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.maxHeight=height+"px";
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.overflowY="auto";
+
             //$( "[id_richiesta="+id_richiesta+"]" ).resizable();
         }, 500);
     }
@@ -4431,7 +4458,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("textarea");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;resize:vertical;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputdescrizione"+id_richiesta);
                                 richiesteListItemElementInput.value=descrizione;
@@ -4454,7 +4481,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("textarea");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;resize:vertical;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;resize:vertical;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputnote"+id_richiesta);
                                 richiesteListItemElementInput.value=note;
@@ -4477,7 +4504,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("onchange","getColonneMacrocategoriaLeTueRichieste(this.value,"+id_richiesta+")");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputmacrocategoria"+id_richiesta);
@@ -4517,7 +4544,7 @@
 
                                 var richiesteListItemElementInput=document.createElement("select");
                                 richiesteListItemElementInput.setAttribute("class","richiesteListItemElementInput richiesteListItemElementInputEditable"+id_richiesta);
-                                richiesteListItemElementInput.setAttribute("style","line-height:25px;height:30px;width:calc(100% - 150px)");
+                                richiesteListItemElementInput.setAttribute("style","line-height:25px;width:calc(100% - 150px)");
                                 richiesteListItemElementInput.setAttribute("disabled","disabled");
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteInputcategoria"+id_richiesta);
 
@@ -4862,7 +4889,8 @@
                                     var data_risposta_mese=data_risposta_eng.split("-")[1];
                                     var data_risposta_giorno=data_risposta_eng.split("-")[2];
                                     var data_risposta_ita=data_risposta_giorno+"/"+data_risposta_mese+"/"+data_risposta_anno;
-                                    richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0];
+                                    //richiesteListItemBoxRowTitle.innerHTML="Risposta di "+username_risposta+" del "+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0];
+                                    richiesteListItemBoxRowTitle.innerHTML="<b style='color:#4C91CB;float:left;display:block'>"+username_risposta+"</b><span style='color:black;float:right;display:block;font-weight:normal'>"+data_risposta_ita+" "+data_risposta.date.split(" ")[1].split(".")[0]+"</span>";
                                     richiesteListItemBoxRow.appendChild(richiesteListItemBoxRowTitle);
 
                                     /*INIZIO COLONNE----------------------------------------------------------------------------------------------------------------------------------*/
@@ -4871,17 +4899,17 @@
                                     richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
                                     richiesteListItemElementContainer.setAttribute("style","");
 
-                                    var richiesteListItemElementLabel=document.createElement("div");
+                                    /*var richiesteListItemElementLabel=document.createElement("div");
                                     richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                     richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-                                    richiesteListItemElementLabel.innerHTML="Testo";
+                                    richiesteListItemElementLabel.innerHTML="Testo";*/
 
                                     var richiesteListItemElementvalue=document.createElement("div");
                                     richiesteListItemElementvalue.setAttribute("class","richiesteListItemElementvalue");
                                     richiesteListItemElementvalue.setAttribute("style","");
                                     richiesteListItemElementvalue.innerHTML=descrizione;
 
-                                    richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+                                    //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
                                     richiesteListItemElementContainer.appendChild(richiesteListItemElementvalue);
 
                                     richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);
@@ -4891,12 +4919,12 @@
 
                                     var richiesteListItemElementContainer=document.createElement("div");
                                     richiesteListItemElementContainer.setAttribute("class","richiesteListItemElementContainer");
-                                    richiesteListItemElementContainer.setAttribute("style","");
+                                    richiesteListItemElementContainer.setAttribute("style","margin-top:-10px");
 
-                                    var richiesteListItemElementLabel=document.createElement("div");
+                                    /*var richiesteListItemElementLabel=document.createElement("div");
                                     richiesteListItemElementLabel.setAttribute("class","richiesteListItemElementLabel");
                                     richiesteListItemElementLabel.setAttribute("style","height:20px;line-height:20px;margin-bottom:5px");
-                                    richiesteListItemElementLabel.innerHTML="Allegati";
+                                    richiesteListItemElementLabel.innerHTML="Allegati";*/
 
                                     var richiesteListItemElementValue=document.createElement("div");
                                     richiesteListItemElementValue.setAttribute("class","richiesteListItemElementValue");
@@ -4974,7 +5002,7 @@
                                         richiesteListItemElementValue.appendChild(richiesteListItemElementValueAllegato);
                                     })
 
-                                    richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
+                                    //richiesteListItemElementContainer.appendChild(richiesteListItemElementLabel);
                                     richiesteListItemElementContainer.appendChild(richiesteListItemElementValue);
 
                                     richiesteListItemBoxRow.appendChild(richiesteListItemElementContainer);

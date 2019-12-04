@@ -44,6 +44,15 @@
 				font-family:'Montserrat',sans-serif;
 				font-size:13px;
 			}
+			#bootstrap-tour-btnRichiesteEfaq
+			{
+				text-decoration:none;
+				color:black;
+			}
+			#bootstrap-tour-btnRichiesteEfaq:visited
+			{
+				color:black;
+			}
 		</style>
 	</head>
 	<body onload="getRichiesteGestione()">
@@ -63,6 +72,10 @@
 					</div>
 					<button class="absoluteActionBarButton" id="bootstrap-tour-btnFiltri" style="margin-top:5px" onclick="$('#viewFunctionBarRowFiltri').toggle('fast','swing')">Filtri <i style="margin-left:5px;" class="far fa-filter"></i></button>
 					<button class="absoluteActionBarButton" id="btnCollassaEspandiTutteRichieste" style="margin-top:5px;margin-left:10px" onclick="toggleAllRichieste(this)">Espandi tutte <i style="margin-left:5px;" class="fas fa-caret-down"></i></button>
+					<a class="absoluteActionBarButton" id="bootstrap-tour-btnRichiesteEfaq" style="margin-top:5px;margin-left:10px" href="richiesteEfaq.php">
+						FAQ & richieste
+						<i class="fal fa-question-square" style="margin-left:5px"></i>
+					</a>
 					<button class="absoluteActionBarButton" style="margin-top:5px;margin-left:10px" id="bootstrap-tour-btnTutorial" title="Tutorial" onclick="startTutorial()">
 						<i class="far fa-question" ></i>
 					</button>

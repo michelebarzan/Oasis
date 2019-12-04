@@ -670,7 +670,7 @@ textarea.formNuovaRichiestaInput
 .richiesteListItemBoxRowTitle
 {
     font-weight: bold;
-    color:#4C91CB;
+    /*color:#4C91CB;*/
     width:100%;
     float: left;
     display: block;
@@ -771,10 +771,12 @@ textarea.formNuovaRichiestaInput
 }
 .richiesteListItemElementInput
 {
+    height:auto;
     float: left;
     display: block;
     font-family: 'Montserrat',sans-serif;
     font-size: 12px;
+    min-height: 30px;
     border-radius: 2px;
     background-color: white;
     width:100%;
