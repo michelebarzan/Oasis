@@ -20,6 +20,18 @@
     else
         die("queryerror");
 
+    $query6="SELECT * FROM richieste_e_faq WHERE id_richiesta=$id_richiesta";	
+    $result6=sqlsrv_query($conn,$query6);
+    if($result6==TRUE)
+    {
+        while($row6=sqlsrv_fetch_array($result6))
+        {
+            $id_richiesta=$row6["id_richiesta"];
+        }
+    }
+    else
+        die("queryerror");
+
     $mail_insert="";
 
     foreach ($utentiInvioMail as $id_utente)
@@ -34,7 +46,6 @@
                 if($mail!="nomail")
                 {
                     $mail_insert=$mail_insert.$mail.";";
-                    //echo shell_exec('C:\cmail\cmail.exe -host:noreply2@oasisgroup.it:Serglo1234@smtp.office365.com:587 -starttls -to:'.$mail.' -from:noreply2@oasisgroup.it "-subject:Richiesta urgente di '.$_SESSION["Username"].', codice: '.$id_richiesta.'" "-body:Oggetto richiesta: '.$oggetto.'" 2>&1');
                 }
             }
         }
@@ -48,11 +59,12 @@
     $result5=sqlsrv_query($conn,$query5);
     if($result5==TRUE)
     {
-        $query4="INSERT INTO [dbo].[InvioMail] ([Mail1],[Subject],[Body]) VALUES ('$mail_insert','Richiesta urgente di ".$_SESSION['Username'].", codice: $id_richiesta','Oggetto richiesta: $oggetto')";	
+        $body="Oggetto richiesta: $oggetto";
+        $query4="INSERT INTO [dbo].[InvioMail] ([Mail1],[Subject],[Body]) VALUES ('$mail_insert','Richiesta urgente di ".$_SESSION['Username'].", codice: $id_richiesta','$body')";	
         $result4=sqlsrv_query($conn,$query4);
         if($result4==TRUE)
         {
-			exec('"C:\Oasis_mail\invio.bat"');
+			//exec('"C:\Oasis_mail\invio.bat"');
 			die("ok");
         }
         else

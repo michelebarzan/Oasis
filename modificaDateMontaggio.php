@@ -63,6 +63,13 @@
 					
 			}
 			
+			if(strlen($weekPto)==5)
+				$weekPto=substr($weekPto,  0,4)."0".substr($weekPto, -1);
+			if(strlen($weekVer)==5)
+				$weekVer=substr($weekVer, 0, 4)."0".substr($weekVer, -1);
+			if(strlen($weekMon)==5)
+				$weekMon=substr($weekMon, 0,4)."0".substr($weekMon, -1);
+			
 			$UDF1 = getData1($conn,$weekPto,$stmt2)->format('d/m/Y');
 			$UDF2 = getData2($conn,$weekVer,$stmt3)->format('d/m/Y');
 			$UDF3 = getData3($conn,$weekMon,$stmt4)->format('d/m/Y');		
