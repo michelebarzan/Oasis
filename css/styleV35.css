@@ -2,6 +2,7 @@
 /* width */
 ::-webkit-scrollbar {
 	width: 10px;
+	height:10px;
 }
 
 /* Track */
@@ -1745,11 +1746,8 @@ html
 	margin-top:10px;
 	margin-left:20px;
 	width:120px;
-	background-image: url("../images/excelB.png");
-	background-position:80px center;
-	background-repeat: no-repeat;
-	text-align:left;
-	padding-left:20px;
+	padding-left:10px;
+	padding-right:10px;
 }
 #btnAggiornaTabelle
 {
