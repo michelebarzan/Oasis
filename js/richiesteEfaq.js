@@ -1648,10 +1648,29 @@
                                 
                                 var valoriColonneExtra={};
                                 var listColonneExtra=colonneExtraMacrocategorie[id_macrocategoria];
-                                listColonneExtra.forEach(function(colonna)
-                                {
-                                    valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
-                                });
+								
+								try {
+                                    listColonneExtra.forEach(function(colonna)
+                                    {
+                                        valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                    });
+                                } catch (error) {
+                                    try {
+                                        listColonneExtra.forEach(function(colonna)
+                                        {
+                                            valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                        });
+                                    } catch (error) {
+                                        removeCircleSpinner();
+                                        getRichiesteUtente();
+                                        /*Swal.fire
+                                        ({
+                                            type: 'error',
+                                            title: 'Errore generale',
+                                            text: "Ricarica la pagina. Se il problema persiste contattare l' amministratore."
+                                        });*/
+                                    }
+                                }
 
                                 var richiesteListItem=document.createElement("div");
                                 richiesteListItem.setAttribute("class","richiesteListItem");
@@ -4193,10 +4212,35 @@
                                 
                                 var valoriColonneExtra={};
                                 var listColonneExtra=colonneExtraMacrocategorie[id_macrocategoria];
-                                listColonneExtra.forEach(function(colonna)
-                                {
-                                    valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
-                                });
+
+                                /*console.log(colonneExtraMacrocategorie);
+                                console.log(id_macrocategoria);
+                                console.log(listColonneExtra);
+                                console.log(colonneExtraMacrocategorie[id_macrocategoria]);*/
+
+                                try {
+                                    listColonneExtra.forEach(function(colonna)
+                                    {
+                                        valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                    });
+                                } catch (error) {
+                                    try {
+                                        listColonneExtra.forEach(function(colonna)
+                                        {
+                                            valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                        });
+                                    } catch (error) {
+                                        removeCircleSpinner();
+                                        getTutteRichieste();
+                                        /*Swal.fire
+                                        ({
+                                            type: 'error',
+                                            title: 'Errore generale',
+                                            text: "Ricarica la pagina. Se il problema persiste contattare l' amministratore."
+                                        });*/
+                                    }
+                                }
+                                
 
                                 var richiesteListItem=document.createElement("div");
                                 richiesteListItem.setAttribute("class","richiesteListItem");

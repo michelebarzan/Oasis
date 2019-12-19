@@ -398,10 +398,34 @@
                                 
                                 var valoriColonneExtra={};
                                 var listColonneExtra=colonneExtraMacrocategorie[id_macrocategoria];
-                                listColonneExtra.forEach(function(colonna)
+								
+								try {
+                                    listColonneExtra.forEach(function(colonna)
+                                    {
+                                        valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                    });
+                                } catch (error) {
+                                    try {
+                                        listColonneExtra.forEach(function(colonna)
+                                        {
+                                            valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
+                                        });
+                                    } catch (error) {
+                                        removeCircleSpinner();
+                                        getRichiesteGestione();
+                                        /*Swal.fire
+                                        ({
+                                            type: 'error',
+                                            title: 'Errore generale',
+                                            text: "Ricarica la pagina. Se il problema persiste contattare l' amministratore."
+                                        });*/
+                                    }
+                                }
+								
+                                /*listColonneExtra.forEach(function(colonna)
                                 {
                                     valoriColonneExtra[colonna["colonna"]]=getValoreColonnaRichiesteById(richieste,id_richiesta,colonna["colonna"]);
-                                });
+                                });*/
 
                                 var richiesteListItem=document.createElement("div");
                                 richiesteListItem.setAttribute("class","richiesteListItem");

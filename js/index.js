@@ -1,3 +1,4 @@
+console.log(location.protocol);
 function getPagineHomepage()
 {
     $(".homepageLinkContainer").empty();
