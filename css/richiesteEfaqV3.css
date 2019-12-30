@@ -72,6 +72,25 @@ textarea.formNuovaRichiestaInput
 {
     resize: vertical;
 }
+.formNuovaRichiestaSelect
+{
+    text-align: left;
+    float:left;
+    display: block;
+    width:calc(100% - 192px);
+    margin-left:20px;
+    margin-right: 20px;
+    font-family: 'Montserrat',sans-serif;
+    font-size:12px;
+    border-radius: 2px;
+    border:1px solid #aaa;
+    box-shadow: none;
+    outline: none;
+}
+.formNuovaRichiestaSelect:hover
+{
+    border: 1px solid gray;
+}
 #formNuovaRichiestaNuovaCategoriaContainer
 {
     float:right;

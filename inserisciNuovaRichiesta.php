@@ -19,7 +19,14 @@
     foreach ($data as $columnEnc)
     { 
         $column=get_object_vars(json_decode($columnEnc));
-        $value=str_replace("'","''",$column['value']);
+        $value=$column['value'];
+        $value=str_replace("'","''",$value);
+        $value=str_replace("à","a",$value);
+        $value=str_replace("è","e",$value);
+        $value=str_replace("ì","i",$value);
+        $value=str_replace("ò","o",$value);
+        $value=str_replace("ù","u",$value);
+        $value=str_replace("€","eur",$value);
         $query2.="'".$value."',";
     }
     $query2.=$_SESSION['id_utente'].",";

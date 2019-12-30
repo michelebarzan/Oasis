@@ -6,6 +6,20 @@
     $categoria=str_replace("'","''",$_REQUEST['categoria']);
     $descrizione=str_replace("'","''",$_REQUEST['descrizione']);
 
+    $categoria=str_replace("à","a",$categoria);
+    $categoria=str_replace("è","e",$categoria);
+    $categoria=str_replace("ì","i",$categoria);
+    $categoria=str_replace("ò","o",$categoria);
+    $categoria=str_replace("ù","u",$categoria);
+    $categoria=str_replace("€","eur",$categoria);
+
+    $descrizione=str_replace("à","a",$descrizione);
+    $descrizione=str_replace("è","e",$descrizione);
+    $descrizione=str_replace("ì","i",$descrizione);
+    $descrizione=str_replace("ò","o",$descrizione);
+    $descrizione=str_replace("ù","u",$descrizione);
+    $descrizione=str_replace("€","eur",$descrizione);
+
     $query3="SELECT * FROM categorie_richieste WHERE nome='$categoria'";	
     $result3=sqlsrv_query($conn,$query3);
     if($result3==FALSE)

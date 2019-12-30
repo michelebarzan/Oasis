@@ -28,6 +28,7 @@
 		<!--<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>-->
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
 		<!--<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>-->
+		
 		<style>
 			.swal2-title
 			{
@@ -186,5 +187,7 @@
 		</div>
 		<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="js_libraries/selectize/selectize.min.js"></script>
+		<link rel="stylesheet" href="js_libraries/selectize/selectize.css" />
 	</body>
 </html>

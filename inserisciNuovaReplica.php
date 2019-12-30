@@ -7,6 +7,12 @@
     $id_richiesta=$_REQUEST['id_richiesta'];
 
     $descrizione=str_replace("'","''",$descrizione);
+    $descrizione=str_replace("à","a",$descrizione);
+    $descrizione=str_replace("è","e",$descrizione);
+    $descrizione=str_replace("ì","i",$descrizione);
+    $descrizione=str_replace("ò","o",$descrizione);
+    $descrizione=str_replace("ù","u",$descrizione);
+    $descrizione=str_replace("€","eur",$descrizione);
 
     $query2="INSERT INTO [dbo].[risposte_richieste_e_faq]
     ([richiesta]
