@@ -7,7 +7,7 @@
 		<script>
 			if(checkMobile())
 			{
-				window.location.href="https://remote.oasisgroup.it/OasisMobile/login.html";
+				window.location.href="http://remote.oasisgroup.it/OasisMobile/login.html";
 				//window.alert("Mobile");
 			}
 			//console.log(window.location.href);

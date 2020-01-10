@@ -69,7 +69,7 @@
 			</button>
 			<button class="absoluteActionBarButton" id="bootstrap-tour-btnTutteLeRichieste" onclick="resetStyle(this);getTutteRichieste()">
                 Tutte le richieste
-                <i class="fad fa-database" style="margin-left:5px"></i>
+                <i class="fad fa-list-alt" style="margin-left:5px"></i>
 			</button>
 			<a class="absoluteActionBarButton" id="bootstrap-tour-btnGestioneRichieste" href="gestioneRichiesteEfaq.php">
                 Gestione richieste

@@ -11,7 +11,7 @@
                 dbo.elenco_pagine.icona, dbo.elenco_pagine.descrizione AS descrizionePagina
                 FROM dbo.pagine_preferite_utenti INNER JOIN
                 dbo.elenco_pagine ON dbo.pagine_preferite_utenti.pagina = dbo.elenco_pagine.id_pagina
-                WHERE (dbo.pagine_preferite_utenti.utente = ".$_SESSION['id_utente'].") AND (dbo.elenco_pagine.applicazione = 'Oasis')";
+                WHERE (dbo.pagine_preferite_utenti.utente = ".$_SESSION['id_utente'].") AND (dbo.elenco_pagine.applicazione = 'Oasis') AND (dbo.elenco_pagine.mobile = 'false')";
     $rPreferiti=sqlsrv_query($conn,$qPreferiti);
     if($rPreferiti==FALSE)
     {
@@ -53,7 +53,7 @@
             $sezione=$rowSezioni['sezione'];
             $descrizione=$rowSezioni['descrizione'];
             $pagine_sezioni=[];
-            $qPagine="SELECT * FROM elenco_pagine WHERE sezione=$id_sezione AND applicazione='Oasis' AND id_pagina NOT IN (SELECT dbo.elenco_pagine.id_pagina FROM dbo.pagine_preferite_utenti INNER JOIN dbo.elenco_pagine ON dbo.pagine_preferite_utenti.pagina = dbo.elenco_pagine.id_pagina WHERE (dbo.pagine_preferite_utenti.utente = ".$_SESSION['id_utente'].") AND (dbo.elenco_pagine.applicazione = 'Oasis'))";
+            $qPagine="SELECT * FROM elenco_pagine WHERE (dbo.elenco_pagine.mobile = 'false') AND sezione=$id_sezione AND applicazione='Oasis' AND id_pagina NOT IN (SELECT dbo.elenco_pagine.id_pagina FROM dbo.pagine_preferite_utenti INNER JOIN dbo.elenco_pagine ON dbo.pagine_preferite_utenti.pagina = dbo.elenco_pagine.id_pagina WHERE (dbo.pagine_preferite_utenti.utente = ".$_SESSION['id_utente'].") AND (dbo.elenco_pagine.applicazione = 'Oasis'))";
             $rPagine=sqlsrv_query($conn,$qPagine);
             if($rPagine==FALSE)
             {
