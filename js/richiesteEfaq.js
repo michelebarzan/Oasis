@@ -1792,6 +1792,14 @@
                                 buttonGestioneRichiesta.innerHTML='Elimina <i class="fad fa-trash" style="margin-left:5px"></i>';
                                 richiesteListItemElementContainer.appendChild(buttonGestioneRichiesta);
 
+                                var buttonStampaRichiesta=document.createElement("button");
+                                buttonStampaRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                buttonStampaRichiesta.setAttribute("style","margin-left:20px;width:25px");
+                                buttonStampaRichiesta.setAttribute("id","buttonPrintRichiesta"+id_richiesta);
+                                buttonStampaRichiesta.setAttribute("onclick","printRichiesta("+id_richiesta+",this)");
+                                buttonStampaRichiesta.innerHTML='<i class="fal fa-print"></i>';
+                                richiesteListItemElementContainer.appendChild(buttonStampaRichiesta);
+
                                 richiesteListItemRow.appendChild(richiesteListItemElementContainer);
 
                                 /*ID--------------------------------------------------------------------------*/
@@ -4320,6 +4328,14 @@
                                 buttonGestioneRichiesta.innerHTML='Espandi <i class="fas fa-caret-down" style="margin-left:5px;"></i>';
                                 richiesteListItemElementContainer.appendChild(buttonGestioneRichiesta);
 
+                                var buttonStampaRichiesta=document.createElement("button");
+                                buttonStampaRichiesta.setAttribute("class","buttonGestioneRichiesta");
+                                buttonStampaRichiesta.setAttribute("style","margin-left:20px;width:25px");
+                                buttonStampaRichiesta.setAttribute("id","buttonPrintRichiesta"+id_richiesta);
+                                buttonStampaRichiesta.setAttribute("onclick","printRichiesta("+id_richiesta+",this)");
+                                buttonStampaRichiesta.innerHTML='<i class="fal fa-print"></i>';
+                                richiesteListItemElementContainer.appendChild(buttonStampaRichiesta);
+
                                 richiesteListItemRow.appendChild(richiesteListItemElementContainer);
 
                                 /*var richiesteListItemElementContainer=document.createElement("div");
@@ -5532,5 +5548,81 @@
             
             //triggering the function
             downloadLink.click();
+        }
+    }
+    function printRichiesta(id_richiesta,button)
+    {
+        var oldButtonContent=button.innerHTML;
+        var oldBodyContent=document.body.innerHTML;
+
+        button.innerHTML='<i class="fad fa-spinner-third fa-spin"></i>';
+        button.disabled=true;
+
+        var all=document.getElementsByClassName("richiesteListItem");
+        for (let index = 0; index < all.length; index++)
+        {
+            const element = all[index];
+            if(element.getAttribute("id_richiesta")==id_richiesta)
+            {
+                var clnElement = element.cloneNode(true);
+
+                document.body.innerHTML="";
+
+                document.body.appendChild(clnElement);
+                clnElement.style.animation="none";
+                clnElement.style.border="none";
+                
+
+                showRichiesta(id_richiesta);
+
+                clnElement.style.margin="20px";
+                clnElement.style.width="calc(100% - 40px)";
+                clnElement.style.width="calc(100% - 40px)";
+
+                /*var inputArray=document.getElementsByClassName("richiesteListItemElementInput");
+                for (let index3 = 0; index3 < inputArray.length; index3++)
+                {
+                    const input = inputArray[index3];
+                    
+                    if(input.tagName=="TEXTAREA")
+                    {
+                        console.log(input)
+                        var inputValue=input.value;
+                        var inputContainer=input.parentElement;
+
+                        var inputTextContainer=document.createElement("div");
+                        inputTextContainer.setAttribute("class","richiesteListItemElementValue");
+                        inputTextContainer.innerHTML=inputValue;
+
+                        input.remove();
+
+                        inputContainer.appendChild(inputTextContainer);
+                    }
+                }*/
+                    
+                setTimeout(function(){
+                    try {
+                        document.getElementsByClassName("alertUrgenteRow")[0].style.textAlign="left";
+                    } catch (error) {}
+                    
+                    clnElement.style.height="auto";
+                    document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).style.maxHeight="100%";
+                    var all2=document.getElementsByClassName("richiesteListItemElementvalue");
+                    for (let index2 = 0; index2 < all2.length; index2++)
+                    {
+                        all2[index2].style.textAlign="left";
+                    }
+                }, 700);
+                
+                
+                setTimeout(function(){window.print();}, 800);
+                setTimeout(function()
+                {
+                    document.body.innerHTML=oldBodyContent;
+
+                    button.innerHTML=oldButtonContent;
+                    button.disabled=false;
+                }, 900);
+            }
         }
     }
