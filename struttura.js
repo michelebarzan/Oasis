@@ -339,3 +339,19 @@
         });
 	}
 	function getUsernameSession(){return document.getElementById("username").innerHTML}
+	function getSessionValue(name)
+	{
+		return new Promise(function (resolve, reject) 
+		{
+			$.get("getSessionValue.php",{name},
+			function(response, status)
+			{
+				if(status=="success")
+				{
+					resolve(response);
+				}
+				else
+					reject({status});
+			});
+		});
+	}

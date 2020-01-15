@@ -218,3 +218,8 @@
 127.0.0.1 - - [11/Dec/2019:09:45:35 +0100] "GET /images/exclamation.png HTTP/1.1" 200 503
 127.0.0.1 - - [11/Dec/2019:09:45:35 +0100] "GET /images/logo3.png HTTP/1.1" 200 15261
 127.0.0.1 - - [11/Dec/2019:09:45:35 +0100] "GET /getPageList.php HTTP/1.1" 200 4633
+192.168.6.32 - - [15/Jan/2020:10:10:40 +0100] "GET /oasis HTTP/1.1" 404 1068
+192.168.6.32 - - [15/Jan/2020:10:10:40 +0100] "GET /favicon.ico HTTP/1.1" 404 1241
+192.168.6.32 - - [15/Jan/2020:10:10:40 +0100] "GET /oasis/ws HTTP/1.1" 404 1068
+192.168.6.32 - - [15/Jan/2020:10:10:53 +0100] "GET /oasis/autenticazione1.php HTTP/1.1" 404 1068
+192.168.6.32 - - [15/Jan/2020:10:10:53 +0100] "GET /oasis/autenticazione1.php/ws HTTP/1.1" 404 1068

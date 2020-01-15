@@ -28,6 +28,9 @@
 		<script type="text/javascript" src="js_libraries/intro.js/intro.js"></script>
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
 		<!--<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>-->
+		<script src="js/commonRichieste.js"></script>
+		<script src="js/sendMail.js"></script>
+		<link rel="stylesheet" href="css/commonRichieste.css" />
 		<style>
 			.swal2-title
 			{
@@ -55,7 +58,7 @@
 			}
 		</style>
 	</head>
-	<body onload="getRichiesteGestione()">
+	<body onload="checkServerSideSettings();getRichiesteGestione()">
         <?php include('struttura.php'); ?>
 		<div class="absoluteContainer2" style="top:100">
 			<!----------------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -76,6 +79,7 @@
 						FAQ & richieste
 						<i class="fal fa-question-square" style="margin-left:5px"></i>
 					</a>
+					<button class="absoluteActionBarButton" style="margin-top:5px" onclick="getPopupImpostazioni()">Impostazioni <i style="margin-left:5px;" class="fad fa-cog"></i></button>
 					<button class="absoluteActionBarButton" style="margin-top:5px;margin-left:10px" id="bootstrap-tour-btnTutorial" title="Tutorial" onclick="startTutorial()">
 						<i class="far fa-question" ></i>
 					</button>

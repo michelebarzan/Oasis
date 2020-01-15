@@ -59,7 +59,7 @@
     $result5=sqlsrv_query($conn,$query5);
     if($result5==TRUE)
     {
-        $body="Oggetto richiesta: $oggetto";
+        $body="Oggetto richiesta: ".$oggetto.". Consulta la pagina remote.oasisgroup.it/oasis/redirect.php?page=richiesta";
         $query4="INSERT INTO [dbo].[InvioMail] ([Mail1],[Subject],[Body]) VALUES ('$mail_insert','Richiesta urgente di ".$_SESSION['Username'].", codice: $id_richiesta','$body')";	
         $result4=sqlsrv_query($conn,$query4);
         if($result4==TRUE)
