@@ -1162,7 +1162,7 @@
                     {
                         var usernameSession=getUsernameSession();
                         var subject="Nuova richiesta di "+usernameSession;
-                        var body="Oggetto: "+document.getElementById('formNuovaRichiestaoggetto').value+".\n test";
+                        var body="Oggetto: "+document.getElementById('formNuovaRichiestaoggetto').value+". Consulta la pagina http://remote.oasisgroup.it/oasis/redirect.php?page=richieste";
                         getMailsByServerSideSetting(utentiInvioMail,"checkboxRiceviMailPerOgniNuovaRichiesta",subject,body);
                         if(document.getElementById("formNuovaRichiestaurgente").checked)
                         {
