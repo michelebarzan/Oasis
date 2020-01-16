@@ -2987,7 +2987,11 @@
         setTimeout(async function()
         {
             var utenteCreazione=await getUtenteCreazione(id_richiesta);
-            var utentiInvioMail=[utenteCreazione];
+            var id_utente=await getSessionValue("id_utente");
+			if(utenteCreazione==id_utente)
+				var utentiInvioMail=[];
+			else
+				var utentiInvioMail=[utenteCreazione];
             var subject="Nuova risposta di "+username_risposta+" alla tua richiesta codice "+id_richiesta;
             var body="Testo: "+descrizione+". Consulta la pagina http://remote.oasisgroup.it/oasis/redirect.php?page=richieste";
             getMailsByServerSideSetting(utentiInvioMail,"checkboxRiceviMailPerOgniRispostaTuaRichiesta",subject,body);
