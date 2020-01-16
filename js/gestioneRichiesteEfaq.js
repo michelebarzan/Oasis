@@ -1636,7 +1636,6 @@
         {
             if(status=="success")
             {
-                console.log(response);
                 if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
                 {
                     Swal.fire
@@ -1736,8 +1735,86 @@
                 reject({status});
         });
     }
+    function getIdMacrocategoria(id_richiesta)
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getIdMacrocategoria.php",
+            {
+                id_richiesta
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    resolve(response);
+                }
+                else
+                    reject({status});
+            });
+        });
+    }
+    function getUtenteCreazione(id_richiesta)
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getUtenteCreazione.php",
+            {
+                id_richiesta
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    resolve(response);
+                }
+                else
+                    reject({status});
+            });
+        });
+    }
+    function getUtentiCoinvoltiEUtentiMacrocategoria(id_richiesta,id_macrocategoria)
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getUtentiCoinvoltiEUtentiMacrocategoria.php",
+            {
+                id_richiesta,
+                id_macrocategoria
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    resolve(JSON.parse(response));
+                }
+                else
+                    reject({status});
+            });
+        });
+    }
     async function appendNuovaReplica(username_risposta,data_risposta,id_richiesta,descrizione,allegati_risposte,successMessage)
     {
+        var id_macrocategoria=await getIdMacrocategoria(id_richiesta); 
+        var utentiInvioMailObj=await getUtentiCoinvoltiEUtentiMacrocategoria(id_richiesta,id_macrocategoria);
+        var utentiInvioMail=[];
+        utentiInvioMailObj.forEach(function(utenteObj)
+        {
+            utentiInvioMail.push(utenteObj.id_utente);
+        });
+        var subject="Nuova risposta di "+username_risposta+" alla richiesta codice "+id_richiesta;
+        var body="Testo: "+descrizione+". Consulta la pagina http://remote.oasisgroup.it/oasis/redirect.php?page=gestione_richieste";
+        getMailsByServerSideSetting(utentiInvioMail,"checkboxRiceviMailPerOgniRispostaRichiestaIncaricato",subject,body);
+        
+        setTimeout(async function()
+        {
+            var utenteCreazione=await getUtenteCreazione(id_richiesta);
+            var utentiInvioMail=[utenteCreazione];
+            var subject="Nuova risposta di "+username_risposta+" alla tua richiesta codice "+id_richiesta;
+            var body="Testo: "+descrizione+". Consulta la pagina http://remote.oasisgroup.it/oasis/redirect.php?page=richieste";
+            getMailsByServerSideSetting(utentiInvioMail,"checkboxRiceviMailPerOgniRispostaTuaRichiesta",subject,body);
+        }, 10000);
+
         if(document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).childNodes[0].className=="richiesteListItemElementContainer")
             document.getElementById("richiesteListItemBoxRisposteContainer"+id_richiesta).innerHTML="";
 

@@ -64,7 +64,7 @@
         $result4=sqlsrv_query($conn,$query4);
         if($result4==TRUE)
         {
-			exec('"C:\Oasis_mail\invio.bat"');
+			//exec('"C:\Oasis_mail\invio.bat"');
 			die("ok");
         }
         else

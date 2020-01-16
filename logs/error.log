@@ -90,3 +90,7 @@
 [Wed Jan 15 08:38:34.538747 2020] [ssl:warn] [pid 12928:tid 624] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
 [Wed Jan 15 08:38:35.258786 2020] [ssl:warn] [pid 13744:tid 660] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
 [Wed Jan 15 08:38:35.290783 2020] [ssl:warn] [pid 13744:tid 660] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 16 08:00:46.908496 2020] [ssl:warn] [pid 15772:tid 628] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 16 08:00:46.950178 2020] [ssl:warn] [pid 15772:tid 628] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 16 08:00:47.773592 2020] [ssl:warn] [pid 12132:tid 628] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 16 08:00:47.810562 2020] [ssl:warn] [pid 12132:tid 628] AH01909: local.oasisgroup.it:443:0 server certificate does NOT include an ID which matches the server name

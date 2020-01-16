@@ -333,7 +333,7 @@ function getDefaultServerSideSetting(name)
         function(response, status)
         {
             if(status=="success")
-            {console.log(response)
+            {
                 resolve(response);
             }
             else
@@ -354,7 +354,9 @@ function getMailsByServerSideSetting(utentiInvioMail,serverSideSetting,subject,b
         if(status=="success")
         {
             var mails=JSON.parse(response);
-            sendMail(mails.join(";"),subject,body);
+            console.log(mails);
+            if(mails.length>0)
+                sendMail(mails.join(";"),subject,body);
         }
         else
             console.log(status);
