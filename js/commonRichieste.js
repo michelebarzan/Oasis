@@ -27,6 +27,7 @@ function printRichiesta(id_richiesta,button)
             showRichiesta(id_richiesta);
 
             clnElement.style.margin="20px";
+            clnElement.style.background="#EBEBEB";
             clnElement.style.width="calc(100% - 40px)";
             clnElement.style.width="calc(100% - 40px)";
 
@@ -79,6 +80,11 @@ function printRichiesta(id_richiesta,button)
                 for (let index2 = 0; index2 < all2.length; index2++)
                 {
                     all2[index2].style.textAlign="left";
+                }
+                var all3=document.getElementsByClassName("richiesteListItemInnerBox");
+                for (let index3 = 0; index3 < all3.length; index3++)
+                {
+                    all3[index3].style.width="100%";
                 }
             }, 700);
             
