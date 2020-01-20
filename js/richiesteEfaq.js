@@ -475,11 +475,16 @@
             formInput.appendChild(formInputOption);
         });
 
-        var formInputOption=document.createElement("option");
-        formInputOption.setAttribute("value","new");
-        formInputOption.innerHTML="Aggiungi categoria...";
-
-        formInput.appendChild(formInputOption);
+        var id_utente=await getSessionValue("id_utente");
+        var id_utente=parseInt(id_utente);
+        var utenti_aggiungi_categoria=await getUtentiAggiungiCategoria();
+        if(utenti_aggiungi_categoria.includes(id_utente))
+        {
+            var formInputOption=document.createElement("option");
+            formInputOption.setAttribute("value","new");
+            formInputOption.innerHTML="Aggiungi categoria...";
+            formInput.appendChild(formInputOption);
+        }
 
         inputContainer.appendChild(formInput);
 
@@ -560,6 +565,8 @@
                         removeMouseSpinner();
                         if(nuovaRichiestaTourAsk)
                             getNuovaRichiestaTour();
+
+                        initResizeTextarea();
                     }
         });
     }
@@ -5615,4 +5622,100 @@
             //triggering the function
             downloadLink.click();
         }
+    }
+    function getUtentiAggiungiCategoria()
+    {
+        return new Promise(function (resolve, reject) 
+        {
+            $.get("getUtentiAggiungiCategoria.php",
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    var utenti_aggiungi_categoria=[];
+
+                    try {
+                        utenti_aggiungi_categoria=JSON.parse(response);
+                    } catch (error) {}
+                    
+                    resolve(utenti_aggiungi_categoria);
+                }
+                else
+                    reject({status});
+            });
+        });
+    }
+    var observeTextarea;
+    if (window.attachEvent)
+    {
+        observeTextarea = function (element, event, handler) {
+            element.attachEvent('on'+event, handler);
+        };
+    }
+    else
+    {
+        observeTextarea = function (element, event, handler) {
+            element.addEventListener(event, handler, false);
+        };
+    }
+    function initResizeTextarea ()
+    {
+        function resizeTextarea () {
+            var height=text.scrollHeight+2;
+            text.style.height = 'auto';
+            text.style.height = height+'px';
+        }
+        function resizeTextarea1 () {
+            var height=text1.scrollHeight+2;
+            text1.style.height = 'auto';
+            text1.style.height = height+'px';
+        }
+        function resizeTextarea2 () {
+            var height=text2.scrollHeight+2;
+            text2.style.height = 'auto';
+            text2.style.height = height+'px';
+        }
+        /* 0-timeout to get the already changed text */
+        function delayedResizeTextarea () {
+            window.setTimeout(resizeTextarea, 0);
+        }
+        function delayedResizeTextarea1 () {
+            window.setTimeout(resizeTextarea1, 0);
+        }
+        function delayedResizeTextarea2 () {
+            window.setTimeout(resizeTextarea2, 0);
+        }
+
+        var text1 = document.getElementById('formNuovaRichiestadescrizione');
+        observeTextarea(text1, 'change',  resizeTextarea1);
+        observeTextarea(text1, 'cut',     delayedResizeTextarea1);
+        observeTextarea(text1, 'paste',   delayedResizeTextarea1);
+        observeTextarea(text1, 'drop',    delayedResizeTextarea1);
+        observeTextarea(text1, 'keydown', delayedResizeTextarea1);
+
+        text1.focus();
+        text1.select();
+        resizeTextarea1;
+
+        var text2 = document.getElementById('formNuovaRichiestanote');
+        observeTextarea(text2, 'change',  resizeTextarea2);
+        observeTextarea(text2, 'cut',     delayedResizeTextarea2);
+        observeTextarea(text2, 'paste',   delayedResizeTextarea2);
+        observeTextarea(text2, 'drop',    delayedResizeTextarea2);
+        observeTextarea(text2, 'keydown', delayedResizeTextarea2);
+
+        text2.focus();
+        text2.select();
+        resizeTextarea2;
+
+        var text = document.getElementById('formNuovaRichiestaoggetto');
+        observeTextarea(text, 'change',  resizeTextarea);
+        observeTextarea(text, 'cut',     delayedResizeTextarea);
+        observeTextarea(text, 'paste',   delayedResizeTextarea);
+        observeTextarea(text, 'drop',    delayedResizeTextarea);
+        observeTextarea(text, 'keydown', delayedResizeTextarea);
+
+        text.focus();
+        text.select();
+        resizeTextarea;
     }
