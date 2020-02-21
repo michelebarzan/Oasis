@@ -7,10 +7,10 @@
 	
 	$stazione = preg_replace('/\s+/', '', $stazione);
 	
-	if(!is_dir('\\\\srv-tmp\\Produzione\\FotoProduzioneAndroid\\'.$ordine))
-		mkdir('\\\\srv-tmp\\Produzione\\FotoProduzioneAndroid\\'.$ordine);
-	if(!is_dir('\\\\srv-tmp\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione))
-		mkdir('\\\\srv-tmp\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione);
+	if(!is_dir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine))
+		mkdir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine);
+	if(!is_dir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione))
+		mkdir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione);
 	
 	for ($k = 0 ; $k < $nImmagini; $k++)
 	{
@@ -22,7 +22,7 @@
 		$binary=base64_decode($base);
 		header('Content-Type: bitmap; charset=utf-8');
 		// Images will be saved under 'www/imgupload/uplodedimages' folder
-		$file = fopen('\\\\srv-tmp\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione.'/'.$filename, 'wb');
+		$file = fopen('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine.'/'.$stazione.'/'.$filename, 'wb');
 		// Create File
 		fwrite($file, $binary);
 		fclose($file);

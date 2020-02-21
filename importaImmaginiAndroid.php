@@ -5,7 +5,8 @@
 	if(set_time_limit(240))
 	{
 
-		$shellOutput = shell_exec("robocopy \\\\192.168.69.15\\produzione\\fotoProduzioneAndroid C:\\xampp\\htdocs\\OasisFotoProduzione\\fotoProduzioneAndroid /S /Z 2>&1");
+		//$shellOutput = shell_exec("robocopy \\\\192.168.69.15\\produzione\\fotoProduzioneAndroid C:\\xampp\\htdocs\\OasisFotoProduzione\\fotoProduzioneAndroid /S /Z 2>&1");
+		$shellOutput = shell_exec("robocopy \\\\srv-dati\\produzione\\fotoProduzioneAndroid C:\\xampp\\htdocs\\OasisFotoProduzione\\fotoProduzioneAndroid /S /Z 2>&1");
 		
 		//echo $shellOutput;
 		
