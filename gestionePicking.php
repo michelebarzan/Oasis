@@ -18,10 +18,12 @@
 					var originalContents = document.body.innerHTML;
 
 					document.body.innerHTML = printContents;
+					
+					document.body.innerHTML+='<button onclick="location.reload()">Fatto</button>';
 
-					window.print();
+					//window.print();
 
-					document.body.innerHTML = originalContents;
+					//document.body.innerHTML = originalContents;
 				}
 			</script>
 			<style>

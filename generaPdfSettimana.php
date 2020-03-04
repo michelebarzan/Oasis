@@ -26,7 +26,7 @@
 	svuotaTmp_stampa_schede_produzione($conn);
 	riempiTmp_stampa_schede_produzione($conn,$stazione,$settimanaTmp,$week,$dataInizio,$dataFine,$stazioneVisualizzata,$stampaordine);
 	
-	exec( '"C:\Program Files (x86)\Microsoft Office\root\Office16\MSACCESS.EXE" "C:\\xampp\\htdocs\\oasis\\files\\stampe_settimane\\Stampa_schede.accdb"');
+	exec( '"C:\Program Files\Microsoft Office\root\Office16\MSACCESS.EXE" "C:\\xampp\\htdocs\\oasis\\files\\stampe_settimane\\Stampa_schede.accdb"');
 	
 	$res = shell_exec("if exist C:\\xampp\\htdocs\\oasis\\files\\stampe_settimane\\".$stazione."_".$settimanaTmp.".pdf echo generato1 2>&1");
 	
