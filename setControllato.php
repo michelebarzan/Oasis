@@ -5,7 +5,10 @@
 	$N_Pick=$_REQUEST['N_Pick'];
 	$controllato=$_REQUEST['controllato'];
 	
-	$q="UPDATE T_Picking_01 SET controllato='$controllato' WHERE N_Pick=$N_Pick";
+	if($controllato=="true")
+		$q="UPDATE T_Picking_01 SET controllato='$controllato',utenteControllato=".$_SESSION['id_utente'].",dataControllato=GETDATE() WHERE N_Pick=$N_Pick";
+	else
+		$q="UPDATE T_Picking_01 SET controllato='$controllato',utenteControllato=NULL,dataControllato=NULL  WHERE N_Pick=$N_Pick";
 	$r=sqlsrv_query($conn,$q);
 	if($r==FALSE)
 	{
