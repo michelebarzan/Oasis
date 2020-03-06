@@ -28,10 +28,105 @@ function changeFlexDirection()
 function stampaImmediata(n_Pick)
 {
     window.open('anteprimaDiStampaChecklist.php?N_Pick='+n_Pick+'&stampaImmediata=true', '_blank','location=yes,height=800,width=1300,scrollbars=yes,status=yes');
+    $.get("cheskStampatoChecklist.php",
+    {
+        n_Pick
+    },
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                console.log(response);
+            }
+            else
+            {
+                if(response.indexOf("true")>-1)
+                {
+                    //console.log("e gia stato stampato, non serve far partire l interval");
+                }
+                else
+                {
+                    setIntervalStampato(n_Pick);
+                }
+            }
+        }
+        else
+            reject({status});
+    });
 }
 function anteprimaDiStampa(n_Pick)
 {
     window.open('anteprimaDiStampaChecklist.php?N_Pick='+n_Pick, '_blank','location=yes,height=800,width=1300,scrollbars=yes,status=yes');
+    $.get("cheskStampatoChecklist.php",
+    {
+        n_Pick
+    },
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                console.log(response);
+            }
+            else
+            {
+                if(response.indexOf("true")>-1)
+                {
+                    //console.log("e gia stato stampato, non serve far partire l interval");
+                }
+                else
+                {
+                    setIntervalStampato(n_Pick);
+                }
+            }
+        }
+        else
+            reject({status});
+    });
+}
+function setIntervalStampato(n_Pick)
+{
+    var intervalStampato = setInterval(cheskStampato, 1000);
+
+    function cheskStampato() 
+    {
+        $.get("cheskStampatoChecklist.php",
+        {
+            n_Pick
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    console.log(response);
+                }
+                else
+                {
+                    console.log(response);
+                    if(response.indexOf("true")>-1)
+                    {
+                        clearIntervalStampato();
+                        getElencoPick();
+                        console.log("stampato");
+                    }
+                    else
+                        console.log("non stampato");
+                }
+            }
+            else
+                reject({status});
+        });
+    }
+
+    function clearIntervalStampato()
+    {
+        clearInterval(intervalStampato);
+    }
 }
 function searchPicks(input)
 {
@@ -84,6 +179,7 @@ function checkFilters()
 }
 async function getElencoPick()
 {
+    document.getElementById("stampaChecklistSearchBar").value="";
     var actionBar=document.getElementById("stampaChecklistActionBar");
     var container=document.getElementById("stampaChecklistContainer");
     container.innerHTML="";

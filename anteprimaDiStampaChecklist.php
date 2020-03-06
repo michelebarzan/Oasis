@@ -26,22 +26,18 @@
 				}
 				function stampa() 
 				{
-					/*try
+					var stampato = true ;
+					var N_Pick=document.getElementById("hiddenn_Pick").value;
+					var xmlhttp = new XMLHttpRequest();
+					xmlhttp.onreadystatechange = function() 
 					{
-						var rows = document.getElementById("hiddenDiv");
-					}
-					catch(err)
-					{
-						window.alert(err);
-					}
-					//window.alert(rows.value);
-					var id='codiceDoganale'+((rows.value)-1);
-					var myElem = document.body.contains(document.getElementById(id));
-					//window.alert(myElem);
-					if (myElem == true) 
-						alert('Compila tutti i codici doganali');
-					else*/
-						window.location = 'impaginaStampaChecklist.php';
+						if (this.readyState == 4 && this.status == 200) 
+						{
+							window.location = 'impaginaStampaChecklist.php';
+						}
+					};
+					xmlhttp.open("POST", "setStampato.php?N_Pick=" + N_Pick + "&stampato=" + stampato, true);
+					xmlhttp.send();
 				}
 				function apriDettaglio(N_Pick)
 				{
@@ -173,7 +169,10 @@
             if(isset($_GET['stampaImmediata']))
                 echo "<input type='hidden' value='stampa' id='hiddenInputStampa'>";
 			if(isset($_GET['N_Pick']))
+			{
 				$N_Pick=$_GET['N_Pick'];
+				echo "<input type='hidden' value='$N_Pick' id='hiddenn_Pick'>";
+			}
 			else
 				$N_Pick=NULL;
 			svuotaStampaPalletTemp($conn);
