@@ -4077,3 +4077,13 @@ html
 {
 	width:100px;
 }
+.icon-q-81-hse-web-app
+{
+	background-image: url("../images/icon-q-81-hse-web-app.png");
+	background-position: 25px center;
+	background-repeat: no-repeat;
+	background-size: 75px 45px;
+	height:35px;
+	width:100px;
+	display:block;
+}
