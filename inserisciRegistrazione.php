@@ -35,7 +35,7 @@
 				}
 				foreach($fileNameList as $item) 
 				{
-					$query4="INSERT INTO [dbo].[allegati_registrazioni_produzione] ([percorso],[registrazione_produzione]) VALUES ('//srv-01/Produzione/FotoProduzioneAndroid/".$ordine."/+".$stazione."/".$item."',".$id_registrazione.")";	
+					$query4="INSERT INTO [dbo].[allegati_registrazioni_produzione] ([percorso],[registrazione_produzione]) VALUES ('//srv-dati/Produzione/FotoProduzioneAndroid/".$ordine."/+".$stazione."/".$item."',".$id_registrazione.")";	
 					$result4=sqlsrv_query($conn,$query4);
 					if($result4==FALSE)
 					{
