@@ -13,7 +13,26 @@
 
     $picks=[];
 
-    $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist WHERE chiuso='$filterChiuso' AND controllato='$filterControllato' AND stampato='$filterStampato' ORDER BY [$orderBy] $orderType";	
+    if($filterChiuso!="both" && $filterControllato!="both" && $filterStampato!="both")
+        $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist WHERE chiuso='$filterChiuso' AND controllato='$filterControllato' AND stampato='$filterStampato' ORDER BY [$orderBy] $orderType";	
+    else
+    {
+        if($filterChiuso=="both" && $filterControllato=="both" && $filterStampato=="both")
+            $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist ORDER BY [$orderBy] $orderType";	
+        else
+        {
+            $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist WHERE ";
+            if($filterChiuso!="both")
+                $query2.="chiuso='$filterChiuso' AND ";	
+            if($filterControllato!="both")
+                $query2.="controllato='$filterControllato' AND ";	
+            if($filterStampato!="both")
+                $query2.="stampato='$filterStampato' AND ";	
+            if(substr($query2, -4)=="AND ")
+                $query2=substr($query2,0, -4);
+            $query2.=" ORDER BY [$orderBy] $orderType";
+        }
+    }
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -51,6 +70,8 @@
             array_push($picks,$pick);
         }
     }
+    else
+        die("error".$query2);
 
     echo json_encode($picks);
 

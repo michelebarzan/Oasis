@@ -2,9 +2,9 @@ var flexDirection="row";
 var orderBy="n_Pick";
 var orderType="DESC";
 var filterTop;
-var filterChiuso="true";
-var filterControllato="true";
-var filterStampato="true";
+var filterChiuso="both";
+var filterControllato="both";
+var filterStampato="both";
 
 function checkFlexDirection()
 {
@@ -146,6 +146,84 @@ function searchPicks(input)
         }
     }
 }
+function toggleFilterButtons(button,filter)
+{
+    if(filter=='chiuso')
+    {
+        if(button=='bntFilterChiusi')
+        {
+            if(filterChiuso=="both")
+            {
+                filterChiuso='true';
+            }
+            else
+            {
+                filterChiuso='both';
+            }
+        }
+        if(button=='bntFilterAperti')
+        {
+            if(filterChiuso=='true')
+            {
+                filterChiuso='both'
+            }
+            else
+            {
+                filterChiuso='false'
+            }
+        }
+    }
+    if(filter=='controllato')
+    {
+        if(button=='bntFilterControllati')
+        {
+            if(filterControllato=="both")
+            {
+                filterControllato='true';
+            }
+            else
+            {
+                filterControllato='both';
+            }
+        }
+        if(button=='bntFilterNonControllati')
+        {
+            if(filterControllato=='true')
+            {
+                filterControllato='both'
+            }
+            else
+            {
+                filterControllato='false'
+            }
+        }
+    }
+    if(filter=='stampato')
+    {
+        if(button=='bntFilterStampati')
+        {
+            if(filterStampato=="both")
+            {
+                filterStampato='true';
+            }
+            else
+            {
+                filterStampato='both';
+            }
+        }
+        if(button=='bntFilterNonStampati')
+        {
+            if(filterStampato=='true')
+            {
+                filterStampato='both'
+            }
+            else
+            {
+                filterStampato='false'
+            }
+        }
+    }
+}
 function checkFilters()
 {
     filterTop=document.getElementById("inputFilterTop").value;
@@ -153,22 +231,37 @@ function checkFilters()
     document.getElementById("bntFilterAperti").style.color="black";document.getElementById("bntFilterAperti").style.border="0.5px solid rgba(0,0,0,0.20)";
     if(filterChiuso=="true")
         {document.getElementById("bntFilterChiusi").style.color="#4C91CB";document.getElementById("bntFilterChiusi").style.border="0.5px solid #4C91CB";}
-    else
+    if(filterChiuso=="false")
         {document.getElementById("bntFilterAperti").style.color="#4C91CB";document.getElementById("bntFilterAperti").style.border="0.5px solid #4C91CB";}
+    if(filterChiuso=="both")
+    {
+        document.getElementById("bntFilterChiusi").style.color="#4C91CB";document.getElementById("bntFilterChiusi").style.border="0.5px solid #4C91CB";
+        document.getElementById("bntFilterAperti").style.color="#4C91CB";document.getElementById("bntFilterAperti").style.border="0.5px solid #4C91CB";
+    }
     
     document.getElementById("bntFilterControllati").style.color="black";document.getElementById("bntFilterControllati").style.border="0.5px solid rgba(0,0,0,0.20)";
     document.getElementById("bntFilterNonControllati").style.color="black";document.getElementById("bntFilterNonControllati").style.border="0.5px solid rgba(0,0,0,0.20)";
     if(filterControllato=="true")
         {document.getElementById("bntFilterControllati").style.color="#4C91CB";document.getElementById("bntFilterControllati").style.border="0.5px solid #4C91CB";}
-    else
+    if(filterControllato=="false")
         {document.getElementById("bntFilterNonControllati").style.color="#4C91CB";document.getElementById("bntFilterNonControllati").style.border="0.5px solid #4C91CB";}
+    if(filterControllato=="both")
+    {
+        document.getElementById("bntFilterControllati").style.color="#4C91CB";document.getElementById("bntFilterControllati").style.border="0.5px solid #4C91CB";
+        document.getElementById("bntFilterNonControllati").style.color="#4C91CB";document.getElementById("bntFilterNonControllati").style.border="0.5px solid #4C91CB";
+    }
 
     document.getElementById("bntFilterStampati").style.color="black";document.getElementById("bntFilterStampati").style.border="0.5px solid rgba(0,0,0,0.20)";
     document.getElementById("bntFilterNonStampati").style.color="black";document.getElementById("bntFilterNonStampati").style.border="0.5px solid rgba(0,0,0,0.20)";
     if(filterStampato=="true")
         {document.getElementById("bntFilterStampati").style.color="#4C91CB";document.getElementById("bntFilterStampati").style.border="0.5px solid #4C91CB";}
-    else
+    if(filterStampato=="false")
         {document.getElementById("bntFilterNonStampati").style.color="#4C91CB";document.getElementById("bntFilterNonStampati").style.border="0.5px solid #4C91CB";}
+    if(filterStampato=="both")
+    {
+        document.getElementById("bntFilterStampati").style.color="#4C91CB";document.getElementById("bntFilterStampati").style.border="0.5px solid #4C91CB";
+        document.getElementById("bntFilterNonStampati").style.color="#4C91CB";document.getElementById("bntFilterNonStampati").style.border="0.5px solid #4C91CB";
+    }
 
     document.getElementById("bntOrderNPick").style.color="black";document.getElementById("bntOrderNPick").style.border="0.5px solid rgba(0,0,0,0.20)";
     document.getElementById("bntOrderData").style.color="black";document.getElementById("bntOrderData").style.border="0.5px solid rgba(0,0,0,0.20)";
