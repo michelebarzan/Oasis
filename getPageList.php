@@ -39,7 +39,7 @@
         }
     }
 
-    $qSezioni="SELECT [id_sezione],[sezione],[descrizione] FROM [Cecklist].[dbo].[elenco_sezioni] ORDER BY id_sezione";
+    $qSezioni="SELECT [id_sezione],[sezione],[descrizione] FROM [Cecklist].[dbo].[elenco_sezioni] WHERE applicazione='Oasis' ORDER BY id_sezione";
     $rSezioni=sqlsrv_query($conn,$qSezioni);
     if($rSezioni==FALSE)
     {
