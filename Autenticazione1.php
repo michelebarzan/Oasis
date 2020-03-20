@@ -5,6 +5,10 @@
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 		<link rel="stylesheet" href="css/styleAV2.css" />
 		<script>
+			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) 
+			{
+				console.log("dark mode");
+			}
 			if(checkMobile())
 			{
 				window.location.href="http://remote.oasisgroup.it/OasisMobile/login.html";

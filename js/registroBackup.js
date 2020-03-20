@@ -20,8 +20,11 @@ function getRegistroBackup()
                 var container=document.getElementById("registroBackupInnerContainer");
                 var arrayResponse=JSON.parse(response);
                 titleContainer.innerHTML='<span>'+arrayResponse.nomeFile+'</span><span style="margin-left:auto">'+arrayResponse.dataModifica+'</span>';
-                container.innerHTML="<div>"+arrayResponse.contenutoFile.join("</div><div>")+"</div>";
-                container.scrollTop = container.scrollHeight;
+				var contenutoFile=arrayResponse.contenutoFile;
+                contenutoFile.reverse();
+                container.innerHTML="<div>"+contenutoFile.join("</div><div>")+"</div>";
+                /*container.innerHTML="<div>"+arrayResponse.contenutoFile.join("</div><div>")+"</div>";
+                container.scrollTop = container.scrollHeight;*/
             }
         }
         else
