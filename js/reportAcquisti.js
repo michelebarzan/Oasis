@@ -38,15 +38,14 @@ function importaPdfReportAcquisti()
 }
 async function onloadActions()
 {
+    getElencoMail();
     var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
     getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
 
     var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
     //console.log(responseImportaPdfReportAcquisti);
 
-    removeFaSpinner("reportAcquistiControlBar");
-
-    getElencoMail();
+    removeFaSpinner("reportAcquistiControlBar");    
 }
 async function getImportaPdfReportAcquisti()
 {
