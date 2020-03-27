@@ -36,19 +36,36 @@ function importaPdfReportAcquisti()
         });
     });
 }
+async function onloadActions()
+{
+    var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
+    getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
+
+    var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
+    //console.log(responseImportaPdfReportAcquisti);
+
+    removeFaSpinner("reportAcquistiControlBar");
+
+    getElencoMail();
+}
+async function getImportaPdfReportAcquisti()
+{
+    var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
+    getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
+
+    var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
+    //console.log(responseImportaPdfReportAcquisti);
+
+    removeFaSpinner("reportAcquistiControlBar");
+
+    Swal.fire({icon:"success",title: "Pdf importati",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+}
 async function getElencoMail()
 {
     var itemsContainer=document.getElementById("reportAcquistiItemsContainer");
     itemsContainer.innerHTML="";
 
     unselectMail();
-
-    getFaSpinner(itemsContainer,"itemsContainer","Importazione pdf in corso...");
-
-    var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
-    //console.log(responseImportaPdfReportAcquisti);
-
-    removeFaSpinner("itemsContainer");
 
     getFaSpinner(itemsContainer,"itemsContainer","Caricamento in corso...");
 

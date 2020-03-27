@@ -18,7 +18,7 @@
 		<script src="js/reportAcquisti.js"></script>
 		<link rel="stylesheet" href="css/reportAcquisti.css" />
 	</head>
-	<body onload="getElencoMail()">
+	<body onload="onloadActions()">
 		<?php include('struttura.php'); ?>
 		<div class="reusable-outer-container reusable-outer-container-c">
             <div class="reusable-control-bar reusable-control-bar-r" id="reportAcquistiControlBar">
@@ -29,6 +29,10 @@
 				<button class="rcb-button-text-icon" onclick="getElencoMail()">
 					<span>Aggiorna</span>
 					<i class="fad fa-sync-alt" style="margin-left:5px"></i>
+				</button>
+				<button class="rcb-button-text-icon" onclick="getImportaPdfReportAcquisti()">
+					<span>Importa pdf</span>
+					<i class="fad fa-file-import" style="margin-left:5px"></i>
 				</button>
 				<div class="rcb-input-icon-container" style="width:85px">
 					<span style="color:gray;margin-right:5px">Righe</span>
