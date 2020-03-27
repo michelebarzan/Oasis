@@ -9,7 +9,6 @@
 		<title><?php echo $pageName; ?></title>
 		<link rel="stylesheet" href="css/styleV35.css" />
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 		<script src="canvasjs.min.js"></script>
 		<script src="struttura.js"></script>
 		<link rel="stylesheet" href="js_libraries/spinners/spinner.css" />

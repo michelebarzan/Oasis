@@ -3,7 +3,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nunito|Raleway" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300" rel="stylesheet">
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-	<script src="https://kit.fontawesome.com/4462bc49a0.js"></script>
+	<link href="css_libraries/fontawesome/css/all.css" rel="stylesheet">
 	<div id="header" class="header" >
 		<!--<input type="button" id="nascondi" value="" onclick="nascondi()" data-toggle='tooltip' title='Apri menu' />-->
 		<button class="main-nav-bar-open-button" onclick="mainNavBarOpen()" title="Apri"><i class="fal fa-list fa-2x"></i></button>

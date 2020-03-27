@@ -1,0 +1,225 @@
+.swal2-title
+{
+    font-family: 'Quicksand', sans-serif;
+    font-size:18px;
+}
+.swal2-content
+{
+    font-family: 'Quicksand', sans-serif;
+    font-size:13px;
+}
+.swal2-confirm,.swal2-cancel
+{
+    font-family: 'Quicksand', sans-serif;
+    font-size:13px;
+}
+html
+{
+    margin:0px;
+    width:100%;
+    height: 100%;
+}
+body
+{
+    margin:0px;
+    width:100%;
+    height: 100%;
+}
+/* width */
+::-webkit-scrollbar
+{
+    width: 8px;
+}
+/* Track */
+::-webkit-scrollbar-track
+{
+    /*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
+    border:0.5px solid rgb(173, 173, 173);
+    border-radius: 10px;
+    background-color: #EBEBEB;
+}
+/* Handle */
+::-webkit-scrollbar-thumb
+{
+    background: rgb(150, 150, 150); 
+    border-radius: 10px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover
+{
+    background: #aaa; 
+}
+/*#searchOrdiniFornitori::placeholder,#searchOrdiniFornitori
+{
+    color:rgba(112,176,133,1);
+}
+#searchOrdiniClienti::placeholder,#searchOrdiniClienti
+{
+    color:rgba(218,105,105,1);
+}*/
+#reportAcquistiItemsContainer
+{
+    min-width:25%;
+    max-width:25%;
+    width:25%;
+    height: calc(100% - 20px);
+    overflow-x: hidden;
+    overflow-y:auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    margin-right: 0px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px;
+}
+.report-acquisti-item
+{
+    width:calc(100% - 10px);
+    border:2px solid transparent;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    margin:5px;
+    background-color: #f0f0f041;
+    cursor: pointer;
+    border-radius: 4px;
+    /*height: 40px;
+    min-height: 40px;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-sizing: border-box;
+    padding: 3px;
+}
+.report-acquisti-item-section-container
+{
+    display: flex;
+    box-sizing: border-box;
+    /*border:1px solid gray;*/
+    border-radius: 2px;
+}
+.report-acquisti-item-section
+{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: start;
+    margin:5px;
+    color:black;
+}
+.report-acquisti-item-section span
+{
+    font-family: 'Quicksand',sans-serif;
+    /*color:black;*/
+    font-weight: bold;
+    font-size:12px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:calc(100% - 25px);
+}
+.report-acquisti-item-section i
+{
+    width:20px;
+    margin-right:5px;
+}
+#reportAcquistiInfoOrdineContainer
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    height:250px;
+    max-height:250px;
+    min-height:250px;
+    padding:5px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+/*-------------------------------------------------------*/
+#reportAcquistiInfoOrdineTable
+{
+    width:100%;
+    /*margin:5px;*/
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 2px;
+}
+#reportAcquistiInfoOrdineTable thead
+{
+    background-color: #404040;
+    border-radius: 2px;
+    height: 25px;
+    padding-right: 8px;
+}
+#reportAcquistiInfoOrdineTable th
+{
+    font-family: 'Quicksand',sans-serif;
+    color:white;
+    font-weight: normal;
+    font-size:12px;
+    text-align: left;
+    background-color: transparent;
+    padding:5px;
+}
+#reportAcquistiInfoOrdineTable tbody
+{
+    border-radius: 2px;
+}
+#reportAcquistiInfoOrdineTable td
+{
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Quicksand',sans-serif;
+    color:black;
+    font-weight: bold;
+    font-size:12px;
+    padding:5px;
+}
+#reportAcquistiInfoOrdineTable tbody tr:nth-child(odd) 
+{
+    background-color:rgba(76, 146, 203, 0.199);
+}
+#reportAcquistiInfoOrdineTable tbody tr:nth-child(even) 
+{
+    background-color:rgb(235, 235, 235);
+}
+#reportAcquistiInfoOrdineTable tbody, #reportAcquistiInfoOrdineTable thead
+{
+    display: block;
+}
+#reportAcquistiInfoOrdineTable tbody 
+{
+   overflow: auto;
+   height: 127px;
+}
+/*-------------------------------------------------------*/
+#reportAcquistiPdfContainer
+{
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    margin-top: 10px;
+    height: calc(100% - 250px - 10px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    flex-direction: row;
+    /*display: flex;
+    flex-direction: row;
+    overflow:auto;
+    flex-wrap: wrap;*/
+    box-sizing: border-box;
+    padding: 5px;
+}
+.report-acquisti-pdf-ordine-iframe
+{
+    height:calc(100% - 10px);
+    width:calc(50% - 10px);
+    border-radius: 4px;
+    margin:5px;
+    box-sizing: border-box;
+}
