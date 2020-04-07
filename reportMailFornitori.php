@@ -2,7 +2,7 @@
 	include "Session.php";
 	include "connessione.php";
 	
-	$pageName="Report Acquisti";
+	$pageName="Report mail fornitori";
 ?>
 <html>
 	<head>
@@ -15,33 +15,29 @@
 		<link rel="stylesheet" href="css/styleV35.css" />
 		<link rel="stylesheet" href="css/reusableContainer.css" />
 		<script src="struttura.js"></script>
-		<script src="js/reportAcquisti.js"></script>
-		<link rel="stylesheet" href="css/reportAcquisti.css" />
+		<script src="js/reportMailFornitori.js"></script>
+		<link rel="stylesheet" href="css/reportMailFornitori.css" />
 	</head>
 	<body onload="onloadActions()">
 		<?php include('struttura.php'); ?>
 		<div class="reusable-outer-container reusable-outer-container-c">
             <div class="reusable-control-bar reusable-control-bar-r" id="reportAcquistiControlBar">
 				<div class="rcb-input-icon-container">
-					<input type="text" placeholder="Cerca..." id="inputSearchReportAcquisti" onkeyup="searchReportAcquisti(event,this)">
-					<i class="fad fa-search"></i>
+					<input type="text" placeholder="Cerca..." id="inputSearchreportAcquisti" onkeyup="checkInputSearchreportAcquisti(this,event)">
+					<i class="fad fa-search" onclick="getElencoMail()" id="iconSearchreportAcquisti"></i>
 				</div>
-				<button class="rcb-button-text-icon" onclick="getElencoMail()">
+				<!--<button class="rcb-button-text-icon" onclick="getElencoMail()">
 					<span>Aggiorna</span>
 					<i class="fad fa-sync-alt" style="margin-left:5px"></i>
-				</button>
-				<button class="rcb-button-text-icon" onclick="getImportaPdfReportAcquisti()">
-					<span>Importa pdf</span>
-					<i class="fad fa-file-import" style="margin-left:5px"></i>
-				</button>
-				<div class="rcb-input-icon-container" style="width:85px">
+				</button>-->
+				<!--<div class="rcb-input-icon-container" style="width:85px">
 					<span style="color:gray;margin-right:5px">Righe</span>
-					<input type="number" id="inputTopReportAcquisti" value="200" onkeyup="getElencoMail()">
-				</div>
+					<input type="number" id="inputTopreportAcquisti" value="400" onkeyup="getElencoMail()">
+				</div>-->
 				<div class="rcb-select-container">
 					<i class="fad fa-sort-alt"></i>
 					<span>Ordina per</span>
-					<select id="selectOrderByReportAcquisti" onchange="getElencoMail()">
+					<select id="selectOrderByreportAcquisti" onchange="getElencoMail()">
 						<option value="ordine_fornitore DESC">ordine fornitore decrescente</option>
 						<option value="ordine_fornitore ASC">ordine fornitore crescente</option>
 						<option value="ordine_cliente DESC">ordine cliente decrescente</option>
@@ -54,6 +50,10 @@
 						<option value="data_spedizione ASC">data spedizione crescente</option>
 					</select>
 				</div>
+				<button class="rcb-button-text-icon" onclick="getImportaPdfreportAcquisti()">
+					<span>Importa pdf</span>
+					<i class="fad fa-file-import" style="margin-left:5px"></i>
+				</button>
 			</div>
 			<div class="reusable-row-container" style="overflow:hidden;min-height: calc(100% - 40px);">
 				<div class="reusable-inner-container reusable-inner-container-margin" id="reportAcquistiItemsContainer"></div>

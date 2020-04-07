@@ -12,7 +12,7 @@
     {
         while($row2=sqlsrv_fetch_array($result2))
         {
-            $percorso="http://remote.oasisgroup.it/OasisPdfReportAcquisti".substr($row2['percorso'],1);
+            $percorso="http://remote.oasisgroup.it/OasisPdfreportAcquisti".substr($row2['percorso'],1);
             
             array_push($pdfOrdine,$percorso);
         }

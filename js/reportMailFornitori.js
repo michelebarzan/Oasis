@@ -1,10 +1,12 @@
 var selectedMailI;
+var steps=0;
+var mailsLenght=0;
 
-function importaPdfReportAcquisti()
+function importaPdfreportAcquisti()
 {
     return new Promise(function (resolve, reject) 
     {
-        $.get("importaPdfReportAcquisti.php",
+        $.get("importaPdfreportAcquisti.php",
         function(response, status)
         {
             if(status=="success")
@@ -42,18 +44,18 @@ async function onloadActions()
     var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
     getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
 
-    var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
-    //console.log(responseImportaPdfReportAcquisti);
+    var responseImportaPdfreportAcquisti= await importaPdfreportAcquisti();
+    //console.log(responseImportaPdfreportAcquisti);
 
     removeFaSpinner("reportAcquistiControlBar");    
 }
-async function getImportaPdfReportAcquisti()
+async function getImportaPdfreportAcquisti()
 {
     var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
     getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
 
-    var responseImportaPdfReportAcquisti= await importaPdfReportAcquisti();
-    //console.log(responseImportaPdfReportAcquisti);
+    var responseImportaPdfreportAcquisti= await importaPdfreportAcquisti();
+    //console.log(responseImportaPdfreportAcquisti);
 
     removeFaSpinner("reportAcquistiControlBar");
 
@@ -70,14 +72,15 @@ async function getElencoMail()
 
     var mails=await getMails();
 
-    var i=0;
+    mailsLenght=0;
     mails.forEach(function (mail)
     {
         var item=document.createElement("div");
         item.setAttribute("class","report-acquisti-item");
-        item.setAttribute("id","reportAcquistiItem"+i);
+        item.setAttribute("style","display:none");
+        item.setAttribute("id","reportAcquistiItem"+mailsLenght);
         var JSONmail=JSON.stringify(mail);
-        item.setAttribute("onclick","selectedMailI="+i+";selectMail(this,'"+JSONmail+"')");
+        item.setAttribute("onclick","selectedMailI="+mailsLenght+";selectMail(this,'"+JSONmail+"')");
 
         var rowSectionContainer=document.createElement("div");
         rowSectionContainer.setAttribute("class","report-acquisti-item-section-container");
@@ -209,120 +212,61 @@ async function getElencoMail()
 
         item.appendChild(rowSectionContainer);
 
-        /*var sectionContainer=document.createElement("div");
-        sectionContainer.setAttribute("class","report-acquisti-item-section-container");
-        sectionContainer.setAttribute("style","flex-direction:column;width:calc(50% - 0px);margin-right:0px;height:100%;justify-content:start;");
-
-        var sectionInnerContainer=document.createElement("div");
-        sectionInnerContainer.setAttribute("class","report-acquisti-item-section-container");
-        sectionInnerContainer.setAttribute("style","flex-direction:column;width:100%;height:100%;background-color:rgba(76,145,203,0.12)");
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        var span=document.createElement("span");
-        span.setAttribute("style","width:calc(100% - 25px);margin-right:5px;text-decoration:underline");
-        span.setAttribute("id","searchResult1ColumnContainer"+mail.ordine_fornitore);
-        //span.innerHTML="Colonna";
-        section.appendChild(span);
-        var icon=document.createElement("i");
-        icon.setAttribute("class","fad fa-search");
-        icon.setAttribute("style","margin-left:auto;margin-right:0px");
-        section.appendChild(icon);
-        sectionInnerContainer.appendChild(section);
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        section.setAttribute("style","margin-top:0px");
-        var span=document.createElement("span");
-        span.setAttribute("id","searchResult1ValueContainer"+mail.ordine_fornitore);
-        span.setAttribute("style","width:100%");
-        //span.innerHTML=mail.nome_fornitore;
-        section.appendChild(span);
-        sectionInnerContainer.appendChild(section);
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        section.setAttribute("style","margin-top:0px");
-        var span=document.createElement("span");
-        span.setAttribute("id","searchResult2ColumnContainer"+mail.ordine_fornitore);
-        span.setAttribute("style","width:100%;text-decoration:underline");
-        //span.innerHTML="Colonna 2";
-        section.appendChild(span);
-        sectionInnerContainer.appendChild(section);
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        section.setAttribute("style","margin-top:0px");
-        var span=document.createElement("span");
-        span.setAttribute("id","searchResult2ValueContainer"+mail.ordine_fornitore);
-        span.setAttribute("style","width:100%");
-        //span.innerHTML=mail.doc_total;
-        section.appendChild(span);
-        sectionInnerContainer.appendChild(section);
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        section.setAttribute("style","margin-top:0px");
-        var span=document.createElement("span");
-        span.setAttribute("id","searchResult3ColumnContainer"+mail.ordine_fornitore);
-        span.setAttribute("style","width:100%;text-decoration:underline");
-        //span.innerHTML="Colonna 3";
-        section.appendChild(span);
-        sectionInnerContainer.appendChild(section);
-
-        var section=document.createElement("div");
-        section.setAttribute("class","report-acquisti-item-section");
-        section.setAttribute("style","margin-top:0px");
-        var span=document.createElement("span");
-        span.setAttribute("id","searchResult3ValueContainer"+mail.ordine_fornitore);
-        span.setAttribute("style","width:100%");
-        //span.innerHTML=mail.oggetto;
-        section.appendChild(span);
-        sectionInnerContainer.appendChild(section);
-
-        sectionContainer.appendChild(sectionInnerContainer);
-
-        item.appendChild(sectionContainer);*/
-
         itemsContainer.appendChild(item);
 
-        i++;
+        mailsLenght++;
     });
 
     removeFaSpinner("itemsContainer");
 
-    /*var headers=[];
-    for (var prop in mails[0]) {
-        if (Object.prototype.hasOwnProperty.call(mails[0], prop))
+    caricaAltreMail();
+
+    var btnSteps=document.createElement("button");
+    btnSteps.setAttribute("onclick","caricaAltreMail()");
+    btnSteps.setAttribute("id","btnCaricaAltreMail");
+    btnSteps.innerHTML="<i class='fal fa-plus-circle'></i><span>Carica altri...</span>";
+    itemsContainer.appendChild(btnSteps);
+
+    var value=document.getElementById("inputSearchreportAcquisti").value.toLowerCase();
+    if(value!="")
+    {
+        $(".report-acquisti-item-section").css({"color":"black"});
+        $(".report-acquisti-item-section").filter(function() {
+            if($(this).text().toLowerCase().indexOf(value) > -1)
+            {
+                $(this).css({"color":"#4C91CB"});
+            }
+            else
+                $(this).css({"color":"black"});
+        });
+    }
+}
+function caricaAltreMail()
+{
+    for (let index = steps; index < steps+50; index++)
+    {
+        $("#reportAcquistiItem"+index).show();
+    }
+    steps+=50;
+    
+    if(steps>mailsLenght && document.getElementById("btnCaricaAltreMail")!=undefined)
+        document.getElementById("btnCaricaAltreMail").style.display="none";
+}
+function checkInputSearchreportAcquisti(input,event)
+{
+    if(input.value=="")
+        getElencoMail();
+    else
+    {
+        var keyCode = event.keyCode;
+        switch(keyCode) 
         {
-            headers.push(prop);
+            case 13://freccia giu
+                event.preventDefault();
+                getElencoMail();
+            break;
         }
     }
-    var table=document.createElement("table");
-    table.setAttribute("id","");
-
-    var tr=document.createElement("tr");
-    headers.forEach(function (header)
-    {
-        var th=document.createElement("th");
-        th.innerHTML=header;
-        tr.appendChild(th);
-    });
-    table.appendChild(tr);
-
-    mails.forEach(function (mail)
-    {
-        var tr=document.createElement("tr");
-        headers.forEach(function (header)
-        {
-            var td=document.createElement("td");
-            td.innerHTML=mail[header];
-            tr.appendChild(td);
-        });
-        table.appendChild(tr);
-    });
-
-    tableContainer.appendChild(table);*/
 }
 async function selectMail(selectedItem,JSONmail)
 {
@@ -598,7 +542,7 @@ function getDettagliOrdine(ordine_fornitore)
 {
     return new Promise(function (resolve, reject) 
     {
-        $.get("getDettagliOrdineReportAcquisti.php",
+        $.get("getDettagliOrdinereportAcquisti.php",
         {
             ordine_fornitore
         },
@@ -636,7 +580,7 @@ function getPdfOrdine(ordine_fornitore)
 {
     return new Promise(function (resolve, reject) 
     {
-        $.get("getPdfOrdineReportAcquisti.php",
+        $.get("getPdfOrdinereportAcquisti.php",
         {
             ordine_fornitore
         },
@@ -690,12 +634,15 @@ function getMails()
 {
     return new Promise(function (resolve, reject) 
     {
-        var orderBy=document.getElementById("selectOrderByReportAcquisti").value;
-        var top=document.getElementById("inputTopReportAcquisti").value;
-        $.get("getMailsReportAcquisti.php",
+        var orderBy=document.getElementById("selectOrderByreportAcquisti").value;
+        //var top=document.getElementById("inputTopreportAcquisti").value;
+        var filter=document.getElementById("inputSearchreportAcquisti").value.toLowerCase();
+
+        $.get("getMailsreportAcquisti.php",
         {
             orderBy,
-            top
+            //top,
+            filter
         },
         function(response, status)
         {
@@ -727,82 +674,17 @@ function getMails()
         });
     });
 }
-function searchReportAcquisti(event,input)
-{
-    unselectMail();
-    $(".report-acquisti-item-section").css({"color":"black"});
-    var value=input.value.toLowerCase();
-    if(value!="")
-    {
-        $(".report-acquisti-item").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            if($(this).is(":visible"))
-            {
-                $(".report-acquisti-item-section").filter(function() {
-                    if($(this).text().toLowerCase().indexOf(value) > -1)
-                    {
-                        $(this).css({"color":"#4C91CB"});
-                    }
-                    else
-                        $(this).css({"color":"black"});
-                });
-            }
-        });
-    }
-    else
-        $(".report-acquisti-item").show();
-    
-    var keyCode = event.keyCode;
-    switch(keyCode) 
-    {
-        case 13:document.getElementById("reportAcquistiItem"+0).click();document.body.focus();break;
-        case 40://freccia giu
-                event.preventDefault();
-                if(selectedMailI==null)
-                    document.getElementById("reportAcquistiItem"+0).click();
-                else
-                {
-                    try {
-                        selectedMailI++;
-                        document.getElementById("reportAcquistiItem"+selectedMailI).click();
-                    } catch (error) {
-                        selectedMailI=0;
-                        document.getElementById("reportAcquistiItem"+selectedMailI).click();
-                    }
-                    
-                }
-            break;
-            case 38://freccia su
-                event.preventDefault();
-                if(selectedMailI==null)
-                    document.getElementById("reportAcquistiItem"+0).click();
-                else
-                {
-                    try {
-                        selectedMailI--;
-                        document.getElementById("reportAcquistiItem"+selectedMailI).click();
-                    } catch (error) {
-                        selectedMailI=0;
-                        document.getElementById("reportAcquistiItem"+selectedMailI).click();
-                    }
-                    
-                }
-            break;
-    }
-}
 window.addEventListener("keydown", windowKeydown, false);
 function windowKeydown(e)
 {
-    if(e.target.id!=="inputSearchReportAcquisti")
+    if(e.target.id!=="inputSearchreportAcquisti")
     {
         var keyCode = e.keyCode;
         switch(keyCode) 
         {
             case 40://freccia giu
                 e.preventDefault();
-                if(selectedMailI==null)
-                    document.getElementById("reportAcquistiItem"+0).click();
-                else
+                if(selectedMailI!==null)
                 {
                     try {
                         selectedMailI++;
@@ -816,9 +698,7 @@ function windowKeydown(e)
             break;
             case 38://freccia su
                 e.preventDefault();
-                if(selectedMailI==null)
-                    document.getElementById("reportAcquistiItem"+0).click();
-                else
+                if(selectedMailI!==null)
                 {
                     try {
                         selectedMailI--;

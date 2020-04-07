@@ -5,11 +5,15 @@
     set_time_limit(120);
 
     $orderBy=$_REQUEST["orderBy"];
-    $top=$_REQUEST["top"];
+    //$top=$_REQUEST["top"];
+    $filter=$_REQUEST["filter"];
 
     $mails=[];
 
-    $query2="SELECT TOP($top) * FROM dbo.report_acquisti_view ORDER BY $orderBy";	
+    $query2="SELECT TOP (223) ordine_fornitore,ordine_cliente,data_mail,mittente,nome_fornitore,nome_cliente,doc_date,data_spedizione,doc_due_date,doc_total,importo_ordine_cliente 
+            FROM dbo.report_acquisti_view 
+            WHERE ordine_fornitore LIKE '%$filter%' OR ordine_cliente LIKE '%$filter%' OR data_mail LIKE '%$filter%' OR mittente LIKE '%$filter%' OR nome_fornitore LIKE '%$filter%' OR nome_cliente LIKE '%$filter%' OR doc_date LIKE '%$filter%' OR data_spedizione LIKE '%$filter%' OR doc_due_date LIKE '%$filter%' OR doc_total LIKE '%$filter%' OR importo_ordine_cliente LIKE '%$filter%' 
+            ORDER BY $orderBy";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -18,8 +22,8 @@
             $mail["ordine_fornitore"]=$row2['ordine_fornitore'];
             $mail["ordine_cliente"]=$row2['ordine_cliente'];
             $mail["data_mail"]=$row2['data_mail']->format('d/m/Y');
-            $oggetto=utf8_encode(str_replace("'","",$row2['oggetto']));
-            $mail["oggetto"]=str_replace('"','',$oggetto);
+            //$oggetto=utf8_encode(str_replace("'","",$row2['oggetto']));
+            //$mail["oggetto"]=str_replace('"','',$oggetto);
             $mittente=utf8_encode(str_replace("'","",$row2['mittente']));
             $mail["mittente"]=str_replace('"','',$mittente);
             $nome_fornitore=utf8_encode(str_replace("'","",$row2['nome_fornitore']));
