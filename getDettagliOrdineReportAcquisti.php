@@ -6,7 +6,7 @@
 
     $righeOrdine=[];
 
-    $query2="SELECT ItemCode,descrizione,Price,Quantity,line_total FROM dbo.report_acquisti_view_dettagli WHERE ordine_fornitore='$ordine_fornitore'";	
+    $query2="SELECT DISTINCT ItemCode,descrizione,Price,Quantity,line_total FROM dbo.report_acquisti_view_dettagli WHERE ordine_fornitore='$ordine_fornitore'";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

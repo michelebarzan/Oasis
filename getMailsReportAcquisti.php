@@ -10,7 +10,7 @@
 
     $mails=[];
 
-    $query2="SELECT TOP (223) ordine_fornitore,ordine_cliente,data_mail,mittente,nome_fornitore,nome_cliente,doc_date,data_spedizione,doc_due_date,doc_total,importo_ordine_cliente 
+    $query2="SELECT ordine_fornitore,ordine_cliente,data_mail,mittente,nome_fornitore,nome_cliente,doc_date,data_spedizione,doc_due_date,doc_total,importo_ordine_cliente 
             FROM dbo.report_acquisti_view 
             WHERE ordine_fornitore LIKE '%$filter%' OR ordine_cliente LIKE '%$filter%' OR data_mail LIKE '%$filter%' OR mittente LIKE '%$filter%' OR nome_fornitore LIKE '%$filter%' OR nome_cliente LIKE '%$filter%' OR doc_date LIKE '%$filter%' OR data_spedizione LIKE '%$filter%' OR doc_due_date LIKE '%$filter%' OR doc_total LIKE '%$filter%' OR importo_ordine_cliente LIKE '%$filter%' 
             ORDER BY $orderBy";	
