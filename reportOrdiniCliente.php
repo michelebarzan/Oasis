@@ -21,9 +21,9 @@
 	<body onload="onloadActions()" onresize="fixTable()">
 		<?php include('struttura.php'); ?>
 		<div class="top-action-bar" id="reportOrdiniClienteActionBar">
-			<div class="action-bar-item" style="margin-left:5px" ><b>Visualizzazione</b>
-				<button class="action-bar-icon-button" id="btnFlexDirectionRow" onclick="changeFlexDirection()"><i class="fal fa-table"></i></button>
-				<button class="action-bar-icon-button" id="btnFlexDirectionColumn" onclick="changeFlexDirection()"><i class="fad fa-line-columns"></i></button>
+			<div class="action-bar-item" style="margin-left:5px" ><b>Header tabella</b>
+				<button class="action-bar-icon-button" id="btnHeaderTabellaSL" onclick="setHeaderTabella('sl')"><i class="far fa-horizontal-rule"></i></button>
+				<button class="action-bar-icon-button" id="btnHeaderTabellaML" onclick="setHeaderTabella('ml')"><i class="fad fa-line-height"></i></button>
 			</div>
 			<!--<div class="action-bar-item"><b>Righe</b>
 				<input type="number" class="action-bar-input" id="inputFilterTop" onfocusout="getElencoPick()" value="200">

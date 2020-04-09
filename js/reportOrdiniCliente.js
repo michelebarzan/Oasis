@@ -4,6 +4,34 @@ var headers;
 var steps=0;
 var ordiniLenght=0;
 
+function setHeaderTabella(headerTabella)
+{
+    if(headerTabella=="sl")
+    {
+        $("#reportOrdiniClientiTable thead").css({"height":"35px","line-height":"35px"});
+        $("#reportOrdiniClientiTable th").css({"height":"35px"});
+        $("#reportOrdiniClientiTable th span").css(
+        {
+            "white-space":"nowrap",
+            "overflow":"hidden",
+            "text-overflow":"ellipsis"
+        });
+        $("#reportOrdiniClientiTable tbody").css({"height":"calc(100% - 36px)"});
+
+    }
+    if(headerTabella=="ml")
+    {
+        $("#reportOrdiniClientiTable thead").css({"height":"60px","line-height":"normal"});
+        $("#reportOrdiniClientiTable th").css({"height":"60px"});
+        $("#reportOrdiniClientiTable th span").css(
+        {
+            "white-space":"normal",
+            "overflow":"hidden",
+            "text-overflow":"clip"
+        });
+        $("#reportOrdiniClientiTable tbody").css({"height":"calc(100% - 61px)"});
+    }
+}
 function checkFlexDirection()
 {
     document.getElementById("btnFlexDirectionRow").style.color="black";
@@ -20,6 +48,7 @@ function checkFlexDirection()
 function onloadActions()
 {
     getElencoOrdiniClienteView();
+    //setHeaderTabella('sl');
 }
 async function getElencoOrdiniClienteView()
 {
@@ -50,6 +79,11 @@ async function getElencoOrdiniClienteView()
             headers.push(header);
         }
     }
+    /*
+    ingrandire colonne nomecliente, nomefornitore,tipopagamento,tipo
+
+    shipopedamoun
+    */
     
     var table=document.createElement("table");
     table.setAttribute("id","reportOrdiniClientiTable");
@@ -68,7 +102,7 @@ async function getElencoOrdiniClienteView()
 
         var i=document.createElement("i");
         i.setAttribute("class","far fa-filter");
-        i.setAttribute("onclick","getFilterMenu(event,'"+header.value+"')");
+        i.setAttribute("onclick","getFilterMenu(event,'"+header.value+"',this)");
         th.appendChild(i);
 
         tr.appendChild(th);
@@ -120,10 +154,13 @@ async function getElencoOrdiniClienteView()
 function hideFilterMenu()
 {
     $(".filter-menu-report-ordini-cliente").hide("fast","swing");
+    $("#reportOrdiniClientiTable th i").css("color","");
 }
-function getFilterMenu(event,colonna)
+function getFilterMenu(event,colonna,icon)
 {
     hideFilterMenu();
+
+    icon.style.color="#4C91CB";
 
     var menu=document.createElement("div");
     menu.setAttribute("class","filter-menu-report-ordini-cliente");
@@ -151,7 +188,7 @@ function getFilterMenu(event,colonna)
     orderButton.setAttribute("onclick","");
 
     var i=document.createElement("i");
-    i.setAttribute("class","fal fa-sort");
+    i.setAttribute("class","fal fa-sort-amount-down");
     orderButton.appendChild(i);
 
     var span=document.createElement("span");
@@ -164,16 +201,44 @@ function getFilterMenu(event,colonna)
     orderButton.setAttribute("onclick","");
 
     var i=document.createElement("i");
-    i.setAttribute("class","fal fa-sort");
+    i.setAttribute("class","fal fa-sort-amount-down-alt");
     orderButton.appendChild(i);
 
     var span=document.createElement("span");
     span.innerHTML="Ordinamento crescente";
     orderButton.appendChild(span);
 
-    
-
     menuRow.appendChild(orderButton);
+
+    menu.appendChild(menuRow);
+
+    var menuRow=document.createElement("div");
+    menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+
+    var titoloFiltro=document.createElement("div");
+    titoloFiltro.setAttribute("class","filter-menu-titolo-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    titoloFiltro.innerHTML="Filtro";
+    menuRow.appendChild(titoloFiltro);
+
+    var inputCercaFiltro=document.createElement("input");
+    inputCercaFiltro.setAttribute("type","search");
+    inputCercaFiltro.setAttribute("class","filter-menu-input-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    inputCercaFiltro.setAttribute("placeholder","Cerca...");
+    menuRow.appendChild(inputCercaFiltro);
+
+    var filterInnerContainer=document.createElement("div");
+    filterInnerContainer.setAttribute("class","filter-menu-inner-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    menuRow.appendChild(filterInnerContainer);
+
+    var filterConfirmButton=document.createElement("button");
+    filterConfirmButton.setAttribute("class","filter-menu-button-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    var span=document.createElement("span");
+    span.innerHTML="Conferma";
+    filterConfirmButton.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","");
+    filterConfirmButton.appendChild(i);
+    menuRow.appendChild(filterConfirmButton);
 
     menu.appendChild(menuRow);
 

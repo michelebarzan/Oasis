@@ -9,7 +9,7 @@
 
     $ordini=[];
 
-    $query2="SELECT TOP (160) * FROM report_ordini_clienti_view ORDER BY $orderBy OPTION ( QUERYTRACEON 9481 )";	
+    $query2="SELECT TOP (800) * FROM report_ordini_clienti_view ORDER BY $orderBy OPTION ( QUERYTRACEON 9481 )";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -25,19 +25,22 @@
             $ordine["linea_business"]=$row2['linea_business'];
             $ordine["tipo"]=$row2['tipo'];
             $ordine["tipo_pagamento"]=$row2['tipo_pagamento'];
-            $ordine["importo_ordine_cliente"]=number_format($row2['importo_ordine_cliente'],2,",",".")."€";
-            $ordine["importo_pagato_ordine_cliente"]=number_format($row2['importo_pagato_ordine_cliente'],2,",",".")."€";
-            $ordine["importo_da_pagare_ordine_cliente"]=number_format($row2['importo_pagato_ordine_cliente'],2,",",".")."€";
-            $ordine["Shipped_Amount"]=number_format($row2['Shipped_Amount'],2,",",".")."€";
-            $ordine["To_Be_Shipped_Amount"]=number_format($row2['To_Be_Shipped_Amount'],2,",",".")."€";
+            $ordine["importo_totale"]=number_format($row2['importo_totale'],2,",",".")."€";
+            $ordine["importo_incassato"]=number_format($row2['importo_incassato'],2,",",".")."€";
+            $ordine["importo_da_pagare"]=number_format($row2['importo_da_pagare'],2,",",".")."€";
+            $ordine["fatturato_spedito"]=number_format($row2['fatturato_spedito'],2,",",".")."€";
+            $ordine["fatturato_da_spedire"]=number_format($row2['fatturato_da_spedire'],2,",",".")."€";
             $note=utf8_encode(str_replace("'","",$row2['note']));
             $ordine["note"]=str_replace('"','',$note);
+            //stato solo aperto o chiuso (no parziale) e colorare 
 
             $ordine["ordine_fornitore"]=$row2['ordine_fornitore'];
             //$ordine["codice_fornitore"]=$row2['codice_fornitore'];
             $nome_fornitore=utf8_encode(str_replace("'","",$row2['nome_fornitore']));
             $ordine["nome_fornitore"]=str_replace('"','',$nome_fornitore);
             $ordine["data_creazione_ordine"]=$row2['data_creazione_ordine']->format('d/m/Y');
+            $ordine["data_arrivo_merce"]=$row2['data_arrivo_merce']->format('d/m/Y');
+            $ordine["stato"]="Cercando...";
             $ordine["importo_ordine_fornitore"]=number_format($row2['importo_ordine_fornitore'],2,",",".")."€";
 
             array_push($ordini,$ordine);
