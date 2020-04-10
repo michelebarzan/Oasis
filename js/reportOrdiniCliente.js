@@ -1,8 +1,12 @@
 var flexDirection="row";
 var ordini;
+var ordiniOriginal;
 var headers;
+var filterArrays={};
 var steps=0;
 var ordiniLenght=0;
+var tbody;
+var filterConditions=[];
 
 function setHeaderTabella(headerTabella)
 {
@@ -17,7 +21,10 @@ function setHeaderTabella(headerTabella)
             "text-overflow":"ellipsis"
         });
         $("#reportOrdiniClientiTable tbody").css({"height":"calc(100% - 36px)"});
-
+        $("#btnHeaderTabellaML").css({"color":""});
+        $("#btnHeaderTabellaML").css({"border":""});
+        $("#btnHeaderTabellaSL").css({"color":"#4C91CB"});
+        $("#btnHeaderTabellaSL").css({"border":"0.5px solid #4C91CB"});
     }
     if(headerTabella=="ml")
     {
@@ -30,6 +37,10 @@ function setHeaderTabella(headerTabella)
             "text-overflow":"clip"
         });
         $("#reportOrdiniClientiTable tbody").css({"height":"calc(100% - 61px)"});
+        $("#btnHeaderTabellaSL").css({"border":""});
+        $("#btnHeaderTabellaSL").css({"color":""});
+        $("#btnHeaderTabellaML").css({"color":"#4C91CB"});
+        $("#btnHeaderTabellaML").css({"border":"0.5px solid #4C91CB"});
     }
 }
 function checkFlexDirection()
@@ -48,7 +59,6 @@ function checkFlexDirection()
 function onloadActions()
 {
     getElencoOrdiniClienteView();
-    //setHeaderTabella('sl');
 }
 async function getElencoOrdiniClienteView()
 {
@@ -57,33 +67,10 @@ async function getElencoOrdiniClienteView()
 
     getFaSpinner(container,"container","Caricamento in corso...");
 
-    ordini=await getOrdiniClienteView();
-    //console.log(ordini);
-
-    var obj=ordini[0];
-    headers=[];
-    for (var prop in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, prop)) 
-        {
-            var label="";
-            var labelArray=prop.split("_");
-            labelArray.forEach(labelArrayItem => {
-                label+=labelArrayItem[0].toUpperCase() + labelArrayItem.slice(1) + " "; 
-            });
-            label.slice(1);
-            var header=
-            {
-                value:prop,
-                label:label
-            }
-            headers.push(header);
-        }
-    }
-    /*
-    ingrandire colonne nomecliente, nomefornitore,tipopagamento,tipo
-
-    shipopedamoun
-    */
+    objOrdini=await getOrdiniClienteView();
+    headers=objOrdini.headers;
+    ordini=objOrdini.ordini;
+    ordiniOriginal=objOrdini.ordini;
     
     var table=document.createElement("table");
     table.setAttribute("id","reportOrdiniClientiTable");
@@ -92,17 +79,21 @@ async function getElencoOrdiniClienteView()
     var tr=document.createElement("tr");
     headers.forEach(function (header)
     {
+        filterArrays[header.value]=[];
+
         var th=document.createElement("th");
         th.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
+        th.setAttribute("id","reportOrdiniClientiTableHeader"+header.value);
+        th.setAttribute("onclick","getFilterMenu(event,'"+header.value+"',this)");
 
         var span=document.createElement("span");
         span.innerHTML=header.label;
         span.setAttribute("title",header.value);
+        span.setAttribute("class","reportOrdiniClientiTableHeaderSpan");
         th.appendChild(span);
 
         var i=document.createElement("i");
         i.setAttribute("class","far fa-filter");
-        i.setAttribute("onclick","getFilterMenu(event,'"+header.value+"',this)");
         th.appendChild(i);
 
         tr.appendChild(th);
@@ -111,7 +102,7 @@ async function getElencoOrdiniClienteView()
     table.appendChild(thead);
 
     ordiniLenght=0;
-    var tbody=document.createElement("tbody");
+    tbody=document.createElement("tbody");
     ordini.forEach(function (ordine)
     {
         var tr=document.createElement("tr");
@@ -121,6 +112,8 @@ async function getElencoOrdiniClienteView()
 
         headers.forEach(function (header)
         {
+            filterArrays[header.value].push(ordine[header.value]);
+
             var td=document.createElement("td");
             td.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
             td.setAttribute("title",ordine[header.value]);
@@ -140,7 +133,21 @@ async function getElencoOrdiniClienteView()
 
     fixTable();
 
+    for (var colonna in filterArrays) {
+        if (Object.prototype.hasOwnProperty.call(filterArrays, colonna)) {
+            var filterArrayDuplicates=filterArrays[colonna];
+            var filterArray = [];
+            $.each(filterArrayDuplicates, function(i, el){
+                if($.inArray(el, filterArray) === -1) filterArray.push(el);
+            });
+            filterArray.sort();
+            filterArrays[colonna]=filterArray;
+        }
+    }
+    
     removeFaSpinner("container");
+
+    checkFilters();
 
     caricaAltriOrdini();
 
@@ -149,18 +156,42 @@ async function getElencoOrdiniClienteView()
     btnSteps.setAttribute("id","btncaricaAltriOrdini");
     btnSteps.innerHTML="<i class='fal fa-plus-circle'></i><span>Carica altri...</span>";
     container.appendChild(btnSteps);
-
+}
+function checkFilters()
+{
+    filterConditionsColumnsDuplicates=[];
+    filterConditions.forEach(function(filterCondition)
+    {
+        filterConditionsColumnsDuplicates.push(filterCondition.colonna);
+    });
+    var filterConditionsColumns = [];
+    $.each(filterConditionsColumnsDuplicates, function(i, el){
+        if($.inArray(el, filterConditionsColumns) === -1) filterConditionsColumns.push(el);
+    });
+    headers.forEach(function(header)
+    {
+        if(filterConditionsColumns.includes(header.value))
+        {
+            $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":"#E9A93A"});
+            $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":"#E9A93A"});
+        }
+        else
+        {
+            $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":""});
+            $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":""});
+        }
+    });
 }
 function hideFilterMenu()
 {
     $(".filter-menu-report-ordini-cliente").hide("fast","swing");
-    $("#reportOrdiniClientiTable th i").css("color","");
+    $("#reportOrdiniClientiTable th").css("color","");
 }
-function getFilterMenu(event,colonna,icon)
+function getFilterMenu(event,colonna,th)
 {
     hideFilterMenu();
 
-    icon.style.color="#4C91CB";
+    th.style.color="#4C91CB";
 
     var menu=document.createElement("div");
     menu.setAttribute("class","filter-menu-report-ordini-cliente");
@@ -171,11 +202,12 @@ function getFilterMenu(event,colonna,icon)
     menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-title-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
 
     var span=document.createElement("span");
+    span.setAttribute("class","filter-menu-item-report-ordini-cliente");
     span.innerHTML=colonna;
     menuRow.appendChild(span);
 
     var i=document.createElement("i");
-    i.setAttribute("class","fal fa-times");
+    i.setAttribute("class","fal fa-times filter-menu-item-report-ordini-cliente");
     i.setAttribute("onclick","hideFilterMenu()");
     menuRow.appendChild(i);
 
@@ -186,12 +218,14 @@ function getFilterMenu(event,colonna,icon)
 
     var orderButton=document.createElement("button");
     orderButton.setAttribute("onclick","");
+    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente");
 
     var i=document.createElement("i");
-    i.setAttribute("class","fal fa-sort-amount-down");
+    i.setAttribute("class","fal fa-sort-amount-down filter-menu-item-report-ordini-cliente");
     orderButton.appendChild(i);
 
     var span=document.createElement("span");
+    span.setAttribute("class","filter-menu-item-report-ordini-cliente");
     span.innerHTML="Ordinamento decrescente";
     orderButton.appendChild(span);
 
@@ -199,12 +233,14 @@ function getFilterMenu(event,colonna,icon)
 
     var orderButton=document.createElement("button");
     orderButton.setAttribute("onclick","");
+    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente");
 
     var i=document.createElement("i");
-    i.setAttribute("class","fal fa-sort-amount-down-alt");
+    i.setAttribute("class","fal fa-sort-amount-down-alt filter-menu-item-report-ordini-cliente");
     orderButton.appendChild(i);
 
     var span=document.createElement("span");
+    span.setAttribute("class","filter-menu-item-report-ordini-cliente");
     span.innerHTML="Ordinamento crescente";
     orderButton.appendChild(span);
 
@@ -212,39 +248,431 @@ function getFilterMenu(event,colonna,icon)
 
     menu.appendChild(menuRow);
 
-    var menuRow=document.createElement("div");
-    menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    var header=getFirstObjByPropValue(headers,"value",colonna);
 
-    var titoloFiltro=document.createElement("div");
-    titoloFiltro.setAttribute("class","filter-menu-titolo-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
-    titoloFiltro.innerHTML="Filtro";
-    menuRow.appendChild(titoloFiltro);
+    if(header.data_type=="date")
+    {
+        var menuRow=document.createElement("div");
+        menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-conditions-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
 
-    var inputCercaFiltro=document.createElement("input");
-    inputCercaFiltro.setAttribute("type","search");
-    inputCercaFiltro.setAttribute("class","filter-menu-input-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
-    inputCercaFiltro.setAttribute("placeholder","Cerca...");
-    menuRow.appendChild(inputCercaFiltro);
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
 
-    var filterInnerContainer=document.createElement("div");
-    filterInnerContainer.setAttribute("class","filter-menu-inner-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
-    menuRow.appendChild(filterInnerContainer);
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Uguale a";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterUguale"+colonna);
+        input.setAttribute("type","date");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Anno";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterAnno"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        conditionContainer.setAttribute("style","flex-direction:column");
+
+        var conditionContainerRow=document.createElement("div");
+        conditionContainerRow.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        conditionContainerRow.setAttribute("style","padding:0px");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Da";
+        conditionContainerRow.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterIntervalloDa"+colonna);
+        input.setAttribute("type","date");
+        conditionContainerRow.appendChild(input);
+
+        conditionContainer.appendChild(conditionContainerRow);
+
+        var conditionContainerRow=document.createElement("div");
+        conditionContainerRow.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        conditionContainerRow.setAttribute("style","padding:0px;padding-top:2px");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="A";
+        conditionContainerRow.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterIntervalloA"+colonna);
+        input.setAttribute("type","date");
+        conditionContainerRow.appendChild(input);
+
+        conditionContainer.appendChild(conditionContainerRow);
+
+        menuRow.appendChild(conditionContainer);
+
+        menu.appendChild(menuRow);
+    }
+    else
+    {
+        var menuRow=document.createElement("div");
+        menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-conditions-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Uguale a";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterUguale"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Contiene";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterContiene"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Inizia con";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterInizia"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Finisce con";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("id","filterFinisce"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        if(header.data_type=="number")
+        {
+            var conditionContainer=document.createElement("div");
+            conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            conditionContainer.setAttribute("style","flex-direction:column");
+    
+            var conditionContainerRow=document.createElement("div");
+            conditionContainerRow.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            conditionContainerRow.setAttribute("style","padding:0px");
+    
+            var span=document.createElement("span");
+            span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            span.innerHTML="Da";
+            conditionContainerRow.appendChild(span);
+    
+            var input=document.createElement("input");
+            input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            input.setAttribute("id","filterIntervalloDa"+colonna);
+            input.setAttribute("type","search");
+            conditionContainerRow.appendChild(input);
+    
+            conditionContainer.appendChild(conditionContainerRow);
+    
+            var conditionContainerRow=document.createElement("div");
+            conditionContainerRow.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            conditionContainerRow.setAttribute("style","padding:0px;padding-top:2px");
+    
+            var span=document.createElement("span");
+            span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            span.innerHTML="A";
+            conditionContainerRow.appendChild(span);
+    
+            var input=document.createElement("input");
+            input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            input.setAttribute("id","filterIntervalloA"+colonna);
+            input.setAttribute("type","search");
+            conditionContainerRow.appendChild(input);
+    
+            conditionContainer.appendChild(conditionContainerRow);
+    
+            menuRow.appendChild(conditionContainer);
+        }
+
+        menu.appendChild(menuRow);
+    }
 
     var filterConfirmButton=document.createElement("button");
-    filterConfirmButton.setAttribute("class","filter-menu-button-filtro-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    filterConfirmButton.setAttribute("class","filter-menu-report-ordini-cliente-confirm-button filter-menu-item-report-ordini-cliente");
+    filterConfirmButton.setAttribute("onclick","applyFilter('"+colonna+"')");
     var span=document.createElement("span");
-    span.innerHTML="Conferma";
+    span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+    span.innerHTML="Applica filtro";
     filterConfirmButton.appendChild(span);
-    var i=document.createElement("i");
-    i.setAttribute("class","");
-    filterConfirmButton.appendChild(i);
-    menuRow.appendChild(filterConfirmButton);
+    menu.appendChild(filterConfirmButton);
 
-    menu.appendChild(menuRow);
 
     document.body.appendChild(menu);
     $("#filterMenuReportOrdiniCliente"+colonna).show("fast","swing");
     $("#filterMenuReportOrdiniCliente"+colonna).css("display","flex");
+}
+function applyFilter(colonna)
+{
+    var header=getFirstObjByPropValue(headers,"value",colonna);
+
+    if(header.data_type=="date")
+    {
+        var uguale=document.getElementById("filterUguale"+colonna).value;
+        var anno=parseInt(document.getElementById("filterAnno"+colonna).value).toString();
+        if(anno.indexOf("NaN")>-1)
+        {
+            document.getElementById("filterAnno"+colonna).value="";
+            anno="";
+        }
+        var da=document.getElementById("filterIntervalloDa"+colonna).value;
+        var a=document.getElementById("filterIntervalloA"+colonna).value;
+        
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="uguale")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(uguale!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"uguale",
+                operatore:"=",
+                valore:"'"+uguale+"'"
+            }
+            filterConditions.push(filterCondition);
+        }
+
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="anno")
+            {
+                var index=filterConditions.indexOf(filterCondition);7
+                filterConditions.splice(index,1);
+            }
+        });
+        if(anno!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"anno",
+                operatore:"IN",
+                valore:"(SELECT ["+colonna+"] FROM report_ordini_clienti_view WHERE DATEPART(yy,["+colonna+"]) = "+anno+")"
+            }
+            filterConditions.push(filterCondition);
+        }
+
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="intervallo")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(da!="" && a!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"intervallo",
+                operatore:"BETWEEN",
+                valore:"'"+da+"' AND '"+a+"'"
+            }
+            filterConditions.push(filterCondition);
+        }
+    }
+    else
+    {
+        var uguale=document.getElementById("filterUguale"+colonna).value;
+        var contiene=document.getElementById("filterContiene"+colonna).value;
+        var inizia=document.getElementById("filterInizia"+colonna).value;
+        var finisce=document.getElementById("filterFinisce"+colonna).value;
+
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="uguale")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(uguale!="")
+        {
+            if(uguale.toLowerCase()==="null")
+            {
+                filterCondition=
+                {
+                    colonna,
+                    nome:"uguale",
+                    operatore:"IS",
+                    valore:"NULL"
+                }
+            }
+            else
+            {
+                filterCondition=
+                {
+                    colonna,
+                    nome:"uguale",
+                    operatore:"=",
+                    valore:"'"+uguale+"'"
+                }
+            }
+            filterConditions.push(filterCondition);
+        }
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="contiene")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(contiene!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"contiene",
+                operatore:"LIKE",
+                valore:"'%"+contiene+"%'"
+            }
+            filterConditions.push(filterCondition);
+        }
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="inizia")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(inizia!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"inizia",
+                operatore:"LIKE",
+                valore:"'"+inizia+"%'"
+            }
+            filterConditions.push(filterCondition);
+        }
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="finisce")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(finisce!="")
+        {
+            filterCondition=
+            {
+                colonna,
+                nome:"finisce",
+                operatore:"LIKE",
+                valore:"'%"+finisce+"'"
+            }
+            filterConditions.push(filterCondition);
+        }
+
+        if(header.data_type=="number")
+        {
+            var da=parseInt(document.getElementById("filterIntervalloDa"+colonna).value).toString();
+            if(da.indexOf("NaN")>-1)
+            {
+                document.getElementById("filterIntervalloDa"+colonna).value="";
+                document.getElementById("filterIntervalloA"+colonna).value="";
+                da="";
+            }
+            var a=parseInt(document.getElementById("filterIntervalloA"+colonna).value).toString();
+            if(a.indexOf("NaN")>-1)
+            {
+                document.getElementById("filterIntervalloDa"+colonna).value="";
+                document.getElementById("filterIntervalloA"+colonna).value="";
+                a="";
+            }
+            
+            filterConditions.forEach(function(filterCondition)
+            {
+                if(filterCondition.colonna==colonna && filterCondition.nome=="intervallo")
+                {
+                    var index=filterConditions.indexOf(filterCondition);
+                    filterConditions.splice(index,1);
+                }
+            });
+            if(da!="" && a!="")
+            {
+                filterCondition=
+                {
+                    colonna,
+                    nome:"intervallo",
+                    operatore:"BETWEEN",
+                    valore:""+da+" AND "+a+""
+                }
+                filterConditions.push(filterCondition);
+            }
+        }
+    }
+
+    hideFilterMenu();
+    steps=0;
+    getElencoOrdiniClienteView();
 }
 function caricaAltriOrdini()
 {
@@ -256,9 +684,12 @@ function caricaAltriOrdini()
 
     if(steps>=ordiniLenght)
     {
-        try {
-            document.getElementById("btncaricaAltriOrdini").style.display="none";
-        } catch (error) {}
+        setTimeout(function()
+        {
+            try {
+                document.getElementById("btncaricaAltriOrdini").style.display="none";
+            } catch (error) {console.log("errsteps")}
+        }, 500);
     }
 }
 function unselectTableRow()
@@ -311,18 +742,25 @@ function isEven(value) {
 function fixTable()
 {
     var tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
-    var tableColWidth1=tableWidth/headers.length;
+
+    headers.forEach(function(header)
+    {
+        var width=(header.width*tableWidth)/100;
+        $(".reportOrdiniClientiTableCell"+header.value).css({"width":width+"px"});
+    });
     
+    /*var tableColWidth1=tableWidth/headers.length;
     $("#reportOrdiniClientiTable td").css({"width":tableColWidth1+"px"});
-    $("#reportOrdiniClientiTable th").css({"width":tableColWidth1+"px"});
+    $("#reportOrdiniClientiTable th").css({"width":tableColWidth1+"px"});*/
 }
 function getOrdiniClienteView()
 {
     return new Promise(function (resolve, reject) 
     {
+        var JSONfilterConditions=JSON.stringify(filterConditions);
         $.get("getOrdiniClienteView.php",
         {
-            
+            JSONfilterConditions
         },
         function(response, status)
         {
@@ -354,6 +792,53 @@ function getOrdiniClienteView()
         });
     });
 }
+function getFirstObjByPropValue(array,prop,propValue)
+{
+    var return_item;
+    array.forEach(function(item)
+    {
+        if(item[prop]==propValue)
+        {
+            return_item= item;
+        }
+    });
+    return return_item;
+}
+function esportaExcel()
+{
+    exportTableToExcel("reportOrdiniClientiTable", "reportOrdiniClienti");
+}
+function exportTableToExcel(tableID, filename = '')
+{
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
 window.addEventListener("click", windowClick, false);
 function windowClick(e)
 {
@@ -361,8 +846,12 @@ function windowClick(e)
     {
         unselectTableRow();
     }
-    //console.log(e.target.className)
-    if(e.target.className!=="far fa-filter" && e.target.className!=="filter-menu-report-ordini-cliente"/* && e.target.className.indexOf("filter-menu-item-report-ordini-cliente")==-1*/)
+    //console.log(e.target.className.indexOf("filter-menu-item-report-ordini-cliente"));
+    if(e.target.className==="far fa-filter" || e.target.className==="reportOrdiniClientiTableHeaderSpan" || e.target.id.indexOf("reportOrdiniClientiTableHeader")>-1 || e.target.className==="filter-menu-report-ordini-cliente" || e.target.className.indexOf("filter-menu-item-report-ordini-cliente")!==-1)
+    {
+        //console.log("non chiudere popup filtro")
+    }
+    else
     {
         hideFilterMenu();
     }

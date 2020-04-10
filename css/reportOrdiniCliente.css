@@ -289,6 +289,8 @@ html
     align-items: center;
     float: left;
     overflow: hidden;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    cursor: pointer;
 }
 #reportOrdiniClientiTable th span
 {
@@ -308,13 +310,13 @@ html
     width:15px;
     margin-left: auto;
     font-size: 11px;
-    cursor: pointer;
+    /*cursor: pointer;*/
     /*color:#4C91CB;*/
 }
-#reportOrdiniClientiTable tbody
+#reportOrdiniClientiTable th:hover
 {
-    border-radius: 4px;
-    margin-top:1px;
+    /*color:#4C91CB;*/
+    background-color: #555555;
 }
 #reportOrdiniClientiTable td
 {
@@ -357,8 +359,10 @@ html
 }
 #reportOrdiniClientiTable tbody 
 {
-   overflow: auto;
+   overflow-y: scroll;
    height: calc(100% - 36px);
+   border-radius: 4px;
+   margin-top:1px;
 }
 /*-------------------------------------------------------*/
 #btncaricaAltriOrdini
@@ -399,7 +403,7 @@ html
 {
     display: none;
     position: absolute;
-    height:350px;
+    /*height:350px;*/
     width:250px;
     background-color: #555555;
     border-radius: 4px;
@@ -465,6 +469,7 @@ html
     background-color: transparent;
     border:none;
     color:white;
+    outline: none;
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -534,11 +539,62 @@ html
     width:100%;
     border-radius: 2px;
     border:0.5px solid gray;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-top:5px;
+    padding-bottom:5px;
+    overflow-y:auto;
+    overflow-x: hidden;
 }
-.filter-menu-button-filtro-container-report-ordini-cliente
+.filter-menu-inner-filtro-container-report-ordini-cliente button
+{
+    width: 100%;
+    background-color: transparent;
+    border:none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left:5px;
+    padding-right:5px;
+    /*margin-bottom:5px;*/
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.filter-menu-inner-filtro-container-report-ordini-cliente button:hover
+{
+    background-color: gray;
+}
+.filter-menu-inner-filtro-container-report-ordini-cliente span
+{
+    font-family: 'Quicksand',sans-serif;
+    font-size: 12px;
+    color:white;
+    margin-left: 5px;
+    width: calc(100% - 18px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+.filter-menu-inner-filtro-container-report-ordini-cliente i
+{
+    width:13px;
+    /*text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.712);*/
+}
+.filter-menu-inner-filtro-container-report-ordini-cliente .fa-check-square
+{
+    color:#4C91CB;
+}
+.filter-menu-inner-filtro-container-report-ordini-cliente .fa-square
+{
+    color:white;
+}
+.filter-menu-report-ordini-cliente-confirm-button
 {
     height:25px;
-    width:100%;
+    width:calc(100% - 20px);
     background-color: #36363665;
     border:0.5px solid gray;
     border-radius: 2px;
@@ -546,21 +602,97 @@ html
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
     cursor: pointer;
     color:white;
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    outline: none;
+    transition: all 0.15s cubic-bezier(.25,.8,.25,1);
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
-.filter-menu-button-filtro-container-report-ordini-cliente span
+.filter-menu-report-ordini-cliente-confirm-button span
 {
     font-family: 'Quicksand',sans-serif;
     font-size: 12px;
 }
-.filter-menu-button-filtro-container-report-ordini-cliente i
+.filter-menu-report-ordini-cliente-confirm-button i
 {
 
 }
-.filter-menu-button-filtro-container-report-ordini-cliente:hover
+.filter-menu-report-ordini-cliente-confirm-button:hover
 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.filter-menu-report-ordini-cliente-confirm-button:active
+{
+    color:#4C91CB;
+}
+.filter-menu-conditions-container-report-ordini-cliente
+{
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    margin-top:5px;
+    margin-bottom: 5px;
+}
+.filter-menu-conditions-container-report-ordini-cliente div
+{
+    width: 100%;
+    background-color: transparent;
+    border:none;
+    color:white;
+    outline: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    padding-left:10px;
+    box-sizing: border-box;
+    padding-right:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.filter-menu-conditions-container-report-ordini-cliente div:hover
+{
+    background-color: #5f5f5f;
+}
+.filter-menu-conditions-container-report-ordini-cliente div span
+{
+    font-family: 'Quicksand',sans-serif;
+    font-size: 12px;
+    width:65px;
+    text-align: left;
+    overflow: hidden;
+}
+.filter-menu-conditions-container-report-ordini-cliente div input
+{
+    font-family: 'Quicksand',sans-serif;
+    background-color: transparent;
+    font-size: 12px;
+    color:white;
+    border:0.5px solid gray;
+    border-radius: 2px;
+    outline: none;
+    box-sizing: border-box;
+    padding: 2px;
+    font-weight: normal;
+    width:calc(100% - 70px);
+    margin-left: 5px;
+}
+input::-webkit-search-cancel-button,input::-webkit-clear-button
+{
+    -webkit-appearance: none;
+    background-image: url(../images/crossWhite2.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 8px 8px;
+    height: 8px;
+    width: 8px;
+    cursor: pointer;
+}
+input::-webkit-clear-button
+{
+    margin-right: 3px;
 }
