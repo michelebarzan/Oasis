@@ -21,11 +21,13 @@
 	<body onload="onloadActions()" onresize="fixTable()">
 		<?php include('struttura.php'); ?>
 		<div class="top-action-bar" id="reportOrdiniClienteActionBar">
-			<div class="action-bar-item" style="margin-left:5px" ><b>Header tabella</b>
+			<div class="action-bar-item" style="margin-left:5px" ><b>Intestazione</b>
 				<button class="action-bar-icon-button" id="btnHeaderTabellaSL" style="color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setHeaderTabella('sl')"><i class="far fa-horizontal-rule"></i></button>
 				<button class="action-bar-icon-button" id="btnHeaderTabellaML" onclick="setHeaderTabella('ml')"><i class="fad fa-line-height"></i></button>
 			</div>
-			<button class="action-bar-text-icon-button" id="btnCancellaFiltri" style="margin-left:5px" onclick="filterConditions=[];steps=0;getElencoOrdiniClienteView();"><span>Cancella filtri</span><i class="far fa-filter"></i></button>
+			<button class="action-bar-text-icon-button" id="btnApplicaFiltro" style="margin-left:5px" onclick="getPopupFiltrISalvati()"><span>Filtri salvati</span><i class="far fa-filter"></i></button>
+			<button class="action-bar-text-icon-button" id="btnCancellaFiltri" style="margin-left:5px" onclick="cancellaFiltri()"><span>Cancella filtri</span><i class="far fa-filter"></i></button>
+			<button class="action-bar-text-icon-button" id="btnSalvaFiltro" style="margin-left:5px" onclick="getSalvaFiltroPopup()"><span>Salva filtro corrente</span><i class="far fa-save"></i></button>
 			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel()"><span>Esporta</span><i class="far fa-file-excel"></i></button>
 			<!--<div class="action-bar-item"><b>Righe</b>
 				<input type="number" class="action-bar-input" id="inputFilterTop" onfocusout="getElencoPick()" value="200">

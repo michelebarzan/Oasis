@@ -5,8 +5,14 @@
     set_time_limit(120);
 
     $filterConditions=json_decode($_REQUEST["JSONfilterConditions"]);
-    //$orderBy=$_REQUEST["orderBy"];
-    $orderBy="ordine_cliente DESC";
+    
+    if(isset($_REQUEST["orderBy"]))
+    {
+        $orderByObj=$_REQUEST["orderBy"];
+        $orderBy="ORDER BY ".$orderByObj["colonna"]." ".$orderByObj["tipo"];
+    }
+    else
+        $orderBy="";
 
     $filterConditionsString="";
 
@@ -51,19 +57,19 @@
     $header["value"]="tipo";
     $header["label"]="Tipo";
     $header["data_type"]="string";
-    $header["width"]="10";
+    $header["width"]="9";
     array_push($headers,$header);
 
     $header["value"]="tipo_pagamento";
     $header["label"]="Tipo Pagamento";
     $header["data_type"]="string";
-    $header["width"]="10";
+    $header["width"]="9";
     array_push($headers,$header);
 
     $header["value"]="importo_totale";
     $header["label"]="Importo Totale";
     $header["data_type"]="number";
-    $header["width"]="3";
+    $header["width"]="4";
     array_push($headers,$header);
 
     $header["value"]="importo_incassato";
@@ -123,7 +129,7 @@
     $header["value"]="stato";
     $header["label"]="Stato";
     $header["data_type"]="string";
-    $header["width"]="3";
+    $header["width"]="4";
     array_push($headers,$header);
 
     $header["value"]="importo_ordine_fornitore";
@@ -135,7 +141,7 @@
     $ordini=[];
 
     if(sizeof($filterConditions)==0)
-        $query2="SELECT TOP (1000) * FROM report_ordini_clienti_view ORDER BY $orderBy OPTION ( QUERYTRACEON 9481 )";
+        $query2="SELECT * FROM report_ordini_clienti_view $orderBy OPTION ( QUERYTRACEON 9481 )";
     else
     {
         foreach ($filterConditions as $JSONfilterConditions) 
@@ -145,7 +151,7 @@
         }
         
         $filterConditionsString=substr($filterConditionsString, 0, -3);
-        $query2="SELECT TOP (1000) * FROM report_ordini_clienti_view WHERE $filterConditionsString ORDER BY $orderBy OPTION ( QUERYTRACEON 9481 )";	
+        $query2="SELECT * FROM report_ordini_clienti_view WHERE $filterConditionsString $orderBy OPTION ( QUERYTRACEON 9481 )";	
     }
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
@@ -186,7 +192,7 @@
                 $ordine["data_arrivo_merce"]="";
             else
                 $ordine["data_arrivo_merce"]=$row2['data_arrivo_merce']->format('d/m/Y');
-            $ordine["stato"]="";
+            $ordine["stato"]=$row2['stato'];
             if(!isset($row2['ordine_fornitore']))
                 $ordine["importo_ordine_fornitore"]="";
             else

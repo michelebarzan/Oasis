@@ -6,7 +6,28 @@ var filterArrays={};
 var steps=0;
 var ordiniLenght=0;
 var tbody;
-var filterConditions=[];
+var oggi = new Date();
+var annoOggi=oggi.getFullYear();
+var defaultFilterConditions=
+[{
+    colonna: "data_spedizione",
+    nome: "anno",
+    operatore: "IN",
+    valore: "(SELECT [data_spedizione] FROM report_ordini_clienti_view WHERE DATEPART(yy,[data_spedizione]) = "+annoOggi+")",
+    input: annoOggi,
+    label: "anno di data_spedizione = "+annoOggi,
+    default:true
+}];
+var filterConditions=defaultFilterConditions;
+var defaultOrderBy=
+{
+    colonna: "data_spedizione",
+    tipo: "DESC"
+}
+var orderBy=defaultOrderBy;
+var id_utente;
+var stepsSize=500;
+var filterMenuAperto;
 
 function setHeaderTabella(headerTabella)
 {
@@ -56,9 +77,317 @@ function checkFlexDirection()
         document.getElementById("btnFlexDirectionColumn").style.color="#4C91CB";
     }
 }
-function onloadActions()
+function cancellaFiltri()
 {
+    orderBy=undefined;
+    filterConditions=[];
+    $('.filter-menu-report-ordini-cliente-input-filtro').val('');
+    steps=0;
     getElencoOrdiniClienteView();
+}
+async function onloadActions()
+{
+    id_utente=await getSessionValue("id_utente");
+    getElencoOrdiniClienteView();
+}
+async function getPopupFiltrISalvati()
+{
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","popup-report-ordini-cliente-outer-container");
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;");
+
+    var span=document.createElement("span");
+    span.setAttribute("style","color:white;font-family: 'Quicksand',sans-serif;font-size:12px;");
+    span.innerHTML="Creati da";
+    row.appendChild(span);
+
+    var select=document.createElement("select");
+    select.setAttribute("id","selectUtentePopupFiltriSalvati");
+    select.setAttribute("onchange","getElencoFiltri(this.value)");
+    var utenti=await getUtentiFiltriSalvati();
+    var username=await getSessionValue("Username");
+
+    var option=document.createElement("option");
+    option.setAttribute("value",id_utente);
+    option.setAttribute("style","color:black;font-weight:bold");
+    option.innerHTML=username;
+    select.appendChild(option);
+
+    var option=document.createElement("option");
+    option.setAttribute("value","*");
+    option.setAttribute("style","color:black;font-weight:bold");
+    option.innerHTML="Tutti";
+    select.appendChild(option);
+
+    utenti.forEach(function(utente)
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value",utente.id_utente);
+        option.setAttribute("style","color:black;font-weight:bold");
+        option.innerHTML=utente.username;
+        select.appendChild(option);
+    });
+    row.appendChild(select);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("id","containerFiltriPopupFiltriSalvati");
+    outerContainer.appendChild(row);
+
+    Swal.fire
+    ({
+        background:"#404040",
+        title:"Filtri salvati",
+        onOpen : function()
+                {
+                    document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+                    document.getElementsByClassName("swal2-title")[0].style.maxWidth="70%";
+                    document.getElementsByClassName("swal2-title")[0].style.boxSizing="border-box";
+                    document.getElementsByClassName("swal2-title")[0].style.marginLeft="10px";
+                    document.getElementsByClassName("swal2-title")[0].style.marginTop="15px";
+                    document.getElementsByClassName("swal2-title")[0].style.marginRight="10px";
+                    document.getElementsByClassName("swal2-title")[0].style.whiteSpace="nowrap";
+                    document.getElementsByClassName("swal2-title")[0].style.overflow="hidden";
+                    document.getElementsByClassName("swal2-title")[0].style.textOverflow="ellipsis";
+                    document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                    document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+                    var utente=document.getElementById("selectUtentePopupFiltriSalvati").value;
+                    getElencoFiltri(utente);
+                },
+        showCloseButton:true,
+        showConfirmButton:false,
+        showCancelButton:false,
+        html:outerContainer.outerHTML
+    }).then((result) => 
+    {
+        
+    });
+}
+async function getElencoFiltri(utente)
+{
+    var filtri=await getFiltri(utente);
+    //console.log(filtri);
+
+    var container=document.getElementById("containerFiltriPopupFiltriSalvati");
+    container.innerHTML="";
+
+    getFaSpinner(container,"container","Caricamento in corso...")
+
+    if(filtri.length==0)
+    {
+        var span=document.createElement("span");
+        span.setAttribute("style","color:white;font-size:12px;text-align:left;margin-top:10px;text-decoration:underline");
+        span.innerHTML="Questo utente non ha ancora salvato nessun filtro";
+        container.appendChild(span);
+    }
+    else
+    {
+        filtri.forEach(function(filtro)
+        {
+            var outerContainer=document.createElement("div");
+            outerContainer.setAttribute("class","popup-filtri-salvati-outer-container");
+
+            var button=document.createElement("button");
+            button.setAttribute("class","popup-filtri-salvati-select-button");
+            button.addEventListener("click", function()
+            {
+                selectFiltro(filtro.filterConditions,filtro.orderBy);
+            });
+            
+            var span=document.createElement("span");
+            span.innerHTML="<b>"+filtro.nome+"</b>";
+            button.appendChild(span);
+
+            if(filtro.descrizione!=null)
+            {
+                var span=document.createElement("span");
+                span.setAttribute("style","margin-top:3px");
+                span.innerHTML=filtro.descrizione;
+                button.appendChild(span);
+            }
+
+            outerContainer.appendChild(button);
+
+            if(filtro.id_utente==id_utente)
+            {
+                var deleteButton=document.createElement("button");
+                deleteButton.setAttribute("class","popup-filtri-salvati-delete-button");
+                deleteButton.setAttribute("title","Elimina salvataggio filtro");
+                deleteButton.setAttribute("onclick","eliminaSalvataggioFiltro("+filtro.id_salvataggio+")");
+                var i=document.createElement("i");
+                i.setAttribute("class","fal fa-times");
+                deleteButton.appendChild(i);
+                outerContainer.appendChild(deleteButton);
+            }
+
+            container.appendChild(outerContainer);
+        });
+    }
+
+    removeFaSpinner("container");
+}
+function eliminaSalvataggioFiltro(id_salvataggio)
+{
+    Swal.fire
+    ({
+        background:"#404040",
+        title: 'Eliminare il filtro salvato?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DA6969',
+        cancelButtonColor: '#4C91CB',
+        confirmButtonText: 'Elimina',
+        cancelButtonText:"Annulla",
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}
+    }).then((result) => {
+        if (result.value) 
+        {
+            $.post("eliminaSalvataggioFiltroReportOrdiniCliente.php",
+            {
+                id_salvataggio
+            },
+            function(response, status)
+            {
+                if(status=="success")
+                {
+                    if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                    {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                    }
+                    else
+                    {
+                        getPopupFiltrISalvati();
+                    }
+                }
+                else
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(status);
+                }
+            });
+        }
+        else
+            getPopupFiltrISalvati();
+      })
+}
+function capitalize(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function selectFiltro(filterConditionsString,orderByString)
+{
+    Swal.close();
+
+    $('.filter-menu-report-ordini-cliente-input-filtro').val('');
+
+    try {
+        filterConditions=JSON.parse(filterConditionsString);
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.nome=="intervallo")
+            {
+                document.getElementById("filterIntervalloDa"+filterCondition.colonna).value=filterCondition.input;
+                document.getElementById("filterIntervalloA"+filterCondition.colonna).value=filterCondition.input1;
+            }
+            else
+            {
+                document.getElementById("filter"+capitalize(filterCondition.nome)+filterCondition.colonna).value=filterCondition.input;
+            }
+        });
+    } catch (error) {
+        filterConditions=[];
+    }
+    try {
+        orderBy=JSON.parse(orderByString);
+        $(".filter-menu-order-button-report-ordini-cliente").css("color","white");
+        document.getElementById("orderButton"+orderBy.colonna+orderBy.tipo).style.color='#E9A93A';
+    } catch (error) {
+        orderBy=undefined;
+    }    
+
+    steps=0;
+    getElencoOrdiniClienteView();
+}
+function getUtentiFiltriSalvati()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getUtentiFiltriSalvati.php",
+        {
+            id_utente
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
+}
+function getFiltri(utente)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getFiltriOrdiniClienteView.php",
+        {
+            utente
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
 }
 async function getElencoOrdiniClienteView()
 {
@@ -84,7 +413,7 @@ async function getElencoOrdiniClienteView()
         var th=document.createElement("th");
         th.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
         th.setAttribute("id","reportOrdiniClientiTableHeader"+header.value);
-        th.setAttribute("onclick","getFilterMenu(event,'"+header.value+"',this)");
+        th.setAttribute("onclick","openFilterMenu(event,'"+header.value+"',this)");
 
         var span=document.createElement("span");
         span.innerHTML=header.label;
@@ -97,6 +426,8 @@ async function getElencoOrdiniClienteView()
         th.appendChild(i);
 
         tr.appendChild(th);
+
+        createFilterMenu(header.value,header.data_type);
     });
     thead.appendChild(tr);
     table.appendChild(thead);
@@ -157,6 +488,25 @@ async function getElencoOrdiniClienteView()
     btnSteps.innerHTML="<i class='fal fa-plus-circle'></i><span>Carica altri...</span>";
     container.appendChild(btnSteps);
 }
+window.addEventListener("keydown", windowKeydown, false);
+function windowKeydown(e)
+{
+    if(filterMenuAperto!==null)
+    {
+        var keyCode = e.keyCode;
+        switch(keyCode) 
+        {
+            case 13:
+                e.preventDefault();
+                applyFilter(filterMenuAperto);
+            break;
+            case 27:
+                e.preventDefault();
+                hideFilterMenu();
+            break;
+        }
+    }
+}
 function checkFilters()
 {
     filterConditionsColumnsDuplicates=[];
@@ -170,33 +520,53 @@ function checkFilters()
     });
     headers.forEach(function(header)
     {
+        $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":""});
+        $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":""});
+    });
+    headers.forEach(function(header)
+    {
         if(filterConditionsColumns.includes(header.value))
         {
             $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":"#E9A93A"});
             $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":"#E9A93A"});
         }
-        else
+        if(orderBy!=undefined)
         {
-            $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":""});
-            $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":""});
+            if(orderBy.colonna==header.value)
+            {
+                $("#reportOrdiniClientiTableHeader"+header.value+" span").css({"color":"#E9A93A"});
+                $("#reportOrdiniClientiTableHeader"+header.value+" i").css({"color":"#E9A93A"});
+            }
         }
     });
 }
 function hideFilterMenu()
 {
+    filterMenuAperto=null;
     $(".filter-menu-report-ordini-cliente").hide("fast","swing");
     $("#reportOrdiniClientiTable th").css("color","");
 }
-function getFilterMenu(event,colonna,th)
+function openFilterMenu(event,colonna,th)
 {
     hideFilterMenu();
 
+    filterMenuAperto=colonna;
+
     th.style.color="#4C91CB";
 
+    $("#filterMenuReportOrdiniCliente"+colonna).show("fast","swing");
+    $("#filterMenuReportOrdiniCliente"+colonna).css(
+    {
+        "display":"flex",
+        "left":(event.clientX - 7),
+        "top":(event.clientY+12)
+    });
+}
+function createFilterMenu(colonna,data_type)
+{
     var menu=document.createElement("div");
     menu.setAttribute("class","filter-menu-report-ordini-cliente");
     menu.setAttribute("id","filterMenuReportOrdiniCliente"+colonna);
-    menu.setAttribute("style","left:"+(event.clientX - 7)+"px;top:"+(event.clientY+12));
 
     var menuRow=document.createElement("div");
     menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-title-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
@@ -217,9 +587,16 @@ function getFilterMenu(event,colonna,th)
     menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-order-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
 
     var orderButton=document.createElement("button");
-    orderButton.setAttribute("onclick","");
-    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente");
-
+    orderButton.setAttribute("onclick","setOrderBy('"+colonna+"','DESC',this)");
+    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-order-button-report-ordini-cliente");
+    orderButton.setAttribute("id","orderButton"+colonna+"DESC");
+    try {
+        if(colonna==orderBy.colonna && orderBy.tipo=="DESC")
+        {
+            orderButton.setAttribute("style","color:#E9A93A");
+        }
+    } catch (error) {}
+    
     var i=document.createElement("i");
     i.setAttribute("class","fal fa-sort-amount-down filter-menu-item-report-ordini-cliente");
     orderButton.appendChild(i);
@@ -232,8 +609,15 @@ function getFilterMenu(event,colonna,th)
     menuRow.appendChild(orderButton);
 
     var orderButton=document.createElement("button");
-    orderButton.setAttribute("onclick","");
-    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente");
+    orderButton.setAttribute("onclick","setOrderBy('"+colonna+"','ASC',this)");
+    orderButton.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-order-button-report-ordini-cliente");
+    orderButton.setAttribute("id","orderButton"+colonna+"ASC");
+    try {
+        if(colonna==orderBy.colonna && orderBy.tipo=="ASC")
+        {
+            orderButton.setAttribute("style","color:#E9A93A");
+        }
+    } catch (error) {}
 
     var i=document.createElement("i");
     i.setAttribute("class","fal fa-sort-amount-down-alt filter-menu-item-report-ordini-cliente");
@@ -248,13 +632,19 @@ function getFilterMenu(event,colonna,th)
 
     menu.appendChild(menuRow);
 
-    var header=getFirstObjByPropValue(headers,"value",colonna);
+    //var header=getFirstObjByPropValue(headers,"value",colonna);
 
-    if(header.data_type=="date")
+    var menuRow=document.createElement("div");
+    menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-conditions-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+
+    var buttonCancella=document.createElement("button");
+    buttonCancella.setAttribute("onclick","cleanInputFiltri('"+colonna+"','"+data_type+"')");
+    buttonCancella.setAttribute("class","filter-menu-conditions-button-cancella-report-ordini-cliente filter-menu-item-report-ordini-cliente");
+    buttonCancella.innerHTML="Cancella filtri";
+    menuRow.appendChild(buttonCancella);
+
+    if(data_type=="date")
     {
-        var menuRow=document.createElement("div");
-        menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-conditions-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
-
         var conditionContainer=document.createElement("div");
         conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
 
@@ -264,7 +654,7 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterUguale"+colonna);
         input.setAttribute("type","date");
         conditionContainer.appendChild(input);
@@ -280,9 +670,17 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterAnno"+colonna);
         input.setAttribute("type","search");
+        try {
+            if(filterConditions[0].default)
+            {
+                var oggi = new Date();
+                input.value=oggi.getFullYear();
+            }
+        } catch (error) {}
+        
         conditionContainer.appendChild(input);
 
         menuRow.appendChild(conditionContainer);
@@ -301,7 +699,7 @@ function getFilterMenu(event,colonna,th)
         conditionContainerRow.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterIntervalloDa"+colonna);
         input.setAttribute("type","date");
         conditionContainerRow.appendChild(input);
@@ -318,7 +716,7 @@ function getFilterMenu(event,colonna,th)
         conditionContainerRow.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterIntervalloA"+colonna);
         input.setAttribute("type","date");
         conditionContainerRow.appendChild(input);
@@ -331,9 +729,6 @@ function getFilterMenu(event,colonna,th)
     }
     else
     {
-        var menuRow=document.createElement("div");
-        menuRow.setAttribute("class","filter-menu-row-report-ordini-cliente filter-menu-conditions-container-report-ordini-cliente filter-menu-item-report-ordini-cliente");
-
         var conditionContainer=document.createElement("div");
         conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
 
@@ -343,8 +738,26 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
+        input.setAttribute("placeholder","NULL per vuoto");
         input.setAttribute("id","filterUguale"+colonna);
+        input.setAttribute("type","search");
+        conditionContainer.appendChild(input);
+
+        menuRow.appendChild(conditionContainer);
+
+        var conditionContainer=document.createElement("div");
+        conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
+
+        var span=document.createElement("span");
+        span.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        span.innerHTML="Diverso da";
+        conditionContainer.appendChild(span);
+
+        var input=document.createElement("input");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
+        input.setAttribute("placeholder","NULL per vuoto");
+        input.setAttribute("id","filterDiverso"+colonna);
         input.setAttribute("type","search");
         conditionContainer.appendChild(input);
 
@@ -359,7 +772,7 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterContiene"+colonna);
         input.setAttribute("type","search");
         conditionContainer.appendChild(input);
@@ -375,7 +788,7 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterInizia"+colonna);
         input.setAttribute("type","search");
         conditionContainer.appendChild(input);
@@ -391,14 +804,14 @@ function getFilterMenu(event,colonna,th)
         conditionContainer.appendChild(span);
 
         var input=document.createElement("input");
-        input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+        input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
         input.setAttribute("id","filterFinisce"+colonna);
         input.setAttribute("type","search");
         conditionContainer.appendChild(input);
 
         menuRow.appendChild(conditionContainer);
 
-        if(header.data_type=="number")
+        if(data_type=="number")
         {
             var conditionContainer=document.createElement("div");
             conditionContainer.setAttribute("class","filter-menu-item-report-ordini-cliente");
@@ -414,7 +827,7 @@ function getFilterMenu(event,colonna,th)
             conditionContainerRow.appendChild(span);
     
             var input=document.createElement("input");
-            input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
             input.setAttribute("id","filterIntervalloDa"+colonna);
             input.setAttribute("type","search");
             conditionContainerRow.appendChild(input);
@@ -431,7 +844,7 @@ function getFilterMenu(event,colonna,th)
             conditionContainerRow.appendChild(span);
     
             var input=document.createElement("input");
-            input.setAttribute("class","filter-menu-item-report-ordini-cliente");
+            input.setAttribute("class","filter-menu-item-report-ordini-cliente filter-menu-report-ordini-cliente-input-filtro");
             input.setAttribute("id","filterIntervalloA"+colonna);
             input.setAttribute("type","search");
             conditionContainerRow.appendChild(input);
@@ -446,6 +859,7 @@ function getFilterMenu(event,colonna,th)
 
     var filterConfirmButton=document.createElement("button");
     filterConfirmButton.setAttribute("class","filter-menu-report-ordini-cliente-confirm-button filter-menu-item-report-ordini-cliente");
+    filterConfirmButton.setAttribute("id","filterMenuReportOrdiniClienteConfirmButton"+colonna);
     filterConfirmButton.setAttribute("onclick","applyFilter('"+colonna+"')");
     var span=document.createElement("span");
     span.setAttribute("class","filter-menu-item-report-ordini-cliente");
@@ -453,10 +867,43 @@ function getFilterMenu(event,colonna,th)
     filterConfirmButton.appendChild(span);
     menu.appendChild(filterConfirmButton);
 
-
     document.body.appendChild(menu);
-    $("#filterMenuReportOrdiniCliente"+colonna).show("fast","swing");
-    $("#filterMenuReportOrdiniCliente"+colonna).css("display","flex");
+}
+function setOrderBy(colonna,tipo,button)
+{
+    orderBy=
+    {
+        colonna,
+        tipo
+    };
+    //orderBy='ORDER BY ['+colonna+'] '+tipo;
+    $(".filter-menu-order-button-report-ordini-cliente").css("color","white");
+    button.style.color='#E9A93A';
+}
+function cleanInputFiltri(colonna,data_type)
+{
+    var header=getFirstObjByPropValue(headers,"value",colonna);
+
+    if(data_type=="date")
+    {
+        document.getElementById("filterUguale"+colonna).value="";
+        document.getElementById("filterAnno"+colonna).value="";
+        document.getElementById("filterIntervalloDa"+colonna).value="";
+        document.getElementById("filterIntervalloA"+colonna).value="";
+    }
+    else
+    {
+        document.getElementById("filterUguale"+colonna).value="";
+        document.getElementById("filterDiverso"+colonna).value="";
+        document.getElementById("filterContiene"+colonna).value="";
+        document.getElementById("filterInizia"+colonna).value="";
+        document.getElementById("filterFinisce"+colonna).value="";
+        if(header.data_type=="number")
+        {
+            document.getElementById("filterIntervalloDa"+colonna).value="";
+            document.getElementById("filterIntervalloA"+colonna).value="";
+        }
+    }
 }
 function applyFilter(colonna)
 {
@@ -489,7 +936,9 @@ function applyFilter(colonna)
                 colonna,
                 nome:"uguale",
                 operatore:"=",
-                valore:"'"+uguale+"'"
+                valore:"'"+uguale+"'",
+                input:uguale,
+                label:colonna+" = "+uguale
             }
             filterConditions.push(filterCondition);
         }
@@ -509,7 +958,9 @@ function applyFilter(colonna)
                 colonna,
                 nome:"anno",
                 operatore:"IN",
-                valore:"(SELECT ["+colonna+"] FROM report_ordini_clienti_view WHERE DATEPART(yy,["+colonna+"]) = "+anno+")"
+                valore:"(SELECT ["+colonna+"] FROM report_ordini_clienti_view WHERE DATEPART(yy,["+colonna+"]) = "+anno+")",
+                input:anno,
+                label:"anno di "+colonna+" = "+anno
             }
             filterConditions.push(filterCondition);
         }
@@ -529,17 +980,21 @@ function applyFilter(colonna)
                 colonna,
                 nome:"intervallo",
                 operatore:"BETWEEN",
-                valore:"'"+da+"' AND '"+a+"'"
+                valore:"'"+da+"' AND '"+a+"'",
+                input:da,
+                input1:a,
+                label:colonna+" da "+da+" a "+a
             }
             filterConditions.push(filterCondition);
         }
     }
     else
     {
-        var uguale=document.getElementById("filterUguale"+colonna).value;
-        var contiene=document.getElementById("filterContiene"+colonna).value;
-        var inizia=document.getElementById("filterInizia"+colonna).value;
-        var finisce=document.getElementById("filterFinisce"+colonna).value;
+        var uguale=document.getElementById("filterUguale"+colonna).value.replace("'", "''");
+        var diverso=document.getElementById("filterDiverso"+colonna).value.replace("'", "''");
+        var contiene=document.getElementById("filterContiene"+colonna).value.replace("'", "''");
+        var inizia=document.getElementById("filterInizia"+colonna).value.replace("'", "''");
+        var finisce=document.getElementById("filterFinisce"+colonna).value.replace("'", "''");
 
         filterConditions.forEach(function(filterCondition)
         {
@@ -558,7 +1013,9 @@ function applyFilter(colonna)
                     colonna,
                     nome:"uguale",
                     operatore:"IS",
-                    valore:"NULL"
+                    valore:"NULL",
+                    input:uguale,
+                    label:colonna+" = "+uguale
                 }
             }
             else
@@ -568,11 +1025,51 @@ function applyFilter(colonna)
                     colonna,
                     nome:"uguale",
                     operatore:"=",
-                    valore:"'"+uguale+"'"
+                    valore:"'"+uguale+"'",
+                    input:uguale,
+                    label:colonna+" = "+uguale
                 }
             }
             filterConditions.push(filterCondition);
         }
+
+        filterConditions.forEach(function(filterCondition)
+        {
+            if(filterCondition.colonna==colonna && filterCondition.nome=="diverso")
+            {
+                var index=filterConditions.indexOf(filterCondition);
+                filterConditions.splice(index,1);
+            }
+        });
+        if(diverso!="")
+        {
+            if(diverso.toLowerCase()==="null")
+            {
+                filterCondition=
+                {
+                    colonna,
+                    nome:"diverso",
+                    operatore:"IS",
+                    valore:"NOT NULL",
+                    input:diverso,
+                    label:colonna+" <> "+diverso
+                }
+            }
+            else
+            {
+                filterCondition=
+                {
+                    colonna,
+                    nome:"diverso",
+                    operatore:"<>",
+                    valore:"'"+diverso+"'",
+                    input:diverso,
+                    label:colonna+" <> "+diverso
+                }
+            }
+            filterConditions.push(filterCondition);
+        }
+
         filterConditions.forEach(function(filterCondition)
         {
             if(filterCondition.colonna==colonna && filterCondition.nome=="contiene")
@@ -588,7 +1085,9 @@ function applyFilter(colonna)
                 colonna,
                 nome:"contiene",
                 operatore:"LIKE",
-                valore:"'%"+contiene+"%'"
+                valore:"'%"+contiene+"%'",
+                input:contiene,
+                label:colonna+" contiene "+contiene
             }
             filterConditions.push(filterCondition);
         }
@@ -607,7 +1106,9 @@ function applyFilter(colonna)
                 colonna,
                 nome:"inizia",
                 operatore:"LIKE",
-                valore:"'"+inizia+"%'"
+                valore:"'"+inizia+"%'",
+                input:inizia,
+                label:colonna+" inizia con "+inizia
             }
             filterConditions.push(filterCondition);
         }
@@ -626,7 +1127,9 @@ function applyFilter(colonna)
                 colonna,
                 nome:"finisce",
                 operatore:"LIKE",
-                valore:"'%"+finisce+"'"
+                valore:"'%"+finisce+"'",
+                input:finisce,
+                label:colonna+" finisce con "+finisce
             }
             filterConditions.push(filterCondition);
         }
@@ -663,7 +1166,10 @@ function applyFilter(colonna)
                     colonna,
                     nome:"intervallo",
                     operatore:"BETWEEN",
-                    valore:""+da+" AND "+a+""
+                    valore:""+da+" AND "+a+"",
+                    input:da,
+                    input1:a,
+                    label:colonna+" da "+da+" a "+a
                 }
                 filterConditions.push(filterCondition);
             }
@@ -676,11 +1182,11 @@ function applyFilter(colonna)
 }
 function caricaAltriOrdini()
 {
-    for (let index = steps; index < steps+100; index++)
+    for (let index = steps; index < steps+stepsSize; index++)
     {
         $("#reportOrdiniClientiTableRow"+index).show();
     }
-    steps+=100;
+    steps+=stepsSize;
 
     if(steps>=ordiniLenght)
     {
@@ -760,7 +1266,8 @@ function getOrdiniClienteView()
         var JSONfilterConditions=JSON.stringify(filterConditions);
         $.get("getOrdiniClienteView.php",
         {
-            JSONfilterConditions
+            JSONfilterConditions,
+            orderBy
         },
         function(response, status)
         {
@@ -792,6 +1299,197 @@ function getOrdiniClienteView()
         });
     });
 }
+function getSalvaFiltroPopup()
+{
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","popup-report-ordini-cliente-outer-container");
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;color:#ddd;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:5px;text-decoration:underline");
+    row.innerHTML="Nome";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;margin-bottom:5px;justify-content:flex-start");
+
+    var input=document.createElement("input");
+    input.setAttribute("type","text");
+    input.setAttribute("class","popup-report-ordini-cliente-input");
+    input.setAttribute("id","popupSalvaFiltroNome");
+    
+    row.appendChild(input);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;color:#ddd;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:5px;text-decoration:underline");
+    row.innerHTML="Descrizione";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;margin-bottom:5px;justify-content:flex-start");
+
+    var input=document.createElement("textarea");
+    input.setAttribute("class","popup-report-ordini-cliente-input");
+    input.setAttribute("id","popupSalvaFiltroDescrizione");
+    
+    row.appendChild(input);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;color:#ddd;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:5px;text-decoration:underline");
+    row.innerHTML="Filtro";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;margin-bottom:5px;justify-content:flex-start");
+
+    var input=document.createElement("textarea");
+    input.setAttribute("class","popup-report-ordini-cliente-input");
+    input.setAttribute("disabled","disabled");
+    input.setAttribute("style","overflow:auto");
+    if(filterConditions.length==0)
+        var filterConditionsString="Nessuno";
+    else
+    {
+        var filterConditionsString="";
+        filterConditions.forEach(function(filterCondition)
+        {
+            //filterConditionsString+=filterCondition.colonna+" "+filterCondition.operatore+" "+filterCondition.valore+"\n";
+            filterConditionsString+=filterCondition.label+"\n";
+        });
+        filterConditionsString = filterConditionsString.substring(0, filterConditionsString.length - 1);
+    }
+    input.innerHTML=filterConditionsString;
+    
+    row.appendChild(input);
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;color:#ddd;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:5px;text-decoration:underline");
+    row.innerHTML="Ordinamento";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("style","width:100%;margin-bottom:5px;justify-content:flex-start");
+
+    var input=document.createElement("textarea");
+    input.setAttribute("class","popup-report-ordini-cliente-input");
+    input.setAttribute("disabled","disabled");
+    if(orderBy==undefined)
+        var orderByString="Nessuno";
+    else
+    {
+        var orderByString=orderBy.colonna;
+        if(orderBy.tipo=="DESC")
+            orderByString+=" decrescente";
+        else
+            orderByString+=" crescente";
+    }
+    input.innerHTML=orderByString;
+    
+    row.appendChild(input);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-report-ordini-cliente-row");
+    row.setAttribute("style","width:100%;flex-direction:row;align-items:center;justify-content:space-between;flex-direction:row;margin-top:10px");
+
+    var rinominaButton=document.createElement("button");
+    rinominaButton.setAttribute("class","popup-report-ordini-cliente-button");
+    rinominaButton.setAttribute("style","width:100%;");
+    rinominaButton.setAttribute("onclick","salvaFiltro()");
+    rinominaButton.innerHTML='<span>Salva filtro</span><i class="fal fa-save"></i>';
+    row.appendChild(rinominaButton);    
+
+    outerContainer.appendChild(row);
+
+    Swal.fire
+    ({
+        background:"#404040",
+        title:"Salvataggio filtro corrente",
+        onOpen : function()
+                {
+                    document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+                    document.getElementsByClassName("swal2-title")[0].style.maxWidth="70%";
+                    document.getElementsByClassName("swal2-title")[0].style.boxSizing="border-box";
+                    document.getElementsByClassName("swal2-title")[0].style.marginLeft="10px";
+                    document.getElementsByClassName("swal2-title")[0].style.marginTop="15px";
+                    document.getElementsByClassName("swal2-title")[0].style.marginRight="10px";
+                    document.getElementsByClassName("swal2-title")[0].style.whiteSpace="nowrap";
+                    document.getElementsByClassName("swal2-title")[0].style.overflow="hidden";
+                    document.getElementsByClassName("swal2-title")[0].style.textOverflow="ellipsis";
+                    document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                    document.getElementsByClassName("swal2-close")[0].style.outline="none";
+                },
+        showCloseButton:true,
+        showConfirmButton:false,
+        showCancelButton:false,
+        html:outerContainer.outerHTML
+    }).then((result) => 
+    {
+        
+    });
+}
+function salvaFiltro()
+{
+    var nome=document.getElementById("popupSalvaFiltroNome").value;
+    var descrizione=document.getElementById("popupSalvaFiltroDescrizione").value;
+    
+    if(nome=="")
+    {
+        Swal.fire(
+        {
+            background:"#404040",
+            icon:"error",
+            title: "Compila il nome",
+            onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}
+        }).then((result) => 
+        {
+            getSalvaFiltroPopup();
+        });
+    }
+    else
+    {
+        var filterConditionsString=JSON.stringify(filterConditions);
+        var orderByString=JSON.stringify(orderBy);
+        $.post("salvaFiltroReportOrdiniCliente.php",
+        {
+            nome,
+            descrizione,
+            filterConditionsString,
+            orderByString
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                }
+                else
+                {
+                    Swal.fire(
+                    {
+                        background:"#404040",
+                        icon:"success",
+                        title: "Filtro salvato",
+                        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}
+                    });
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(status);
+            }
+        });
+    }
+}
 function getFirstObjByPropValue(array,prop,propValue)
 {
     var return_item;
@@ -804,9 +1502,45 @@ function getFirstObjByPropValue(array,prop,propValue)
     });
     return return_item;
 }
-function esportaExcel()
+async function esportaExcel()
 {
-    exportTableToExcel("reportOrdiniClientiTable", "reportOrdiniClienti");
+    var tableID=await preparaTabellaEsportazione();
+
+    console.log(tableID);
+
+    exportTableToExcel(tableID, "reportOrdiniClienti");
+
+    document.getElementById("exportTableContainer").remove();
+}
+function preparaTabellaEsportazione()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        var tabella=document.getElementById("reportOrdiniClientiTable");
+        var exportTable = tabella.cloneNode(true);
+        exportTable.id="reportOrdiniClientiExportTable";
+
+        var container=document.createElement("div");
+        container.setAttribute("id","exportTableContainer");
+        container.setAttribute("style","display:none");
+
+        $("#reportOrdiniClientiExportTable i").remove();
+        for (var i = 0, row; row = exportTable.rows[i]; i++) 
+        {
+            row.style.display="block";
+            for (var j = 0, col; col = row.cells[j]; j++) 
+            {
+                col.innerHTML=col.innerHTML.replace("€","");
+            }  
+        }
+
+        container.appendChild(exportTable);
+
+        document.body.appendChild(container);
+
+        resolve("reportOrdiniClientiExportTable");
+    });
+    
 }
 function exportTableToExcel(tableID, filename = '')
 {
