@@ -452,7 +452,18 @@ async function getElencoOrdiniClienteView()
                 td.setAttribute("style","background-color:rgba(255, 255, 255, 0.199)");
             else
                 td.setAttribute("style","background-color:rgba(76, 146, 203, 0.199)");
-            td.innerHTML=ordine[header.value];
+            
+            if(header.value=="ordine_cliente" || header.value=="ordine_fornitore")
+            {
+                var linkOrdine=document.createElement("a");
+                linkOrdine.setAttribute("class","link-cerca-pdf-report-ordini-cliente");
+                linkOrdine.setAttribute("href","reportMailFornitori.php?colonnaFiltro="+header.value+"&valoreFiltro="+ordine[header.value]);
+                linkOrdine.setAttribute("title","Cerca pdf...");
+                linkOrdine.innerHTML=ordine[header.value];
+                td.appendChild(linkOrdine);
+            }
+            else
+                td.innerHTML=ordine[header.value];
             tr.appendChild(td);
         });
         tbody.appendChild(tr);

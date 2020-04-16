@@ -161,6 +161,19 @@
     align-items: center;
     justify-content: start;
 }
+.rcb-input-icon-container select
+{
+    font-family: 'Quicksand',sans-serif;
+    color:black;
+    font-weight: bold;
+    font-size:12px;
+    margin:0px;
+    padding:0px;
+    background-color: transparent;
+    border:none;
+    outline: none;
+    height:30px;
+}
 .rcb-input-icon-container input
 {
     font-family: 'Quicksand',sans-serif;

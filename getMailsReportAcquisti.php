@@ -5,15 +5,30 @@
     set_time_limit(120);
 
     $orderBy=$_REQUEST["orderBy"];
-    //$top=$_REQUEST["top"];
+    $tipo=$_REQUEST["tipo"];
+    $colonna=$_REQUEST["colonna"];
     $filter=$_REQUEST["filter"];
 
     $mails=[];
 
-    $query2="SELECT ordine_fornitore,ordine_cliente,data_mail,mittente,nome_fornitore,nome_cliente,doc_date,data_spedizione,doc_due_date,doc_total,importo_ordine_cliente 
-            FROM dbo.report_acquisti_view 
-            WHERE ordine_fornitore LIKE '%$filter%' OR ordine_cliente LIKE '%$filter%' OR data_mail LIKE '%$filter%' OR mittente LIKE '%$filter%' OR nome_fornitore LIKE '%$filter%' OR nome_cliente LIKE '%$filter%' OR doc_date LIKE '%$filter%' OR data_spedizione LIKE '%$filter%' OR doc_due_date LIKE '%$filter%' OR doc_total LIKE '%$filter%' OR importo_ordine_cliente LIKE '%$filter%' 
-            ORDER BY $orderBy";	
+    $query2="SELECT ordine_fornitore,ordine_cliente,data_mail,mittente,nome_fornitore,nome_cliente,doc_date,data_spedizione,doc_due_date,doc_total,importo_ordine_cliente  FROM dbo.report_acquisti_view";
+
+    if($filter!="")
+    {
+        if($tipo=="uguale")
+            $query2.=" WHERE $colonna='$filter'";
+        if($tipo=="anno")
+            $query2.=" WHERE DATEPART(yy,$colonna) = $filter";
+        if($tipo=="diverso")
+            $query2.=" WHERE $colonna<>'$filter'";
+        if($tipo=="contiene")
+            $query2.=" WHERE $colonna LIKE '%$filter%'";
+    }
+    
+    $query2.=" ORDER BY $orderBy";
+
+    //echo $query2;
+            
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

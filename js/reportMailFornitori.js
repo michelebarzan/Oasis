@@ -1,6 +1,9 @@
 var selectedMailI;
 var steps=0;
 var mailsLenght=0;
+var stepsSize=100;
+var getParamsColonnaFiltro;
+var getParamsValoreFiltro;
 
 function importaPdfreportAcquisti()
 {
@@ -40,6 +43,18 @@ function importaPdfreportAcquisti()
 }
 async function onloadActions()
 {
+    if(document.getElementById("getParamsColonnaFiltro")!=undefined)
+        getParamsColonnaFiltro=document.getElementById("getParamsColonnaFiltro").value;
+    if(document.getElementById("getParamsValoreFiltro")!=undefined)
+        getParamsValoreFiltro=document.getElementById("getParamsValoreFiltro").value;
+    
+    if(getParamsColonnaFiltro!=undefined && getParamsValoreFiltro!=undefined)
+    {
+        document.getElementById("selectColonnaFiltroReportAcquisti").value=getParamsColonnaFiltro;
+        document.getElementById("selectTipoFiltroReportAcquisti").value="uguale";
+        document.getElementById("inputSearchreportAcquisti").value=getParamsValoreFiltro;
+    }
+
     getElencoMail();
     var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
     getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");
@@ -48,6 +63,55 @@ async function onloadActions()
     //console.log(responseImportaPdfreportAcquisti);
 
     removeFaSpinner("reportAcquistiControlBar");    
+}
+function getSelectTipoFiltro(colonna)
+{
+    var select=document.getElementById("selectTipoFiltroReportAcquisti");
+    select.innerHTML="";
+    if(colonna=="data_spedizione" || colonna=="doc_due_date")
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value","uguale");
+        option.innerHTML="Uguale";
+        select.appendChild(option);
+
+        var option=document.createElement("option");
+        option.setAttribute("value","anno");
+        option.innerHTML="Anno";
+        select.appendChild(option);
+
+        document.getElementById("inputSearchreportAcquisti").setAttribute("type", "date");
+
+        select.setAttribute("onchange","setInputTypeFiltro(this.value)");
+    }
+    else
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value","uguale");
+        option.innerHTML="Uguale";
+        select.appendChild(option);
+
+        var option=document.createElement("option");
+        option.setAttribute("value","diverso");
+        option.innerHTML="Diverso";
+        select.appendChild(option);
+
+        var option=document.createElement("option");
+        option.setAttribute("value","contiene");
+        option.innerHTML="Contiene";
+        select.appendChild(option);
+
+        select.setAttribute("onchange","");
+
+        document.getElementById("inputSearchreportAcquisti").setAttribute("type", "search");
+    }
+}
+function setInputTypeFiltro(tipo)
+{
+    if(tipo=="uguale")
+        document.getElementById("inputSearchreportAcquisti").setAttribute("type", "date");
+    else
+        document.getElementById("inputSearchreportAcquisti").setAttribute("type", "number");
 }
 async function getImportaPdfreportAcquisti()
 {
@@ -63,6 +127,8 @@ async function getImportaPdfreportAcquisti()
 }
 async function getElencoMail()
 {
+    steps=0;
+
     var itemsContainer=document.getElementById("reportAcquistiItemsContainer");
     itemsContainer.innerHTML="";
 
@@ -243,14 +309,23 @@ async function getElencoMail()
 }
 function caricaAltreMail()
 {
-    for (let index = steps; index < steps+50; index++)
+    for (let index = steps; index < steps+stepsSize; index++)
     {
         $("#reportAcquistiItem"+index).show();
     }
-    steps+=50;
+    steps+=stepsSize;
     
-    if(steps>mailsLenght && document.getElementById("btnCaricaAltreMail")!=undefined)
-        document.getElementById("btnCaricaAltreMail").style.display="none";
+    if(steps>=mailsLenght)
+    {
+        setTimeout(function()
+        {
+            try {
+                document.getElementById("btnCaricaAltreMail").style.display="none";
+            } catch (error) {console.log("errsteps")}
+        }, 500);
+    }
+    /*if(steps>mailsLenght && document.getElementById("btnCaricaAltreMail")!=undefined)
+        document.getElementById("btnCaricaAltreMail").style.display="none";*/
 }
 function checkInputSearchreportAcquisti(input,event)
 {
@@ -638,16 +713,21 @@ function getMails()
         //var top=document.getElementById("inputTopreportAcquisti").value;
         var filter=document.getElementById("inputSearchreportAcquisti").value.toLowerCase();
 
+        var colonna=document.getElementById("selectColonnaFiltroReportAcquisti").value;
+        var tipo=document.getElementById("selectTipoFiltroReportAcquisti").value;
+
         $.get("getMailsreportAcquisti.php",
         {
             orderBy,
-            //top,
+            colonna,
+            tipo,
             filter
         },
         function(response, status)
         {
             if(status=="success")
             {
+                //console.log(response);
                 if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
                 {
                     Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});

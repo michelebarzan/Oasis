@@ -3,7 +3,12 @@
 	include "connessione.php";
 	
 	$pageName="Report mail fornitori";
-?>
+
+	if(isset($_GET["colonnaFiltro"]))
+		echo '<input type="hidden" value="'.$_GET["colonnaFiltro"].'" id="getParamsColonnaFiltro">';
+	if(isset($_GET["valoreFiltro"]))
+		echo '<input type="hidden" value="'.$_GET["valoreFiltro"].'" id="getParamsValoreFiltro">';
+	?>
 <html>
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -23,7 +28,21 @@
 		<div class="reusable-outer-container reusable-outer-container-c">
             <div class="reusable-control-bar reusable-control-bar-r" id="reportAcquistiControlBar">
 				<div class="rcb-input-icon-container">
-					<input type="text" placeholder="Cerca..." id="inputSearchreportAcquisti" onkeyup="checkInputSearchreportAcquisti(this,event)">
+					<i class="fas fa-filter" style="font-size:14px"></i>
+					<select style="margin-left:5px" id="selectColonnaFiltroReportAcquisti" onchange="getSelectTipoFiltro(this.value)">
+						<option value="ordine_fornitore">Ordine fornitore</option>
+						<option value="ordine_cliente">Ordine cliente</option>
+						<option value="nome_fornitore">Nome fornitore</option>
+						<option value="nome_cliente">Nome cliente</option>
+						<option value="data_spedizione">Data spedizione</option>
+						<option value="doc_due_date">Data ordine</option>
+					</select>
+					<select id="selectTipoFiltroReportAcquisti" style="margin-left:5px">
+						<option value="uguale">Uguale</option>
+						<option value="diverso">Diverso</option>
+						<option value="contiene">Contiene</option>
+					</select>
+					<input type="search" placeholder="Valore..." style="margin-left:5px;border:0.5px solid #ddd;height:23px;margin-right:10px;border-radius:2px;padding-left:5px;padding-right:5px" id="inputSearchreportAcquisti" onkeyup="checkInputSearchreportAcquisti(this,event)">
 					<i class="fad fa-search" onclick="getElencoMail()" id="iconSearchreportAcquisti"></i>
 				</div>
 				<!--<button class="rcb-button-text-icon" onclick="getElencoMail()">
@@ -50,10 +69,10 @@
 						<option value="data_spedizione ASC">data spedizione crescente</option>
 					</select>
 				</div>
-				<button class="rcb-button-text-icon" onclick="getImportaPdfreportAcquisti()">
+				<!--<button class="rcb-button-text-icon" onclick="getImportaPdfreportAcquisti()">
 					<span>Importa pdf</span>
 					<i class="fad fa-file-import" style="margin-left:5px"></i>
-				</button>
+				</button>-->
 			</div>
 			<div class="reusable-row-container" style="overflow:hidden;min-height: calc(100% - 40px);">
 				<div class="reusable-inner-container reusable-inner-container-margin" id="reportAcquistiItemsContainer"></div>
