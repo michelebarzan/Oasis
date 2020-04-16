@@ -457,7 +457,7 @@ async function getElencoOrdiniClienteView()
             {
                 var linkOrdine=document.createElement("a");
                 linkOrdine.setAttribute("class","link-cerca-pdf-report-ordini-cliente");
-                linkOrdine.setAttribute("href","reportMailFornitori.php?colonnaFiltro="+header.value+"&valoreFiltro="+ordine[header.value]);
+                linkOrdine.setAttribute("href","http://remote.oasisgroup.it/Oasis/reportMailFornitori.php?colonnaFiltro="+header.value+"&valoreFiltro="+ordine[header.value]);
                 linkOrdine.setAttribute("title","Cerca pdf...");
                 linkOrdine.innerHTML=ordine[header.value];
                 td.appendChild(linkOrdine);
