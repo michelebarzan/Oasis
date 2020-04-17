@@ -12,8 +12,10 @@ var defaultFilterConditions=
 [{
     colonna: "data_spedizione",
     nome: "anno",
-    operatore: "IN",
-    valore: "(SELECT [data_spedizione] FROM report_ordini_clienti_view WHERE DATEPART(yy,[data_spedizione]) = "+annoOggi+")",
+    /*operatore: "IN",
+    valore: "(SELECT [data_spedizione] FROM report_ordini_clienti_view WHERE DATEPART(yy,[data_spedizione]) = "+annoOggi+")",*/
+    operatore:"BETWEEN",
+    valore:"'01-01-"+annoOggi+"' AND '12-31-"+annoOggi+"'",
     input: annoOggi,
     label: "anno di data_spedizione = "+annoOggi,
     default:true
@@ -62,6 +64,23 @@ function setHeaderTabella(headerTabella)
         $("#btnHeaderTabellaSL").css({"color":""});
         $("#btnHeaderTabellaML").css({"color":"#4C91CB"});
         $("#btnHeaderTabellaML").css({"border":"0.5px solid #4C91CB"});
+    }
+}
+async function setRangeDati(range)
+{
+    if(range=='*')
+    {
+        /*var anni=await getAnni();
+        anni.forEach(function(anno)
+        {
+
+        });
+        var query=
+        [
+            "INSERT INTO [dbo].[filtro_anno_viste] ([anno],[utilizzo]) SELECT DATEPART(yy,)",
+            ""
+        ];
+        var query="";*/
     }
 }
 function checkFlexDirection()
@@ -968,8 +987,10 @@ function applyFilter(colonna)
             {
                 colonna,
                 nome:"anno",
-                operatore:"IN",
-                valore:"(SELECT ["+colonna+"] FROM report_ordini_clienti_view WHERE DATEPART(yy,["+colonna+"]) = "+anno+")",
+                /*operatore:"IN",
+                valore:"(SELECT ["+colonna+"] FROM report_ordini_clienti_view WHERE DATEPART(yy,["+colonna+"]) = "+anno+")",*/
+                operatore:"BETWEEN",
+                valore:"'01-01-"+anno+"' AND '12-31-"+anno+"'",
                 input:anno,
                 label:"anno di "+colonna+" = "+anno
             }

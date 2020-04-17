@@ -87,6 +87,11 @@ function getSelectTipoFiltro(colonna)
     else
     {
         var option=document.createElement("option");
+        option.setAttribute("value","contiene");
+        option.innerHTML="Contiene";
+        select.appendChild(option);
+
+        var option=document.createElement("option");
         option.setAttribute("value","uguale");
         option.innerHTML="Uguale";
         select.appendChild(option);
@@ -94,11 +99,6 @@ function getSelectTipoFiltro(colonna)
         var option=document.createElement("option");
         option.setAttribute("value","diverso");
         option.innerHTML="Diverso";
-        select.appendChild(option);
-
-        var option=document.createElement("option");
-        option.setAttribute("value","contiene");
-        option.innerHTML="Contiene";
         select.appendChild(option);
 
         select.setAttribute("onchange","");
@@ -137,6 +137,11 @@ async function getElencoMail()
     getFaSpinner(itemsContainer,"itemsContainer","Caricamento in corso...");
 
     var mails=await getMails();
+
+    console.log(mails);
+
+    if(mails.length==0)
+        itemsContainer.innerHTML='<div id="alertNessunaMail">Il filtro applicato non ha prodotto nessun risultato</div>';
 
     mailsLenght=0;
     mails.forEach(function (mail)

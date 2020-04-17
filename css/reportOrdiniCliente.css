@@ -239,6 +239,10 @@ html
 {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+#reportOrdiniClienteActiveFilterContainer
+{
+
+}
 #reportOrdiniClienteContainer
 {
     max-width:calc(100% - 80px);
@@ -935,3 +939,4 @@ input::-webkit-clear-button
 {
     border:1px solid gray;
 }
+/*SWITCH------------------------------------*/

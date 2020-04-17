@@ -38,9 +38,9 @@
 						<option value="doc_due_date">Data ordine</option>
 					</select>
 					<select id="selectTipoFiltroReportAcquisti" style="margin-left:5px">
+						<option value="contiene">Contiene</option>
 						<option value="uguale">Uguale</option>
 						<option value="diverso">Diverso</option>
-						<option value="contiene">Contiene</option>
 					</select>
 					<input type="search" placeholder="Valore..." style="margin-left:5px;border:0.5px solid #ddd;height:23px;margin-right:10px;border-radius:2px;padding-left:5px;padding-right:5px" id="inputSearchreportAcquisti" onkeyup="checkInputSearchreportAcquisti(this,event)">
 					<i class="fad fa-search" onclick="getElencoMail()" id="iconSearchreportAcquisti"></i>
