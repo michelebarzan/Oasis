@@ -138,7 +138,7 @@ async function getElencoMail()
 
     var mails=await getMails();
 
-    console.log(mails);
+    //console.log(mails);
 
     if(mails.length==0)
         itemsContainer.innerHTML='<div id="alertNessunaMail">Il filtro applicato non ha prodotto nessun risultato</div>';

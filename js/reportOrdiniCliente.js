@@ -30,6 +30,7 @@ var orderBy=defaultOrderBy;
 var id_utente;
 var stepsSize=500;
 var filterMenuAperto;
+var filtroAnni="";
 
 function setHeaderTabella(headerTabella)
 {
@@ -68,20 +69,64 @@ function setHeaderTabella(headerTabella)
 }
 async function setRangeDati(range)
 {
-    if(range=='*')
+    filtroAnni="";
+    
+    if(range!=='*')
     {
-        /*var anni=await getAnni();
-        anni.forEach(function(anno)
+        $("#btnRangeDatiTutti").css({"color":""});
+        $("#btnRangeDatiTutti").css({"border":""});
+        $("#btnRangeDati").css({"color":"#4C91CB"});
+        $("#btnRangeDati").css({"border":"0.5px solid #4C91CB"});
+        for (let anno = annoOggi; anno != annoOggi-range; anno--) 
         {
-
-        });
-        var query=
-        [
-            "INSERT INTO [dbo].[filtro_anno_viste] ([anno],[utilizzo]) SELECT DATEPART(yy,)",
-            ""
-        ];
-        var query="";*/
+            filtroAnni+=anno+",";
+        }
+        filtroAnni = filtroAnni.substring(0, filtroAnni.length - 1);
     }
+    else
+    {
+        $("#btnRangeDati").css({"color":""});
+        $("#btnRangeDati").css({"border":""});
+        $("#btnRangeDatiTutti").css({"color":"#4C91CB"});
+        $("#btnRangeDatiTutti").css({"border":"0.5px solid #4C91CB"});
+    }
+
+    getElencoOrdiniClienteView();
+}
+function getAnni()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getAnniOrdiniClientiView.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
 }
 function checkFlexDirection()
 {
@@ -1299,7 +1344,8 @@ function getOrdiniClienteView()
         $.get("getOrdiniClienteView.php",
         {
             JSONfilterConditions,
-            orderBy
+            orderBy,
+            filtroAnni
         },
         function(response, status)
         {
