@@ -453,10 +453,107 @@ function getFiltri(utente)
         });
     });
 }
+function rimuoviFiltro(icon,index)
+{
+    icon.parentElement.remove();
+    if (index > -1)
+        filterConditions.splice(index, 1);
+
+    steps=0;
+    getElencoOrdiniClienteView();
+}
+function getActiveFilterBar()
+{
+    var filtriAttiviReportOrdiniCliente=document.getElementById("filtriAttiviReportOrdiniCliente");
+    filtriAttiviReportOrdiniCliente.innerHTML="";
+    var j=0;
+    filterConditions.forEach(function(filterCondition)
+    {
+        var div=document.createElement("div");
+        var span=document.createElement("span");
+        span.innerHTML=filterCondition.label;
+        div.appendChild(span);
+        var i=document.createElement("i");
+        i.setAttribute("class","fal fa-times");
+        i.setAttribute("onclick","rimuoviFiltro(this,"+j+")");
+        div.appendChild(i);
+
+        filtriAttiviReportOrdiniCliente.appendChild(div);
+        j++;
+    });
+}
+function closeContextMenuOrdineCliente()
+{
+    $(".ordine-cliente-context-menu-outer-container").remove();
+    $(".link-cerca-pdf-report-ordini-cliente").css
+    ({
+        "text-decoration":"",
+        "color":""
+    });
+}
+function getContextMenuOrdineCliente(button,event,ordine)
+{
+    closeContextMenuOrdineCliente();
+
+    var rect = button.getBoundingClientRect();
+
+    button.style.textDecoration="underline";
+    button.style.color="#4C91CB";
+
+    var contextMenuOuterContainer=document.createElement("div");
+    contextMenuOuterContainer.setAttribute("class","ordine-cliente-context-menu-outer-container");
+    contextMenuOuterContainer.setAttribute("id","ordineClienteContentMenuOuterContainer"+ordine);
+    //contextMenuOuterContainer.setAttribute("","");
+    
+    var link=document.createElement("a");
+    link.setAttribute("href","");
+    link.setAttribute("target","_blank");
+    //link.setAttribute("href","http://remote.oasisgroup.it/Oasis/registrazioniProduzione.php?colonnaFiltro=ordine_cliente&valoreFiltro="+ordine);
+    link.setAttribute("href","http://127.0.0.1:5500/registrazioniProduzione.php?colonnaFiltro=ordine_cliente&valoreFiltro="+ordine);
+    link.setAttribute("class","ordine-cliente-context-menu-item");
+    link.setAttribute("onclick","closeContextMenuOrdineCliente()");
+    var span=document.createElement("span");
+    span.setAttribute("class","ordine-cliente-context-menu-item");
+    span.innerHTML="Stato produzione";
+    link.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
+    link.appendChild(i);
+    contextMenuOuterContainer.appendChild(link);
+
+    var link=document.createElement("a");
+    link.setAttribute("target","_blank");
+    link.setAttribute("href","http://remote.oasisgroup.it/Oasis/reportMailFornitori.php?colonnaFiltro=ordine_cliente&valoreFiltro="+ordine);
+    link.setAttribute("class","ordine-cliente-context-menu-item");
+    link.setAttribute("onclick","closeContextMenuOrdineCliente()");
+    var span=document.createElement("span");
+    span.setAttribute("class","ordine-cliente-context-menu-item");
+    span.innerHTML="Pdf ordine fornitore";
+    link.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
+    link.appendChild(i);
+    contextMenuOuterContainer.appendChild(link);
+
+    document.body.appendChild(contextMenuOuterContainer);
+
+    var left=rect.left+55;
+    var top=rect.top-30;
+
+    $("#ordineClienteContentMenuOuterContainer"+ordine).show("fast","swing");
+    $("#ordineClienteContentMenuOuterContainer"+ordine).css
+    ({
+        "display":"flex",
+        "left":left+"px",
+        "top":top+"px"
+    });
+}
 async function getElencoOrdiniClienteView()
 {
     var container=document.getElementById("reportOrdiniClienteContainer");
     container.innerHTML="";
+
+    document.getElementById("numeroRecordReportOrdiniCliente").innerHTML="0";
 
     getFaSpinner(container,"container","Caricamento in corso...");
 
@@ -464,10 +561,13 @@ async function getElencoOrdiniClienteView()
     headers=objOrdini.headers;
     ordini=objOrdini.ordini;
     ordiniOriginal=objOrdini.ordini;
+
+    getActiveFilterBar();
     
     var table=document.createElement("table");
     table.setAttribute("id","reportOrdiniClientiTable");
 
+    var colNum=0;
     var thead=document.createElement("thead");
     var tr=document.createElement("tr");
     headers.forEach(function (header)
@@ -477,7 +577,7 @@ async function getElencoOrdiniClienteView()
         var th=document.createElement("th");
         th.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
         th.setAttribute("id","reportOrdiniClientiTableHeader"+header.value);
-        th.setAttribute("onclick","openFilterMenu(event,'"+header.value+"',this)");
+        th.setAttribute("onclick","openFilterMenu(event,'"+header.value+"',"+colNum+",this)");
 
         var span=document.createElement("span");
         span.innerHTML=header.label;
@@ -492,12 +592,14 @@ async function getElencoOrdiniClienteView()
         tr.appendChild(th);
 
         createFilterMenu(header.value,header.data_type);
+        colNum++;
     });
     thead.appendChild(tr);
     table.appendChild(thead);
 
     ordiniLenght=0;
     tbody=document.createElement("tbody");
+    tbody.setAttribute("onscroll","closeContextMenuOrdineCliente()")
     ordini.forEach(function (ordine)
     {
         var tr=document.createElement("tr");
@@ -511,23 +613,37 @@ async function getElencoOrdiniClienteView()
 
             var td=document.createElement("td");
             td.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
-            td.setAttribute("title",ordine[header.value]);
             if(isEven(ordiniLenght))
                 td.setAttribute("style","background-color:rgba(255, 255, 255, 0.199)");
             else
                 td.setAttribute("style","background-color:rgba(76, 146, 203, 0.199)");
             
-            if(header.value=="ordine_cliente" || header.value=="ordine_fornitore")
+            if(header.value!=="ordine_cliente" && header.value!=="ordine_fornitore")
             {
-                var linkOrdine=document.createElement("a");
-                linkOrdine.setAttribute("class","link-cerca-pdf-report-ordini-cliente");
-                linkOrdine.setAttribute("href","http://remote.oasisgroup.it/Oasis/reportMailFornitori.php?colonnaFiltro="+header.value+"&valoreFiltro="+ordine[header.value]);
-                linkOrdine.setAttribute("title","Cerca pdf...");
-                linkOrdine.innerHTML=ordine[header.value];
-                td.appendChild(linkOrdine);
+                td.innerHTML=ordine[header.value];
+                td.setAttribute("title",ordine[header.value]);
             }
             else
-                td.innerHTML=ordine[header.value];
+            {
+                if(header.value=="ordine_fornitore")
+                {
+                    var linkOrdine=document.createElement("a");
+                    linkOrdine.setAttribute("class","link-cerca-pdf-report-ordini-cliente");
+                    linkOrdine.setAttribute("target","_blank");
+                    linkOrdine.setAttribute("href","http://remote.oasisgroup.it/Oasis/reportMailFornitori.php?colonnaFiltro="+header.value+"&valoreFiltro="+ordine[header.value]);
+                    linkOrdine.setAttribute("title","Cerca pdf...");
+                    linkOrdine.innerHTML=ordine[header.value];
+                    td.appendChild(linkOrdine);
+                }
+                else
+                {
+                    var linkOrdine=document.createElement("a");
+                    linkOrdine.setAttribute("class","link-cerca-pdf-report-ordini-cliente");
+                    linkOrdine.setAttribute("onclick","getContextMenuOrdineCliente(this,event,'"+ordine.ordine_cliente+"')");
+                    linkOrdine.innerHTML=ordine[header.value];
+                    td.appendChild(linkOrdine);
+                }
+            }
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -556,6 +672,8 @@ async function getElencoOrdiniClienteView()
     checkFilters();
 
     caricaAltriOrdini();
+
+    document.getElementById("numeroRecordReportOrdiniCliente").innerHTML=ordiniLenght;
 
     var btnSteps=document.createElement("button");
     btnSteps.setAttribute("onclick","caricaAltriOrdini()");
@@ -621,7 +739,7 @@ function hideFilterMenu()
     $(".filter-menu-report-ordini-cliente").hide("fast","swing");
     $("#reportOrdiniClientiTable th").css("color","");
 }
-function openFilterMenu(event,colonna,th)
+function openFilterMenu(event,colonna,colNum,th)
 {
     hideFilterMenu();
 
@@ -630,12 +748,24 @@ function openFilterMenu(event,colonna,th)
     th.style.color="#4C91CB";
 
     $("#filterMenuReportOrdiniCliente"+colonna).show("fast","swing");
-    $("#filterMenuReportOrdiniCliente"+colonna).css(
+    if(colNum<headers.length/2)
     {
-        "display":"flex",
-        "left":(event.clientX - 7),
-        "top":(event.clientY+12)
-    });
+        $("#filterMenuReportOrdiniCliente"+colonna).css(
+        {
+            "display":"flex",
+            "left":(event.clientX - 7),
+            "top":(event.clientY+12)
+        });
+    }
+    else
+    {
+        $("#filterMenuReportOrdiniCliente"+colonna).css(
+        {
+            "display":"flex",
+            "left":(event.clientX - 240),
+            "top":(event.clientY+12)
+        });
+    }    
 }
 function createFilterMenu(colonna,data_type)
 {
@@ -1324,17 +1454,15 @@ function isEven(value) {
 }
 function fixTable()
 {
-    var tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
+    try {
+        var tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
 
-    headers.forEach(function(header)
-    {
-        var width=(header.width*tableWidth)/100;
-        $(".reportOrdiniClientiTableCell"+header.value).css({"width":width+"px"});
-    });
-    
-    /*var tableColWidth1=tableWidth/headers.length;
-    $("#reportOrdiniClientiTable td").css({"width":tableColWidth1+"px"});
-    $("#reportOrdiniClientiTable th").css({"width":tableColWidth1+"px"});*/
+        headers.forEach(function(header)
+        {
+            var width=(header.width*tableWidth)/100;
+            $(".reportOrdiniClientiTableCell"+header.value).css({"width":width+"px"});
+        });
+    } catch (error) {}
 }
 function getOrdiniClienteView()
 {
@@ -1666,5 +1794,9 @@ function windowClick(e)
     else
     {
         hideFilterMenu();
+    }
+    if(e.target.className!="link-cerca-pdf-report-ordini-cliente" && e.target.className!="ordine-cliente-context-menu-outer-container" && e.target.parentElement.className!="ordine-cliente-context-menu-item")
+    {
+        closeContextMenuOrdineCliente();
     }
 }

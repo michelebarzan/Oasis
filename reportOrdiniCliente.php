@@ -25,6 +25,7 @@
 				<button class="action-bar-icon-button" id="btnHeaderTabellaSL" style="color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setHeaderTabella('sl')"><i class="far fa-horizontal-rule"></i></button>
 				<button class="action-bar-icon-button" id="btnHeaderTabellaML" onclick="setHeaderTabella('ml')"><i class="fad fa-line-height"></i></button>
 			</div>
+			<!--<button class="action-bar-text-icon-button" style="margin-left:5px" onclick="window.find('galleria')"><span>cerca</span><i class="far fa-filter"></i></button>-->
 			<button class="action-bar-text-icon-button" id="btnApplicaFiltro" style="margin-left:5px" onclick="getPopupFiltrISalvati()"><span>Filtri salvati</span><i class="far fa-filter"></i></button>
 			<button class="action-bar-text-icon-button" id="btnCancellaFiltri" style="margin-left:5px" onclick="cancellaFiltri()"><span>Cancella filtri</span><i class="far fa-filter"></i></button>
 			<button class="action-bar-text-icon-button" id="btnSalvaFiltro" style="margin-left:5px" onclick="getSalvaFiltroPopup()"><span>Salva filtro corrente</span><i class="far fa-save"></i></button>
@@ -34,7 +35,16 @@
 				<button class="action-bar-icon-button" id="btnRangeDatiTutti" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold" onclick="setRangeDati('*')">Tutti gli anni</button>
 			</div>
 		</div>
-		<div id="reportOrdiniClienteActiveFilterContainer"></div>
+		<div id="reportOrdiniClienteActiveFilterContainer">
+			<div class="report-ordini-cliente-active-filter-container-item" style="border-top-left-radius:3px;border-bottom-left-radius:3px;height:25px;background-color:#404040;color:white;font-weight:normal;padding-left:10px;padding-right:10px;width:90px;overflow:hidden">
+				<span>N. record:</span>
+				<span id="numeroRecordReportOrdiniCliente" style='margin-left:5px'>0</span>
+			</div>
+			<div class="report-ordini-cliente-active-filter-container-item" style="margin-left:10px">
+				<span style="margin-right:5px">Filtri attivi:</span>
+				<div id="filtriAttiviReportOrdiniCliente"></div>
+			</div>
+		</div>
 		<!--<input type="text" id="reportOrdiniClienteSearchBar" placeholder="Cerca..." onkeyup="searchPicks(this)">-->
 		<div id="reportOrdiniClienteContainer"></div>
 		<div id="footer">

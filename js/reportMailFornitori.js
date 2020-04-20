@@ -55,6 +55,8 @@ async function onloadActions()
         document.getElementById("inputSearchreportAcquisti").value=getParamsValoreFiltro;
     }
 
+    //CEWRCA ANCHE SULLA DESCRIZIONE DELLE righe
+
     getElencoMail();
     var reportAcquistiControlBar=document.getElementById("reportAcquistiControlBar");
     getFaSpinner(reportAcquistiControlBar,"reportAcquistiControlBar","Importazione pdf in corso...");

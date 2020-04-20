@@ -3,6 +3,7 @@
 	<head>
 		<title>Autenticazione</title>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+		<link rel="shortcut icon" type="image/x-icon" href="images/logo3.png" />
 		<link rel="stylesheet" href="css/styleAV2.css" />
 		<script>
 			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) 

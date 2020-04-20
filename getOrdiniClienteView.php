@@ -1,6 +1,7 @@
 <?php
 
     include "connessione.php";
+    include "Session.php";
 
     set_time_limit(120);
 
@@ -29,125 +30,216 @@
 
     $headers=[];
 
-    $header["value"]="ordine_cliente";
-    $header["label"]="Ordine Cliente";
-    $header["data_type"]="string";
-    $header["width"]="4.5";
-    array_push($headers,$header);
+    $stmt = sqlsrv_query( $conn, "SELECT * FROM permessi_colonne_report_ordini_cliente WHERE utente=".$_SESSION['id_utente']);
 
-    $header["value"]="nome_cliente";
-    $header["label"]="Nome Cliente";
-    $header["data_type"]="string";
-    $header["width"]="8.5";
-    array_push($headers,$header);
+    if ($stmt) 
+    {
+        $rows = sqlsrv_has_rows( $stmt );
+        if ($rows === true)
+        {
+            $header["value"]="ordine_cliente";
+            $header["label"]="Ordine Cliente";
+            $header["data_type"]="string";
+            $header["width"]="4.5";
+            array_push($headers,$header);
 
-    $header["value"]="data_spedizione";
-    $header["label"]="Data Spedizione";
-    $header["data_type"]="date";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="nome_cliente";
+            $header["label"]="Nome Cliente";
+            $header["data_type"]="string";
+            $header["width"]="8.5";
+            array_push($headers,$header);
 
-    $header["value"]="Statistical_group_code";
-    $header["label"]="Statistical Group Code";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="data_spedizione";
+            $header["label"]="Data Spedizione";
+            $header["data_type"]="date";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="Statistical_group_name";
-    $header["label"]="Statistical Group Name";
-    $header["data_type"]="string";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="Statistical_group_code";
+            $header["label"]="Statistical Group Code";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="linea_business";
-    $header["label"]="Linea Business";
-    $header["data_type"]="string";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="Statistical_group_name";
+            $header["label"]="Statistical Group Name";
+            $header["data_type"]="string";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="tipo";
-    $header["label"]="Tipo";
-    $header["data_type"]="string";
-    $header["width"]="9";
-    array_push($headers,$header);
+            $header["value"]="linea_business";
+            $header["label"]="Linea Business";
+            $header["data_type"]="string";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="tipo_pagamento";
-    $header["label"]="Tipo Pagamento";
-    $header["data_type"]="string";
-    $header["width"]="9";
-    array_push($headers,$header);
+            $header["value"]="tipo";
+            $header["label"]="Tipo";
+            $header["data_type"]="string";
+            $header["width"]="9";
+            array_push($headers,$header);
 
-    $header["value"]="importo_totale";
-    $header["label"]="Importo Totale";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="tipo_pagamento";
+            $header["label"]="Tipo Pagamento";
+            $header["data_type"]="string";
+            $header["width"]="9";
+            array_push($headers,$header);
 
-    $header["value"]="importo_incassato";
-    $header["label"]="Importo Incassato";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="importo_totale";
+            $header["label"]="Importo Totale";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="importo_da_pagare";
-    $header["label"]="Importo Da Pagare";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="importo_incassato";
+            $header["label"]="Importo Incassato";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="fatturato_spedito";
-    $header["label"]="Fatturato Spedito";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="importo_da_pagare";
+            $header["label"]="Importo Da Pagare";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="fatturato_da_spedire";
-    $header["label"]="Fatturato Da Spedire";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="fatturato_spedito";
+            $header["label"]="Fatturato Spedito";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="note";
-    $header["label"]="Note";
-    $header["data_type"]="string";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="fatturato_da_spedire";
+            $header["label"]="Fatturato Da Spedire";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="ordine_fornitore";
-    $header["label"]="Ordine Fornitore";
-    $header["data_type"]="string";
-    $header["width"]="4.5";
-    array_push($headers,$header);
+            $header["value"]="note";
+            $header["label"]="Note";
+            $header["data_type"]="string";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="nome_fornitore";
-    $header["label"]="Nome Fornitore";
-    $header["data_type"]="string";
-    $header["width"]="8.5";
-    array_push($headers,$header);
+            $header["value"]="ordine_fornitore";
+            $header["label"]="Ordine Fornitore";
+            $header["data_type"]="string";
+            $header["width"]="4.5";
+            array_push($headers,$header);
 
-    $header["value"]="data_creazione_ordine";
-    $header["label"]="Data Creazione Ordine";
-    $header["data_type"]="date";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="nome_fornitore";
+            $header["label"]="Nome Fornitore";
+            $header["data_type"]="string";
+            $header["width"]="8.5";
+            array_push($headers,$header);
 
-    $header["value"]="data_arrivo_merce";
-    $header["label"]="Data Arrivo Merce";
-    $header["data_type"]="date";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="data_creazione_ordine";
+            $header["label"]="Data Creazione Ordine";
+            $header["data_type"]="date";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="stato";
-    $header["label"]="Stato";
-    $header["data_type"]="string";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="data_arrivo_merce";
+            $header["label"]="Data Arrivo Merce";
+            $header["data_type"]="date";
+            $header["width"]="4";
+            array_push($headers,$header);
 
-    $header["value"]="importo_ordine_fornitore";
-    $header["label"]="Importo Ordine Fornitore";
-    $header["data_type"]="number";
-    $header["width"]="4";
-    array_push($headers,$header);
+            $header["value"]="stato";
+            $header["label"]="Stato";
+            $header["data_type"]="string";
+            $header["width"]="4";
+            array_push($headers,$header);
+
+            $header["value"]="importo_ordine_fornitore";
+            $header["label"]="Importo Ordine Fornitore";
+            $header["data_type"]="number";
+            $header["width"]="4";
+            array_push($headers,$header);
+        }
+        else 
+        {
+            $header["value"]="ordine_cliente";
+            $header["label"]="Ordine Cliente";
+            $header["data_type"]="string";
+            $header["width"]="7";
+            array_push($headers,$header);
+
+            $header["value"]="nome_cliente";
+            $header["label"]="Nome Cliente";
+            $header["data_type"]="string";
+            $header["width"]="13";
+            array_push($headers,$header);
+
+            $header["value"]="data_spedizione";
+            $header["label"]="Data Spedizione";
+            $header["data_type"]="date";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="Statistical_group_code";
+            $header["label"]="Statistical Group Code";
+            $header["data_type"]="number";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="Statistical_group_name";
+            $header["label"]="Statistical Group Name";
+            $header["data_type"]="string";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="linea_business";
+            $header["label"]="Linea Business";
+            $header["data_type"]="string";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="tipo";
+            $header["label"]="Tipo";
+            $header["data_type"]="string";
+            $header["width"]="12";
+            array_push($headers,$header);
+
+            $header["value"]="note";
+            $header["label"]="Note";
+            $header["data_type"]="string";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="ordine_fornitore";
+            $header["label"]="Ordine Fornitore";
+            $header["data_type"]="string";
+            $header["width"]="7";
+            array_push($headers,$header);
+
+            $header["value"]="nome_fornitore";
+            $header["label"]="Nome Fornitore";
+            $header["data_type"]="string";
+            $header["width"]="13";
+            array_push($headers,$header);
+
+            $header["value"]="data_creazione_ordine";
+            $header["label"]="Data Creazione Ordine";
+            $header["data_type"]="date";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="data_arrivo_merce";
+            $header["label"]="Data Arrivo Merce";
+            $header["data_type"]="date";
+            $header["width"]="6";
+            array_push($headers,$header);
+
+            $header["value"]="stato";
+            $header["label"]="Stato";
+            $header["data_type"]="string";
+            $header["width"]="6";
+            array_push($headers,$header);
+        }
+    }
+    else
+        die("error");
 
     $ordini=[];
 
