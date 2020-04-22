@@ -411,7 +411,14 @@ FROM            (SELECT        ordine_cliente, codice_cliente, nome_cliente, dat
     {
         while($row2=sqlsrv_fetch_array($result2))
         {
-            $ordine["ordine_cliente"]=utf8_encode(str_replace("'","",$row2['ordine_cliente']));
+            $ordine_cliente=$row2["ordine_cliente"];
+            $ordine_cliente=str_replace("'","||",$ordine_cliente);
+            $ordine_cliente=str_replace(" ","|_|",$ordine_cliente);
+            $ordine_cliente=str_replace("/","|-|",$ordine_cliente);
+            $ordine_cliente=str_replace("\\","|--|",$ordine_cliente);
+            $ordine_cliente=str_replace("&","|e|",$ordine_cliente);
+            $ordine_cliente=str_replace("=","|uguale|",$ordine_cliente);
+            $ordine["ordine_cliente"]=utf8_encode($ordine_cliente);
             //$ordine["codice_cliente"]=$row2['codice_cliente'];
             $nome_cliente=utf8_encode(str_replace("'","",$row2['nome_cliente']));
             $ordine["nome_cliente"]=str_replace('"','',$nome_cliente);

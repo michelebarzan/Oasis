@@ -25,11 +25,13 @@
 				<button class="action-bar-icon-button" id="btnHeaderTabellaSL" style="color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setHeaderTabella('sl')"><i class="far fa-horizontal-rule"></i></button>
 				<button class="action-bar-icon-button" id="btnHeaderTabellaML" onclick="setHeaderTabella('ml')"><i class="fad fa-line-height"></i></button>
 			</div>
+			<button class="action-bar-text-icon-button" id="btnRaggruppaOrdiniFornitore" style="margin-left:5px" onclick="toggleRaggruppaOrdini(this)"><span>Raggruppa ordini</span><i class="fal fa-object-group"></i></button>
 			<!--<button class="action-bar-text-icon-button" style="margin-left:5px" onclick="window.find('galleria')"><span>cerca</span><i class="far fa-filter"></i></button>-->
 			<button class="action-bar-text-icon-button" id="btnApplicaFiltro" style="margin-left:5px" onclick="getPopupFiltrISalvati()"><span>Filtri salvati</span><i class="far fa-filter"></i></button>
 			<button class="action-bar-text-icon-button" id="btnCancellaFiltri" style="margin-left:5px" onclick="cancellaFiltri()"><span>Cancella filtri</span><i class="far fa-filter"></i></button>
 			<button class="action-bar-text-icon-button" id="btnSalvaFiltro" style="margin-left:5px" onclick="getSalvaFiltroPopup()"><span>Salva filtro corrente</span><i class="far fa-save"></i></button>
-			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel()"><span>Esporta</span><i class="far fa-file-excel"></i></button>
+			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('*')"><span>Esporta tutto</span><i class="far fa-file-excel"></i></button>
+			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('ordini_cliente')"><span>Esporta ordini cliente</span><i class="far fa-file-excel"></i></button>
 			<div class="action-bar-item" style="margin-left:auto;margin-right:5px" >
 				<button class="action-bar-icon-button" id="btnRangeDati" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold;color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setRangeDati(2)">Ultimi 2 anni</button>
 				<button class="action-bar-icon-button" id="btnRangeDatiTutti" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold" onclick="setRangeDati('*')">Tutti gli anni</button>

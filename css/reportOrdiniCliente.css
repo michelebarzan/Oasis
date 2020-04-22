@@ -426,7 +426,8 @@ html
 }*/
 #reportOrdiniClientiTable tbody tr
 {
-    /*transition: all 0.07s;*/
+    cursor: pointer;
+    display: flex;
 }
 #reportOrdiniClientiTable tbody tr:hover
 {
@@ -448,7 +449,7 @@ html
     color:black;
     text-decoration: none;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    cursor: pointer;
+    cursor: alias;
 }
 .link-cerca-pdf-report-ordini-cliente:hover
 {

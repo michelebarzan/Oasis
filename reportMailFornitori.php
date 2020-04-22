@@ -7,7 +7,16 @@
 	if(isset($_GET["colonnaFiltro"]))
 		echo '<input type="hidden" value="'.$_GET["colonnaFiltro"].'" id="getParamsColonnaFiltro">';
 	if(isset($_GET["valoreFiltro"]))
-		echo '<input type="hidden" value="'.$_GET["valoreFiltro"].'" id="getParamsValoreFiltro">';
+	{
+		$valoreFiltro=$_GET["valoreFiltro"];
+		$valoreFiltro=str_replace("||","'",$valoreFiltro);
+		$valoreFiltro=str_replace("|_|"," ",$valoreFiltro);
+		$valoreFiltro=str_replace("|-|","/",$valoreFiltro);
+		$valoreFiltro=str_replace("|--|","\\",$valoreFiltro);
+		$valoreFiltro=str_replace("|e|","&",$valoreFiltro);
+		$valoreFiltro=str_replace("|uguale|","=",$valoreFiltro);
+		echo '<input type="hidden" value="'.$valoreFiltro.'" id="getParamsValoreFiltro">';
+	}
 	?>
 <html>
 	<head>
