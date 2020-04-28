@@ -4,7 +4,7 @@
 	include "connessione.php";
 
 	//$nSettimane=11;
-	$nSettimane=5;
+	$nSettimane=11;
 	$stazione=$_REQUEST['stazione'];
 	
 	if($stazione=="CAB_LAC" || $stazione=="CAB_ACR")
