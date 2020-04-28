@@ -19,78 +19,8 @@
 		<script src="tableToExcel.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<script src="js/gestioneCarichiDiLavoro.js"></script>
+		<link rel="stylesheet" href="css/gestioneCarichiDiLavoro.css" />
 		<script src="jscolor.js"></script>
-		<style>
-			.loader {
-				display:inline-block;
-				float:center;
-			  border:7px solid #f3f3f3;
-			  border-radius: 50%;
-			  border-top: 7px solid #3498db;
-			  width: 20px;
-			  height: 20px;
-			  -webkit-animation: spin 2s linear infinite; /* Safari */
-			  animation: spin 2s linear infinite;
-			}
-			/*.elementOrdine * {pointer-events: none;}*/
-			/* Safari */
-			@-webkit-keyframes spin {
-			  0% { -webkit-transform: rotate(0deg); }
-			  100% { -webkit-transform: rotate(360deg); }
-			}
-
-			@keyframes spin {
-			  0% { transform: rotate(0deg); }
-			  100% { transform: rotate(360deg); }
-			}
-			/*.swal-text 
-			{
-				animation: fa-spin 2s infinite linear;
-				color: #79A5D1;
-			}
-			.swal-title 
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:14px;
-			}*/
-			.swal2-title
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:18px;
-			}
-			.swal2-content
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:13px;
-			}
-			.swal2-confirm,.swal2-cancel
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:13px;
-			}
-			@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
-			@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
-			
-			/* width */
-			::-webkit-scrollbar {
-				width: 10px;
-			}
-
-			/* Track */
-			::-webkit-scrollbar-track {
-				background: #f1f1f1; 
-			}
-			 
-			/* Handle */
-			::-webkit-scrollbar-thumb {
-				background: #888; 
-			}
-
-			/* Handle on hover */
-			::-webkit-scrollbar-thumb:hover {
-				background: #555; 
-			}
-		</style>
 	</head>
 	<body onload="document.getElementById('btnConfermaSettimane').disabled=false;document.getElementById('btnNonAggiornare').disabled=false;" >
 		<input type="hidden" id="server_adress" value="<?php echo $_SERVER['SERVER_ADDR']; ?>" />
