@@ -6,7 +6,7 @@ var globalHoveredElement;
 var draggedElement;
 var checkHoveredElementInterval;
 var counter=0;
-var nWeeks=5;
+var nWeeks=11;
 
 function resetStyle()
 {
@@ -614,8 +614,7 @@ function scrollUpPage()
 }
 function scrollDownPage()
 {
-	//window.scrollTo(0,document.body.scrollHeight+10000000);
-	var altezzeVER=[];
+	/*var altezzeVER=[];
 	var height=document.getElementById('residuoVER').offsetHeight;
 	altezzeVER.push(height);
 	for (let index = 1; index <= nWeeks; index++) 
@@ -625,7 +624,8 @@ function scrollDownPage()
 	}
 	//var altezzeVER=[document.getElementById('residuoVER').offsetHeight,document.getElementById('ordiniVER1').offsetHeight,document.getElementById('ordiniVER2').offsetHeight,document.getElementById('ordiniVER3').offsetHeight,document.getElementById('ordiniVER4').offsetHeight,document.getElementById('ordiniVER5').offsetHeight];
 	var largestVER = Math.max.apply(null, altezzeVER);
-	window.scrollTo(0,largestVER);
+	window.scrollTo(0,largestVER);*/
+	window.scrollTo(0,document.body.scrollHeight+10000000);
 }
 function removeScrollContainers()
 {
