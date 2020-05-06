@@ -39,7 +39,9 @@
     {
         while($row=sqlsrv_fetch_array($result1))
         {
-            array_push($columns,$row["COLUMN_NAME"]);
+            $column["COLUMN_NAME"]=$row["COLUMN_NAME"];
+            $column["DATA_TYPE"]=$row["DATA_TYPE"];
+            array_push($columns,$column);
         }
     }
 
@@ -59,7 +61,7 @@
 
     $extraColumnsSelect="[".implode("],[",$extraColumns)."]";
 
-    $query2="SELECT * FROM richieste_e_faq_view WHERE stato IN ('$filtroStato_in') $filtroMacrocategoria $filtroCategoria OPTION ( QUERYTRACEON 9481 )";	
+    $query2="SELECT * FROM richieste_e_faq_view WHERE stato IN ('$filtroStato_in') $filtroMacrocategoria $filtroCategoria OPTION ( QUERYTRACEON 9481 )";
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -67,7 +69,10 @@
         {
             foreach ($columns as $column) 
             {
-                $richiesta[$column]=$row2[$column];
+                if($column["DATA_TYPE"]=="datetime")
+                    $richiesta[$column["COLUMN_NAME"]]["date"]=$row2[$column["COLUMN_NAME"]]->format("d/m/Y H:i:s");
+                else
+                    $richiesta[$column["COLUMN_NAME"]]=utf8_encode($row2[$column["COLUMN_NAME"]]);
             }
             $query4="SELECT $extraColumnsSelect FROM richieste_e_faq WHERE id_richiesta=".$row2['id_richiesta']." OPTION ( QUERYTRACEON 9481 )";	
             $result4=sqlsrv_query($conn,$query4);

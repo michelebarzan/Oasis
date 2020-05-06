@@ -4290,7 +4290,12 @@
                         }
                         else
                         {
-                            richieste=JSON.parse(response);
+                            try {
+                                richieste=JSON.parse(response);
+                            } catch (error) {
+                                console.log(response);
+                                richieste=[];
+                            }
                             var id_richieste=[];
 
                             //console.log(richieste);
@@ -4327,9 +4332,9 @@
                                 var descrizione_categoria=getValoreColonnaRichiesteById(richieste,id_richiesta,"descrizione_categoria");
                                 var stato=getValoreColonnaRichiesteById(richieste,id_richiesta,"stato");
                                 var urgente=getValoreColonnaRichiesteById(richieste,id_richiesta,"urgente");
-                                var data_creazione=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[0];
+                                //var data_creazione=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[0];
                                 var ora_creazione=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[1];
-
+                                var data_ita=getValoreColonnaRichiesteById(richieste,id_richiesta,"data_creazione").date.split(" ")[0];
                                 var utenti_coinvolti=getValoriColonnaRichiesteById(richieste,id_richiesta,"utente_incaricato");
                                 var allegati=getValoriColonnaRichiesteById(richieste,id_richiesta,"percorso_allegato");
                                 
@@ -4526,10 +4531,10 @@
                                 richiesteListItemElementInput.setAttribute("id","leTueRichiesteValuedata_creazione"+id_richiesta);
                                 richiesteListItemElementInput.setAttribute("style","width:120px;line-height:30px;height:30px;color:#EBEBEB;");
                                 
-                                var data_creazione_anno=data_creazione.split("-")[0];
+                                /*var data_creazione_anno=data_creazione.split("-")[0];
                                 var data_creazione_mese=data_creazione.split("-")[1];
                                 var data_creazione_giorno=data_creazione.split("-")[2];
-                                var data_ita=data_creazione_giorno+"/"+data_creazione_mese+"/"+data_creazione_anno;
+                                var data_ita=data_creazione_giorno+"/"+data_creazione_mese+"/"+data_creazione_anno;*/
 
                                 richiesteListItemElementInput.innerHTML=data_ita+" "+ora_creazione.split(".")[0];
 
