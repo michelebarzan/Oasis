@@ -111,7 +111,7 @@
 								<option value="In attesa di chiusura" selected>Richieste in attesa di chiusura</option>
 								<option value="Presa in carico" selected>Richieste prese in carico</option>
 								<option value="Aperta" selected>Richieste aperte</option>
-								<option value="Chiusa">Richieste chiuse</option>
+								<option id="selectStatoLeTueRichiesteOptionChiusa" value="Chiusa">Richieste chiuse</option>
 							</select>
 						</div>
 						<div class="absoluteActionBarElement">

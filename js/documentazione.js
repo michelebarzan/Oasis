@@ -8,6 +8,7 @@ var pageInfo=
 };
 var orderBy='nome ASC';
 var documenti;
+var id_utente;
 
 function toggleOrderIcon(button)
 {
@@ -30,6 +31,8 @@ async function onloadActions()
 {
     getElencoCategorie();
     getElencoDocumentazione();
+
+    id_utente=await getSessionValue("id_utente");
 }
 async function getElencoCategorie()
 {
@@ -137,11 +140,22 @@ async function getElencoDocumentazione()
 
         var expandButton=document.createElement("button");
         expandButton.setAttribute("class","info-bar-hidden-button");
-        expandButton.setAttribute("onclick","expandDocumento('"+documento.nomeFile+"','"+documento.nome+"')");
+        expandButton.setAttribute("onclick","expandDocumento("+documento.id_documento+","+documento.utente+",'"+documento.nomeFile+"','"+documento.nome+"')");
         var expandIcon=document.createElement("i");
         expandIcon.setAttribute("class","far fa-expand-arrows-alt");
         expandButton.appendChild(expandIcon);
         menuContainer.appendChild(expandButton);
+
+        if(id_utente==documento.utente)
+        {
+            var deleteButton=document.createElement("button");
+            deleteButton.setAttribute("class","info-bar-hidden-button");
+            deleteButton.setAttribute("onclick","eliminaDocumento("+documento.id_documento+")");
+            var deleteIcon=document.createElement("i");
+            deleteIcon.setAttribute("class","fad fa-trash");
+            deleteButton.appendChild(deleteIcon);
+            menuContainer.appendChild(deleteButton);
+        }
 
         infoBar.appendChild(menuContainer);
 
@@ -169,6 +183,40 @@ async function getElencoDocumentazione()
         container.appendChild(outerContainer);
         
         i++;
+    });
+}
+function eliminaDocumento(id_documento)
+{
+    $.get("eliminaDocumento.php",
+    {
+        id_documento
+    },
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                
+                Swal.fire
+                ({
+                    icon:"success",title: "Documento eliminato",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}
+                }).then((result) => 
+                {
+                    onloadActions();
+                });
+            }
+        }
+        else
+        {
+            Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+            console.log(status);
+        }
     });
 }
 function shareDocumento(nomeFile,nome)
@@ -253,7 +301,7 @@ function shareDocumento(nomeFile,nome)
         
     });
 }
-function expandDocumento(nomeFile,nome)
+function expandDocumento(id_documento,utente,nomeFile,nome)
 {
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("id","expandPdfOuterContainer");
@@ -272,6 +320,16 @@ function expandDocumento(nomeFile,nome)
     shareButton.appendChild(shareIcon);
     infoBar.appendChild(shareButton);
 
+    if(id_utente==utente)
+    {
+        var deleteButton=document.createElement("button");
+        deleteButton.setAttribute("onclick","eliminaDocumento("+id_documento+")");
+        var deleteIcon=document.createElement("i");
+        deleteIcon.setAttribute("class","fad fa-trash");
+        deleteButton.appendChild(deleteIcon);
+        infoBar.appendChild(deleteButton);
+    }
+    
     var closeButton=document.createElement("button");
     closeButton.setAttribute("onclick","document.getElementById('expandPdfOuterContainer').remove()");
     closeButton.setAttribute("style","font-size:18px;");
@@ -548,7 +606,7 @@ async function caricaDocumento()
                             }
                         }).then((result) => 
                         {
-                            onloaddocumentazione();
+                            onloadActions();
                         });
                     }
                 }

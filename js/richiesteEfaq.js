@@ -1536,6 +1536,7 @@
     }
     async function getRichiesteUtente()
     {
+        document.getElementById("selectStatoLeTueRichiesteOptionChiusa").removeAttribute("selected");
         document.getElementById("viewTitle").innerHTML='Le tue richieste<i class="fad fa-user-edit" style="margin-left:10px;"></i>';
         document.getElementById("richiesteContainer").innerHTML="";
         view="richieste_utente";
@@ -4172,6 +4173,7 @@
     /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     async function getTutteRichieste()
     {
+        document.getElementById("selectStatoLeTueRichiesteOptionChiusa").setAttribute("selected","selected");
         document.getElementById("viewTitle").innerHTML='Tutte le richieste<i class="fad fa-database" style="margin-left:10px;"></i>';
         document.getElementById("richiesteContainer").innerHTML="";
         view="tutte_le_richieste";
