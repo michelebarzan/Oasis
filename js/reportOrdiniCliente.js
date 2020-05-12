@@ -534,7 +534,21 @@ function getContextMenuOrdineCliente(button,event,ordine)
     link.setAttribute("onclick","closeContextMenuOrdineCliente()");
     var span=document.createElement("span");
     span.setAttribute("class","ordine-cliente-context-menu-item");
-    span.innerHTML="Pdf ordine fornitore";
+    span.innerHTML="Mail fornitore";
+    link.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
+    link.appendChild(i);
+    contextMenuOuterContainer.appendChild(link);
+
+    var link=document.createElement("a");
+    link.setAttribute("target","_blank");
+    link.setAttribute("href","http://remote.oasisgroup.it/OasisPdfOrdini/pdf_ordini/H"+ordine+".pdf");
+    link.setAttribute("class","ordine-cliente-context-menu-item");
+    link.setAttribute("onclick","closeContextMenuOrdineCliente()");
+    var span=document.createElement("span");
+    span.setAttribute("class","ordine-cliente-context-menu-item");
+    span.innerHTML="Pdf ordine";
     link.appendChild(span);
     var i=document.createElement("i");
     i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
@@ -544,7 +558,7 @@ function getContextMenuOrdineCliente(button,event,ordine)
     document.body.appendChild(contextMenuOuterContainer);
 
     var left=rect.left+55;
-    var top=rect.top-30;
+    var top=rect.top-50;
 
     $("#ordineClienteContentMenuOuterContainer"+ordine).show("fast","swing");
     $("#ordineClienteContentMenuOuterContainer"+ordine).css
