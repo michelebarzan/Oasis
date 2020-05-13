@@ -31,6 +31,9 @@ var stepsSize=500;
 var filterMenuAperto;
 var filtroAnni="2019,2020";
 var raggruppati=false;
+var resizeStep;
+var tableWidth;
+var defaultHeaders;
 
 function setHeaderTabella(headerTabella)
 {
@@ -578,6 +581,8 @@ async function getElencoOrdiniClienteView()
     headers=objOrdini.headers;
     ordini=objOrdini.ordini;
 
+    defaultHeaders=headers;
+
     if(raggruppati)
         raggruppaOrdini();
 
@@ -602,9 +607,12 @@ function getReportOrdiniClientiTable()
     var tr=document.createElement("tr");
     headers.forEach(function (header)
     {
+        header.colNum=colNum;
         filterArrays[header.value]=[];
 
         var th=document.createElement("th");
+        //th.setAttribute("onresize","resizeColumnPerc(this)");
+        th.setAttribute("colonna",header.value);
         th.setAttribute("class","reportOrdiniClientiTableCell"+header.value);
         th.setAttribute("id","reportOrdiniClientiTableHeader"+header.value);
         th.setAttribute("onclick","openFilterMenu(event,'"+header.value+"',"+colNum+",this)");
@@ -618,6 +626,22 @@ function getReportOrdiniClientiTable()
         var i=document.createElement("i");
         i.setAttribute("class","far fa-filter");
         th.appendChild(i);
+
+        var resizeDiv=document.createElement("div");
+        resizeDiv.setAttribute("class","resize-div-th");
+        resizeDiv.setAttribute("title","Ridimensiona colonna");
+        resizeDiv.setAttribute("colonna",header.value);
+        /*var btnPlus=document.createElement("button");
+        btnPlus.setAttribute("class","resize-div-th-item");
+        btnPlus.setAttribute("onclick","resizeColumnPerc('plus','"+header.value+"')");
+        btnPlus.innerHTML="+";
+        resizeDiv.appendChild(btnPlus);
+        var btnMinus=document.createElement("button");
+        btnMinus.setAttribute("class","resize-div-th-item");
+        btnMinus.setAttribute("onclick","resizeColumnPerc('minus','"+header.value+"')");
+        btnMinus.innerHTML="-";
+        resizeDiv.appendChild(btnMinus);*/
+        th.appendChild(resizeDiv);
 
         tr.appendChild(th);
 
@@ -751,6 +775,102 @@ function getReportOrdiniClientiTable()
     btnSteps.setAttribute("id","btncaricaAltriOrdini");
     btnSteps.innerHTML="<i class='fal fa-plus-circle'></i><span>Carica altri...</span>";
     container.appendChild(btnSteps);
+
+    $( ".resize-div-th" ).draggable
+    ({
+        axis: "x",
+        start: function( event, ui )
+        {
+            var verticalLine=document.createElement("div");
+            verticalLine.setAttribute("id","resizeDivVerticalLine");
+            document.body.appendChild(verticalLine);
+
+            this.style.backgroundColor="#DA6969";
+        },
+        drag: function( event, ui )
+        {
+            var left=event.clientX;
+            $("#resizeDivVerticalLine").css("left",left+"px");
+        },
+        stop: function( event, ui ) 
+            {
+                $("#resizeDivVerticalLine").remove();
+                this.style.backgroundColor="";
+
+                $("#btnRipristinaDimensioneColonna").show("fast","swing");
+                var element=this;
+                var colonna=element.getAttribute("colonna");
+                var resizeAmount=ui.position.left;
+                resizeColumn(colonna,resizeAmount);
+            }
+    });
+}
+function resizeColumn(colonna,resizeAmount)
+{
+    tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
+    if(resizeAmount>0)
+    {
+        resizeStep=(100*resizeAmount)/tableWidth;
+        resizeColumnPerc("plus",colonna);
+    }
+    if(resizeAmount<0)
+    {
+        resizeAmount=resizeAmount*-1;
+        resizeStep=(100*resizeAmount)/tableWidth;
+        resizeColumnPerc("minus",colonna);
+    }
+}
+function resizeColumnPerc(type,colonna)
+{
+    var headerObj=getFirstObjByPropValue(headers,"value",colonna);
+    var nColumnsLeft=headers.length-headerObj.colNum;
+    var resizeCompensate=resizeStep/(nColumnsLeft-1);
+    var i=0;
+    headers.forEach(function(header)
+    {
+        if(type=="plus")
+        {
+            if(header.value==colonna)
+                header.width=header.width+resizeStep;
+            else
+            {
+                if(header.colNum>headerObj.colNum)
+                    header.width=header.width-resizeCompensate;
+            }
+        }
+        else
+        {
+            if(header.value==colonna)
+                header.width=header.width-resizeStep;
+            else
+            {
+                if(header.colNum>headerObj.colNum)
+                    header.width=header.width+resizeCompensate;
+            }
+        }
+        i++;
+    });
+    steps=0;
+    getReportOrdiniClientiTable();
+}
+function fixTable()
+{
+    try {
+        tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
+
+        var widths=0;
+        headers.forEach(function(header)
+        {
+            var width=(header.width*tableWidth)/100;
+            $(".reportOrdiniClientiTableCell"+header.value).css({"width":width+"px"});
+            widths+=header.width;
+        });
+    } catch (error) {}
+}
+function ripristinaDimensioneColonne()
+{
+    $("#btnRipristinaDimensioneColonna").hide("fast","swing");
+    getElencoOrdiniClienteView();
 }
 window.addEventListener("keydown", windowKeydown, false);
 function windowKeydown(e)
@@ -814,6 +934,9 @@ function openFilterMenu(event,colonna,colNum,th)
 {
     hideFilterMenu();
 
+    if(event.target.className=="resize-div-th" || event.target.className=="resize-div-th-item")
+        return;
+        
     filterMenuAperto=colonna;
 
     th.style.color="#4C91CB";
@@ -1534,18 +1657,6 @@ function isEven(value) {
 		return true;
 	else
 		return false;
-}
-function fixTable()
-{
-    try {
-        var tableWidth=document.getElementById("reportOrdiniClientiTable").offsetWidth-8;
-
-        headers.forEach(function(header)
-        {
-            var width=(header.width*tableWidth)/100;
-            $(".reportOrdiniClientiTableCell"+header.value).css({"width":width+"px"});
-        });
-    } catch (error) {}
 }
 function getOrdiniClienteView()
 {

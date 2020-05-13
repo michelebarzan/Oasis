@@ -32,6 +32,7 @@
 			<button class="action-bar-text-icon-button" id="btnSalvaFiltro" style="margin-left:5px" onclick="getSalvaFiltroPopup()"><span>Salva filtro corrente</span><i class="far fa-save"></i></button>
 			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('*')"><span>Esporta tutto</span><i class="far fa-file-excel"></i></button>
 			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('ordini_cliente')"><span>Esporta ordini cliente</span><i class="far fa-file-excel"></i></button>
+			<button class="action-bar-text-icon-button" id="btnRipristinaDimensioneColonna" style="margin-left:5px;display:none" onclick="ripristinaDimensioneColonne()"><span>Ripristina dimensione colonne</span><i class="fad fa-redo-alt"></i></button>
 			<div class="action-bar-item" style="margin-left:auto;margin-right:5px" >
 				<button class="action-bar-icon-button" id="btnRangeDati" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold;color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setRangeDati(2)">Ultimi 2 anni</button>
 				<button class="action-bar-icon-button" id="btnRangeDatiTutti" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold" onclick="setRangeDati('*')">Tutti gli anni</button>
@@ -52,6 +53,7 @@
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>
+		<script src="js_libraries/jquery-ui.js"></script>
 	</body>
 </html>
 
