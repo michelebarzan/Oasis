@@ -36,6 +36,7 @@ var resizeStep;
 var tableWidth;
 var defaultHeaders;
 var steps2=100;
+var oldSteps2;
 
 function setHeaderTabella(headerTabella)
 {
@@ -1931,11 +1932,17 @@ async function esportaExcel(tipo)
     exportTableToExcel(tableID, "reportOrdiniClienti");
 
     document.getElementById("exportTableContainer").remove();
+
+    steps2=oldSteps2;
+    getReportOrdiniClientiTable();
 }
 function preparaTabellaEsportazione(tipo)
 {
     return new Promise(function (resolve, reject) 
     {
+        oldSteps2=steps2;
+        steps2=ordiniLenght;
+        getReportOrdiniClientiTable();
         var tabella=document.getElementById("reportOrdiniClientiTable");
         var exportTable = tabella.cloneNode(true);
         exportTable.id="reportOrdiniClientiExportTable";
