@@ -5,6 +5,7 @@
 	if(set_time_limit(120))
 	{
 		$output3 = shell_exec("robocopy \\\\srv-cont\\K1OasisCatalogo\\Ordini\\Produzione C:\\xampp\\htdocs\\OasisPdfOrdini\\pdf_ordini *.pdf /z 2>&1");
+		$output4 = shell_exec("robocopy \\\\srv-cont\\K1OasisCatalogo\\Ordini C:\\xampp\\htdocs\\OasisPdfOrdini\\ordini_acquisto *.pdf /z 2>&1");
 		
 		//echo $output3;
 		

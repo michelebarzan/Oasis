@@ -159,6 +159,27 @@ async function onloadActions()
 {
     id_utente=await getSessionValue("id_utente");
     getElencoOrdiniClienteView();
+    importaPdf();
+}
+function importaPdf()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("importaPdf.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                console.log(response);
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
 }
 async function getPopupFiltrISalvati()
 {
@@ -497,7 +518,7 @@ function closeContextMenuOrdineCliente()
         "color":""
     });
 }
-function getContextMenuOrdineCliente(button,event,ordine)
+async function getContextMenuOrdineCliente(button,event,ordine)
 {
     closeContextMenuOrdineCliente();
 
@@ -554,17 +575,40 @@ function getContextMenuOrdineCliente(button,event,ordine)
     link.setAttribute("onclick","closeContextMenuOrdineCliente()");
     var span=document.createElement("span");
     span.setAttribute("class","ordine-cliente-context-menu-item");
-    span.innerHTML="Pdf ordine";
+    span.innerHTML="Pdf ordine produzione";
     link.appendChild(span);
     var i=document.createElement("i");
     i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
     link.appendChild(i);
     contextMenuOuterContainer.appendChild(link);
 
-    document.body.appendChild(contextMenuOuterContainer);
+    var permessiColonne=await checkPermessiColonne();
+    if(permessiColonne)
+    {
+        var link=document.createElement("a");
+        link.setAttribute("target","_blank");
+        link.setAttribute("href","http://remote.oasisgroup.it/OasisPdfOrdini/ordini_acquisto/H"+ordine+".pdf");
+        link.setAttribute("class","ordine-cliente-context-menu-item");
+        link.setAttribute("onclick","closeContextMenuOrdineCliente()");
+        var span=document.createElement("span");
+        span.setAttribute("class","ordine-cliente-context-menu-item");
+        span.innerHTML="Pdf ordine acquisto";
+        link.appendChild(span);
+        var i=document.createElement("i");
+        i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");
+        link.appendChild(i);
+        contextMenuOuterContainer.appendChild(link);
 
-    var left=rect.left+55;
-    var top=rect.top-50;
+        var left=rect.left+60;
+        var top=rect.top-64;
+    }
+    else
+    {
+        var left=rect.left+60;
+        var top=rect.top-50;
+    }
+
+    document.body.appendChild(contextMenuOuterContainer);    
 
     $("#ordineClienteContentMenuOuterContainer"+ordine).show("fast","swing");
     $("#ordineClienteContentMenuOuterContainer"+ordine).css
@@ -572,6 +616,35 @@ function getContextMenuOrdineCliente(button,event,ordine)
         "display":"flex",
         "left":left+"px",
         "top":top+"px"
+    });
+}
+function checkPermessiColonne()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("checkPermessiColonneReportOrdiniCliente.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve(false);
+                }
+                else
+                {
+                    resolve(response=="true");
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve(false);
+            }
+        });
     });
 }
 async function getElencoOrdiniClienteView()

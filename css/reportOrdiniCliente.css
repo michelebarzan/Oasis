@@ -1066,11 +1066,11 @@ input::-webkit-clear-button
     justify-content: flex-start;
     height: 30px;
     background-color: rgba(0, 0, 0, 0.85);
-    margin:4px;
+    margin:2.5px;
     text-decoration: none;
     color:white;
     border:none;
-    width:150px;
+    width:100%;
     border-radius: 3px;
     box-sizing: border-box;
     padding-left: 10px;
@@ -1083,6 +1083,7 @@ input::-webkit-clear-button
 {
     font-family: 'Quicksand',sans-serif;
     font-size: 12px;
+    margin-right: 5px;
 }
 .ordine-cliente-context-menu-outer-container a i
 {
