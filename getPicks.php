@@ -40,7 +40,7 @@
                 $query2.="stampato='$filterStampato' AND ";	
             if(substr($query2, -4)=="AND ")
                 $query2=substr($query2,0, -4);
-            $query2.=" ORDER BY GROUP BY n_Pick, DataPick, descrPick, nOrdini, nBancali, nGruppi, righe [$orderBy] $orderType";
+            $query2.=" GROUP BY n_Pick, DataPick, descrPick, nOrdini, nBancali, nGruppi, righe ORDER BY [$orderBy] $orderType";
         }
     }
     $result2=sqlsrv_query($conn,$query2);
