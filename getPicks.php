@@ -14,14 +14,24 @@
     $picks=[];
 
     if($filterChiuso!="both" && $filterControllato!="both" && $filterStampato!="both")
-        $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist WHERE chiuso='$filterChiuso' AND controllato='$filterControllato' AND stampato='$filterStampato' ORDER BY [$orderBy] $orderType";	
+	{
+		$query2="SELECT TOP($filterTop) n_Pick, DataPick, descrPick, MAX(chiuso) AS chiuso, MAX(dataChiusura) AS dataChiusura, MAX(controllato) AS controllato, MAX(dataControllato) AS dataControllato, MAX(stampato) AS stampato, 
+				 MAX(data_stampa_cecklist) AS data_stampa_cecklist, MAX(utenteChiusura) AS utenteChiusura, MAX(utenteControllato) AS utenteControllato, MAX(utente_stampa_checklist) AS utente_stampa_checklist, nOrdini, nBancali, 
+				 nGruppi, righe FROM view_stampa_checklist WHERE chiuso='$filterChiuso' AND controllato='$filterControllato' AND stampato='$filterStampato' GROUP BY n_Pick, DataPick, descrPick, nOrdini, nBancali, nGruppi, righe ORDER BY [$orderBy] $orderType";	
+	}
     else
     {
         if($filterChiuso=="both" && $filterControllato=="both" && $filterStampato=="both")
-            $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist ORDER BY [$orderBy] $orderType";	
+		{
+			$query2="SELECT TOP($filterTop) n_Pick, DataPick, descrPick, MAX(chiuso) AS chiuso, MAX(dataChiusura) AS dataChiusura, MAX(controllato) AS controllato, MAX(dataControllato) AS dataControllato, MAX(stampato) AS stampato, 
+                         MAX(data_stampa_cecklist) AS data_stampa_cecklist, MAX(utenteChiusura) AS utenteChiusura, MAX(utenteControllato) AS utenteControllato, MAX(utente_stampa_checklist) AS utente_stampa_checklist, nOrdini, nBancali, 
+                         nGruppi, righe FROM view_stampa_checklist GROUP BY n_Pick, DataPick, descrPick, nOrdini, nBancali, nGruppi, righe ORDER BY [$orderBy] $orderType";	
+		}
         else
         {
-            $query2="SELECT TOP($filterTop) * FROM view_stampa_checklist WHERE ";
+            $query2="SELECT TOP($filterTop) n_Pick, DataPick, descrPick, MAX(chiuso) AS chiuso, MAX(dataChiusura) AS dataChiusura, MAX(controllato) AS controllato, MAX(dataControllato) AS dataControllato, MAX(stampato) AS stampato, 
+                         MAX(data_stampa_cecklist) AS data_stampa_cecklist, MAX(utenteChiusura) AS utenteChiusura, MAX(utenteControllato) AS utenteControllato, MAX(utente_stampa_checklist) AS utente_stampa_checklist, nOrdini, nBancali, 
+                         nGruppi, righe FROM view_stampa_checklist WHERE ";
             if($filterChiuso!="both")
                 $query2.="chiuso='$filterChiuso' AND ";	
             if($filterControllato!="both")
@@ -30,7 +40,7 @@
                 $query2.="stampato='$filterStampato' AND ";	
             if(substr($query2, -4)=="AND ")
                 $query2=substr($query2,0, -4);
-            $query2.=" ORDER BY [$orderBy] $orderType";
+            $query2.=" ORDER BY GROUP BY n_Pick, DataPick, descrPick, nOrdini, nBancali, nGruppi, righe [$orderBy] $orderType";
         }
     }
     $result2=sqlsrv_query($conn,$query2);
@@ -72,6 +82,8 @@
     }
     else
         die("error".$query2);
+	
+	//echo $query2;
 
     echo json_encode($picks);
 
