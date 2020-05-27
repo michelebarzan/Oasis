@@ -76,6 +76,7 @@
             $pick["nBancali"]=$row2['nBancali'];
             $pick["nGruppi"]=$row2['nGruppi'];
             $pick["righe"]=$row2['righe'];
+            $pick["righeChiuse"]=getRigheChiuse($conn,$row2['n_Pick']);
 
             array_push($picks,$pick);
         }
@@ -86,5 +87,24 @@
 	//echo $query2;
 
     echo json_encode($picks);
+
+    function getRigheChiuse($conn,$n_Pick)
+    {
+        $query2="SELECT n_Pick, ISNULL(COUNT(*),0) AS righeChiuse
+                FROM dbo.T_Picking_01 AS T_Picking_01_1
+                WHERE (chiuso = 'V') AND (n_Pick = $n_Pick)
+                GROUP BY n_Pick";
+        $result2=sqlsrv_query($conn,$query2);
+        if($result2==TRUE)
+        {
+            while($row2=sqlsrv_fetch_array($result2))
+            {
+                return $row2['righeChiuse'];
+            }
+            return 0;
+        }
+        else
+            die("error".$query2);
+    }
 
 ?>

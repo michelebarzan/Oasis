@@ -451,6 +451,11 @@ async function getElencoPick()
         info.setAttribute("style","display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-left:10px");
         info.innerHTML="<b style='color:#4C91CB'>"+pick.righe+"</b><b>Righe</b>";
         rowItem.appendChild(info);
+        var info=document.createElement("div");
+        info.setAttribute("class","pick-item-info-container");
+        info.setAttribute("style","display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-left:10px");
+        info.innerHTML="<b style='color:#4C91CB'>"+pick.righeChiuse+"/"+pick.righe+"</b><b>Chiuse</b>";
+        rowItem.appendChild(info);
         row.appendChild(rowItem);
 
         var rowItem2=document.createElement("div");
