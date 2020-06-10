@@ -53,7 +53,7 @@
 			}
 		</style>
 	</head>
-	<body onload="checkSincronizzazioneImmaginiAndroid();getElencoRegistrazioniProduzione()">
+	<body onload="/*checkSincronizzazioneImmaginiAndroid();*/getElencoRegistrazioniProduzione()">
 		<?php include('struttura.php'); ?>
 		<div class="topRightCornerToast" id="topRightCornerToast"></div>
 		<div id="container">
@@ -62,7 +62,9 @@
 				<div class="menuListContainer">
 					<div class="menuListInputContainer">
 						<button class="menuListButton" id="btnElencoRegistrazioni" onclick="resetStyle();getElencoRegistrazioniProduzione()">Registrazioni<i class="fal fa-list" style="font-size:100%;margin-left:15px"></i></button>
-						<button class="menuListButton" id="btnFotoOrdini" onclick="resetStyle();getFotoOrdini()">Foto ordini<i class="fal fa-camera" style="font-size:100%;margin-left:15px"></i></button>
+						<button class="menuListButton" id="btnFotoOrdini" onclick="document.getElementById('linkFotoOrdini').click()">Foto ordini<i class="fal fa-camera" style="font-size:100%;margin-left:15px"></i></button>
+						<a id="linkFotoOrdini" target="_blank" href="fotoOrdini.php"></a>
+						<!--<button class="menuListButton" id="btnFotoOrdini" onclick="resetStyle();getFotoOrdini()">Foto ordini<i class="fal fa-camera" style="font-size:100%;margin-left:15px"></i></button>-->
 					</div>
 				</div>
 				<div id="registrazioniProduzioneContainer">

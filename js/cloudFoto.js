@@ -129,8 +129,9 @@ async function getElencoContenutoCartella(id_cartella)
         }
         if(item.tipo=="file")
         {
+            var formato=item.nomeFile.split(".")[item.nomeFile.split(".").length-1];
             //button.setAttribute("onlongtouch","clickActionButton("+item.id_file+")");
-            button.setAttribute("onclick","expandImage(this.firstChild,'"+item.nomeFile+"')");
+            button.setAttribute("onclick","expandImage('"+formato+"',this.firstChild,'"+item.nomeFile+"')");
         }
         if(item.tipo=="cartella")
         {
@@ -140,9 +141,22 @@ async function getElencoContenutoCartella(id_cartella)
         }
         if(item.tipo=="file")
         {
-            var img=document.createElement("img");
-            img.setAttribute("src",location.protocol+"//"+item.server+"/"+item.path);
-            button.appendChild(img);
+            if(formato.toLowerCase()=="mp4")
+            {
+                var video=document.createElement("video");
+                //video.setAttribute("controls","controls");
+                var source=document.createElement("source");
+                source.setAttribute("src",location.protocol+"//"+item.server+"/"+item.path);
+                source.setAttribute("type","video/mp4");
+                video.appendChild(source);
+                button.appendChild(video);
+            }
+            else
+            {
+                var img=document.createElement("img");
+                img.setAttribute("src",location.protocol+"//"+item.server+"/"+item.path);
+                button.appendChild(img);
+            }
         }
 
         var name=document.createElement("div");
@@ -231,7 +245,8 @@ function actionMenuCloudFoto(event,tipo,nome,descrizione,id)
     }
     if(tipo=="file")
     {
-        var formato=nome.split(".")[1];
+        //var formato=nome.split(".")[1];
+        var formato=nome.split(".")[nome.split(".").length-1];
         input.setAttribute("value",nome.replace("."+formato,""));
         input.setAttribute("formato",formato);
     }
@@ -679,9 +694,14 @@ function getFiles(id_cartella)
         });
     });
 }
-function expandImage(img,nomeFile)
+function expandImage(formato,element,nomeFile)
 {
-    var src=img.getAttribute("src");
+    if(formato.toLowerCase()=="mp4")
+    {
+        var src=element.getElementsByTagName("source")[0].getAttribute("src");
+    }
+    else
+        var src=element.getAttribute("src");
 
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","popup-expand-image-outer-container");
@@ -709,10 +729,22 @@ function expandImage(img,nomeFile)
 
     outerContainer.appendChild(actionBar);
 
-    var img=document.createElement("img");
-    img.setAttribute("src",src);
-
-    outerContainer.appendChild(img);
+    if(formato.toLowerCase()=="mp4")
+    {
+        var video=document.createElement("video");
+        video.setAttribute("controls","controls");
+        var source=document.createElement("source");
+        source.setAttribute("src",src);
+        source.setAttribute("type","video/mp4");
+        video.appendChild(source);
+        outerContainer.appendChild(video);
+    }
+    else
+    {
+        var img=document.createElement("img");
+        img.setAttribute("src",src);
+        outerContainer.appendChild(img);
+    }
 
     Swal.fire(
     {
@@ -858,6 +890,25 @@ async function cloudFotoIndietro()
             getElencoContenutoCartella(pathIdCartelle[idCartellaBefore]);
         }
     }
+}
+function getSystemToast(message)
+{
+    try {
+        document.getElementById("systemToast").remove(); 
+    } catch (error) {}
+    var systemToast=document.createElement("div");
+    systemToast.setAttribute("class","system-toast-outer-container");
+    systemToast.setAttribute("id","systemToast");
+    systemToast.innerHTML=message;
+    document.body.appendChild(systemToast);
+    $("#systemToast").show(300,"swing");
+    $("#systemToast").css("display","flex");
+}
+function removeSystemToast()
+{
+    try {
+        $("#systemToast").hide(300,"swing");
+    } catch (error) {}
 }
 async function checkImage(input)
 {

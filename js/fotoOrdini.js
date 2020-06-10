@@ -1,158 +1,638 @@
-    var sincronizzati=false;
-    function checkSincronizzazioneImmaginiAndroid()
+var files;
+
+async function onloadFotoOrdini()
+{
+    chekcSincronizzazione();
+    getElencoFotoOrdini();
+    addTopButton();
+}
+function getSystemToast(message)
+{
+    try {
+        document.getElementById("systemToast").remove(); 
+    } catch (error) {}
+    var systemToast=document.createElement("div");
+    systemToast.setAttribute("class","system-toast-outer-container");
+    systemToast.setAttribute("id","systemToast");
+    systemToast.innerHTML=message;
+    document.body.appendChild(systemToast);
+    $("#systemToast").show(300,"swing");
+    $("#systemToast").css("display","flex");
+}
+function removeSystemToast()
+{
+    try {
+        $("#systemToast").hide(300,"swing");
+    } catch (error) {}
+}
+function addTopButton()
+{
+    var button=document.createElement("button");
+    button.setAttribute("id","btnGoToTop");
+    button.setAttribute("onclick","goToTop()");
+    button.innerHTML='<i class="fal fa-arrow-alt-to-top"></i>';
+
+    document.body.appendChild(button);
+
+    window.onscroll = function() {scrollFunction()};
+}
+function scrollFunction() 
+{
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    $("#btnGoToTop").show("fast","swing");
+    $("#btnGoToTop").css("display","flex");
+  } else {
+    $("#btnGoToTop").hide("fast","swing");
+  }
+}
+function goToTop() 
+{
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+function chekcSincronizzazione()
+{
+    getSystemToast("<i class='fad fa-spinner-third fa-spin'></i><span>Controllo sincronizzazione...</span>");
+    $.get("chekcSincronizzazioneFotoOrdini.php",
+    function(response, status)
     {
-        newGridSpinner("Controllo sincronizzazione...","topRightCornerToast","","","font-size:100%;color:white");
-        document.getElementsByClassName("topRightCornerToast")[0].style.width="250px";	
-        document.getElementsByClassName("topRightCornerToast")[0].style.borderLeft="5px solid #4C91CB";	
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = async function() 
+        if(status=="success")
         {
-            if (this.readyState == 4 && this.status == 200) 
+            removeSystemToast();
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
             {
-                if(this.responseText=="ok")
-                {
-                    sincronizzati=true;
-                    document.getElementById("topRightCornerToast").innerHTML ='<i class="fal fa-check" style="font-size:140%;margin-right:20px;"></i>Allegati sincronizzati';
-                    setTimeout(function()
-                    {
-                        document.getElementsByClassName("topRightCornerToast")[0].style.width="0px";
-                        document.getElementsByClassName("topRightCornerToast")[0].style.borderLeft="none";										
-                        document.getElementById("topRightCornerToast").innerHTML ="";
-                    }, 3000);
-                }
+                Swal.fire({icon:"error",title: "Errore sincronizzazione. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                var missingFolders=JSON.parse(response);
+				console.log(missingFolders);
+                if(missingFolders.length>0)
+                    getSystemToast("<i class='fal fa-exclamation-triangle'></i><span style='text-decoration:underline;cursor:pointer' onclick='sincronizzaFotoOrdini()'>Sincronizza foto</span>");
                 else
                 {
-                    sincronizzati=false;
-                    var ultimaSincronizzazione=await getUltimaSincronizzazione();
-                    document.getElementById("topRightCornerToast").innerHTML ="<i class='fal fa-exclamation-circle' style='color:red;font-size:140%;margin-left:30px;float:left;display:inline-block;margin-top:23px;'></i><button data-tooltip='"+ultimaSincronizzazione+"' class='btnSincronizza' onclick='importaImmaginiAndroid()'>Sincronizza foto</button>";
+                    getSystemToast("<i class='fal fa-check-circle'></i><span>Foto sincronizzate</span>");
+                    setTimeout(function(){ removeSystemToast(); }, 5000);
                 }
-            }
-        };
-        xmlhttp.open("POST", "checkSincronizzazioneImmaginiAndroid.php?", true);
-        xmlhttp.send();
-    }
-    function getUltimaSincronizzazione()
-    {
-        return new Promise(function (resolve, reject) 
+                }
+        }
+        else
         {
-            $.get("getUltimaSincronizzazioneFotoOrdini.php",
-            function(response, status)
+            Swal.fire({icon:"error",title: "Errore sincronizzazione. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+            console.log(status);
+        }
+    });
+}
+async function sincronizzaFotoOrdini()
+{
+    removeSystemToast();
+    getSystemToast("<i class='fad fa-spinner-third fa-spin'></i><span>Sincronizzazione in corso...</span>");
+    var id_utente=await getSessionValue("id_utente");
+    $.post("sincronizzaFotoOrdini.php",
+    {
+        id_utente
+    },
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            removeSystemToast();
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
             {
-                if(status=="success")
+                Swal.fire({icon:"error",title: "Errore sincronizzazione. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                getSystemToast("<i class='fal fa-check-circle'></i><span>Foto sincronizzate</span>");
+                setTimeout(function(){ removeSystemToast(); }, 5000);
+                getElencoFotoOrdini();
+            }
+        }
+        else
+        {
+            Swal.fire({icon:"error",title: "Errore sincronizzazione. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+            console.log(status);
+        }
+    });
+}
+function searchFotoOrdini(value)
+{
+    $(".ordine-outer-container").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}
+async function getElencoFotoOrdini()
+{
+    var container=document.getElementById("containerFotoOrdini");
+    container.innerHTML="";
+    getFaSpinner(container,"container","Caricamento in corso...");
+    document.getElementById("searcBarFotoOrdini").value="";
+    var pathBarFotoOrdini=document.getElementById("pathBarFotoOrdini");
+    pathBarFotoOrdini.innerHTML="";
+    var i=document.createElement("i");
+    i.setAttribute("class","fas fa-folder");
+    pathBarFotoOrdini.appendChild(i);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoFotoOrdini()");
+    button.innerHTML="Ordini";
+    pathBarFotoOrdini.appendChild(button);
+
+    var ordini=await getFotoOrdini();
+    removeFaSpinner("container");
+    goToTop();
+    ordini.forEach(ordine => 
+    {
+        var ordineOuterContainer=document.createElement("button");
+        ordineOuterContainer.setAttribute("class","ordine-outer-container");
+        ordineOuterContainer.setAttribute("onclick","getElencoStazioniOrdine('"+ordine+"')");
+
+        var icon=document.createElement("i");
+        icon.setAttribute("class","fas fa-folder");
+        ordineOuterContainer.appendChild(icon);
+
+        var span=document.createElement("span");
+        span.innerHTML=ordine;
+        ordineOuterContainer.appendChild(span);
+
+        container.appendChild(ordineOuterContainer);
+    });
+}
+async function getElencoStazioniOrdine(ordine)
+{
+    var pathBarFotoOrdini=document.getElementById("pathBarFotoOrdini");
+    pathBarFotoOrdini.innerHTML="";
+    var i=document.createElement("i");
+    i.setAttribute("class","fas fa-folder");
+    pathBarFotoOrdini.appendChild(i);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoFotoOrdini()");
+    button.innerHTML="Ordini";
+    pathBarFotoOrdini.appendChild(button);
+
+    var arrow=document.createElement("div");
+    arrow.setAttribute("class","arrow-pathBarFotoOrdini");
+    arrow.innerHTML=">";
+    pathBarFotoOrdini.appendChild(arrow);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoStazioniOrdine('"+ordine+"')");
+    button.innerHTML=ordine;
+    pathBarFotoOrdini.appendChild(button);
+
+    var container=document.getElementById("containerFotoOrdini");
+    container.innerHTML="";
+    var stazioniOrdine=await getFotoStazioniOrdine(ordine);
+    stazioniOrdine.forEach(stazione => 
+    {
+        var stazioneOuterContainer=document.createElement("button");
+        stazioneOuterContainer.setAttribute("class","stazione-outer-container");
+        stazioneOuterContainer.setAttribute("onclick","getElencoFotoOrdine('"+ordine+"','"+stazione+"')");
+
+        var icon=document.createElement("i");
+        icon.setAttribute("class","fas fa-folder");
+        stazioneOuterContainer.appendChild(icon);
+
+        var span=document.createElement("span");
+        span.innerHTML=stazione;
+        stazioneOuterContainer.appendChild(span);
+
+        container.appendChild(stazioneOuterContainer);
+    });
+}
+async function getElencoFotoOrdine(ordine,stazione)
+{
+    var pathBarFotoOrdini=document.getElementById("pathBarFotoOrdini");
+    pathBarFotoOrdini.innerHTML="";
+    var i=document.createElement("i");
+    i.setAttribute("class","fas fa-folder");
+    pathBarFotoOrdini.appendChild(i);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoFotoOrdini()");
+    button.innerHTML="Ordini";
+    pathBarFotoOrdini.appendChild(button);
+
+    var arrow=document.createElement("div");
+    arrow.setAttribute("class","arrow-pathBarFotoOrdini");
+    arrow.innerHTML=">";
+    pathBarFotoOrdini.appendChild(arrow);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoStazioniOrdine('"+ordine+"')");
+    button.innerHTML=ordine;
+    pathBarFotoOrdini.appendChild(button);
+
+    var arrow=document.createElement("div");
+    arrow.setAttribute("class","arrow-pathBarFotoOrdini");
+    arrow.innerHTML=">";
+    pathBarFotoOrdini.appendChild(arrow);
+
+    var button=document.createElement("button");
+    button.setAttribute("onclick","getElencoFotoOrdine('"+ordine+"','"+stazione+"')");
+    button.innerHTML=stazione;
+    pathBarFotoOrdini.appendChild(button);
+
+    var container=document.getElementById("containerFotoOrdini");
+    container.innerHTML="";
+    var fotoOrdine=await getFotoOrdine(ordine,stazione);
+    console.log(fotoOrdine);
+    fotoOrdine.forEach(foto => 
+    {
+        var fotoOuterContainer=document.createElement("button");
+        fotoOuterContainer.setAttribute("class","foto-outer-container");
+        //fotoOuterContainer.setAttribute("onclick","");
+
+        var img=document.createElement("img");
+        img.setAttribute("src",foto.percorso);
+        img.setAttribute("onclick","expandImage(this,'"+foto.nomeFile+"')");
+        //img.setAttribute("onerror","window.alert('error')");
+        fotoOuterContainer.appendChild(img);
+
+        var div=document.createElement("div");
+        div.innerHTML=foto.nomeFile;
+        fotoOuterContainer.appendChild(div);
+
+        container.appendChild(fotoOuterContainer);
+    });
+}
+function getFotoOrdine(ordine,stazione)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getFotoOrdine.php",
+        {
+            ordine,
+            stazione
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
                 {
-                    if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                    resolve(JSON.parse(response));
+            }
+            else
+                resolve([]);
+        });
+    });
+}
+function getFotoStazioniOrdine(ordine)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getFotoStazioniOrdine.php",
+        {
+            ordine
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                    resolve(JSON.parse(response));
+            }
+            else
+                resolve([]);
+        });
+    });
+}
+function getFotoOrdini()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getFotoOrdini.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                    resolve(JSON.parse(response));
+            }
+            else
+                resolve([]);
+        });
+    });
+}
+async function checkImage(input)
+{
+    var formats=["jpg","png","jpeg"];
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","popup-foto-ordini-outer-container");
+
+    files=input.files;
+    console.log(files);
+    var i=0;
+
+    var row1=document.createElement("div");
+    row1.setAttribute("class","popup-foto-ordini-row");
+    row1.setAttribute("id","nFotoOrdini");
+    row1.setAttribute("style","padding-left:5px;padding-right:5px;width:100%;color:#EBEBEB;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:5px;text-decoration:underline");
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","justify-content: start;flex-wrap: wrap;flex-direction:row;min-height:120px;max-height:330px;overflow-y:auto");
+
+    for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        var nameArray=file.name.split(".");
+        var format=nameArray.slice(-1)[0];
+        if(formats.includes(format))
+        {
+            var img=document.createElement("img");
+            img.setAttribute("id","popupFotoOrdiniImgPreview"+i);
+            row.appendChild(img);
+            i++;
+        }
+    }
+    /*files.forEach(function(file)
+    {
+        var nameArray=file.name.split(".");
+        var format=nameArray.slice(-1)[0];
+        if(formats.includes(format))
+        {
+            var img=document.createElement("img");
+            img.setAttribute("id","popupFotoOrdiniImgPreview"+i);
+            row.appendChild(img);
+            i++;
+        }
+    });*/
+
+    var nFoto=i;
+    row1.innerHTML=nFoto+" foto selezionate";
+    outerContainer.appendChild(row1);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","padding-left:5px;padding-right:5px;width:100%;color:#EBEBEB;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:10px;margin-top:10px;text-decoration:underline");
+    row.innerHTML="Stazione";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","padding-left:5px;padding-right:5px;width:100%;color:#EBEBEB;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:15px");
+
+    var selectStazione=document.createElement("select");
+    selectStazione.setAttribute("id","popupFotoOrdiniSelectStazione");
+    var stazioni=await getStazioni();
+    stazioni.forEach(function (stazione)
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value",stazione);
+        option.innerHTML=stazione;
+        selectStazione.appendChild(option);
+    });
+    row.appendChild(selectStazione);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","padding-left:5px;padding-right:5px;width:100%;color:#EBEBEB;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:10px;text-decoration:underline");
+    row.innerHTML="Ordine";
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","padding-left:5px;padding-right:5px;width:100%;color:#EBEBEB;font-size: 12px;text-align:left;font-weight: normal;font-family: 'Quicksand',sans-serif;margin-bottom:15px");
+
+    var inputOrdine=document.createElement("input");
+    inputOrdine.setAttribute("id","popupFotoOrdiniInputOrdine");
+    inputOrdine.setAttribute("type","text");
+    row.appendChild(inputOrdine);
+
+    outerContainer.appendChild(row);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","popup-foto-ordini-row");
+    row.setAttribute("style","width:100%;flex-direction:row;align-items:center;justify-content:space-evenly;margin-top:10px");
+
+    var confirmButton=document.createElement("button");
+    confirmButton.setAttribute("id","popupFotoOrdiniConfirmButton");
+    confirmButton.setAttribute("onclick","uploadFotoOrdine(this)");
+    confirmButton.innerHTML='<span>CONFERMA</span><i class="fad fa-paper-plane"></i>';
+    row.appendChild(confirmButton);
+
+    outerContainer.appendChild(row);
+
+    Swal.fire(
+    {
+        position:"top",
+        width:"100%",
+        background:"#404040",
+        title: "Caricamento foto ordine",
+        onOpen : function()
+                {
+                    document.getElementsByClassName("swal2-title")[0].style.color="#EBEBEB";
+                    document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+                    document.getElementsByClassName("swal2-title")[0].style.fontFamily="'Quicksand',sans-serif";
+                    document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+                    document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+                    document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+
+                    for (let index = 0; index < i; index++)
                     {
-                        console.log(response);
-                        reject({response});
+                        var reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            $("#popupFotoOrdiniImgPreview"+index).attr('src', e.target.result);
+                        }
+
+                        reader.readAsDataURL(files[index]);
                     }
-                    else
-                    {
-                        resolve(response);
-                    }
+                },
+        showCloseButton:true,
+        showConfirmButton:false,
+        showCancelButton:false,
+        html:outerContainer.outerHTML
+    });
+}
+function getStazioni()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getStazioniFotoOrdini.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
                 }
                 else
-                    reject({status});
-            });
+                    resolve(JSON.parse(response));
+            }
+            else
+                resolve([]);
         });
-    }
-    function importaImmaginiAndroid()
+    });
+}
+async function uploadFotoOrdine(button)
+{
+    button.disabled=true;
+    var icon=button.getElementsByTagName("i")[0];
+    var span=button.getElementsByTagName("span")[0];
+    span.innerHTML="CARICAMENTO<div id='progressoCaricamentoUploadFotoOrdine'>1</div>/"+files.length;
+    icon.className="fad fa-spinner-third fa-spin";
+    let progressoCaricamentoUploadFotoOrdine=1;
+
+    var stazione=document.getElementById("popupFotoOrdiniSelectStazione").value;
+    var ordine=document.getElementById("popupFotoOrdiniInputOrdine").value;
+
+    var error=false;
+
+    if(stazione==null || ordine==null || stazione=="" || ordine=="" || files.length==0 || ordine.length!=8)
     {
-        newGridSpinner("Sincronizzazione allegati...","topRightCornerToast","","","font-size:100%;color:white");
-        document.getElementsByClassName("topRightCornerToast")[0].style.width="250px";	
-        document.getElementsByClassName("topRightCornerToast")[0].style.borderLeft="5px solid #4C91CB";	
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() 
+        window.alert("Errore\n\nCompila tutti i campi.\nRicorda: l' ordine deve essere composto da 8 caratteri");
+        icon.className="fad fa-paper-plane";
+        span.innerHTML="CONFERMA";
+        button.disabled=false;
+    }
+    else
+    {
+        for (let index = 0; index < files.length; index++) 
         {
-            if (this.readyState == 4 && this.status == 200) 
-            {
-                if(this.responseText=="ERRORE")
+            document.getElementById("progressoCaricamentoUploadFotoOrdine").innerHTML=progressoCaricamentoUploadFotoOrdine;
+            progressoCaricamentoUploadFotoOrdine++;
+            const file = files[index];
+            var response=await uploadFoto(file,stazione,ordine);
+            if(response.indexOf("error")>-1 || response.indexOf("notice")>-1 || response.indexOf("warning")>-1)
+                error=true;
+        }
+        if(error)
+        {
+            window.alert("Errore\n\nImpossibile caricare le foto.\nSe il problema persiste contatta l'amministratore");
+            console.log(response);
+            icon.className="fad fa-exclamation-triangle";
+            span.innerHTML="ERRORE";
+            setTimeout(function(){ icon.className="fad fa-paper-plane"; button.disabled=false;span.innerHTML="CONFERMA";}, 3000);
+        }
+        else
+        {
+            Swal.fire({width:"100%",background:"#404040",icon:"success",title: "Le foto dell' ordine sono state caricate",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="#EBEBEB";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+            sincronizzaFotoOrdini();
+        }
+    }
+}
+function uploadFoto(file,stazione,ordine)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        var data= new FormData();
+        data.append('file',file);
+        data.append("stazione",stazione);
+        data.append("ordine",ordine);
+        $.ajax(
+        {
+            url:'uploadFotoOrdine.php',
+            data:data,
+            processData:false,
+            contentType:false,
+            type:'POST',
+            success:function(response)
                 {
-                    sincronizzati=false;
-                    console.log(this.responseText);
-                    document.getElementById("topRightCornerToast").innerHTML ="<i class='fal fa-exclamation-circle' style='color:red;font-size:140%;margin-right:20px;'></i><b style='color:red'>Errore. Sincronizzazione fallita</b>";
+                    resolve(response);
                 }
-                else
+        });
+    });
+}
+function fotoOrdiniIndietro()
+{
+    nPulsanti=$("#pathBarFotoOrdini button").length;
+    console.log(nPulsanti);
+    switch (nPulsanti)
+    {
+        case 1:
+            $('#pathBarFotoOrdini button').eq(0).click();
+        break;
+        case 2:
+            $('#pathBarFotoOrdini button').eq(0).click();
+        break;
+        case 3:
+            $('#pathBarFotoOrdini button').eq(1).click();
+        break;
+    }
+}
+function expandImage(img,nomeFile)
+{
+    var src=img.getAttribute("src");
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","popup-expand-image-outer-container");
+
+    var actionBar=document.createElement("div");
+    actionBar.setAttribute("class","popup-expand-image-action-bar");
+
+    var span=document.createElement("span");
+    span.innerHTML=nomeFile;
+    actionBar.appendChild(span);
+
+    var button=document.createElement("button");
+    button.setAttribute("style","font-size:14px");
+    button.setAttribute("class","popup-expand-image-action-bar-download-button");
+    button.setAttribute("onclick","downloadFotoOrdine('"+src+"')");
+    button.innerHTML='<i class="fal fa-cloud-download"></i>';
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("style","margin-left:10px;font-size:18px");
+    button.setAttribute("class","popup-expand-image-action-bar-close-button");
+    button.setAttribute("onclick","Swal.close()");
+    button.innerHTML='<i class="fal fa-times"></i>';
+    actionBar.appendChild(button);
+
+    outerContainer.appendChild(actionBar);
+
+    var img=document.createElement("img");
+    img.setAttribute("src",src);
+
+    outerContainer.appendChild(img);
+
+    Swal.fire(
+    {
+        //position:"top",
+        width:"100%",
+        background:"#404040",
+        onOpen : function()
                 {
-                    sincronizzati=true;
-                    document.getElementById("topRightCornerToast").innerHTML =this.responseText;
-                    setTimeout(function()
-                    {
-                        document.getElementsByClassName("topRightCornerToast")[0].style.width="0px";
-                        document.getElementsByClassName("topRightCornerToast")[0].style.borderLeft="none";										
-                        document.getElementById("topRightCornerToast").innerHTML ="";
-                    }, 3000);
-                }
-            }
-        };
-        xmlhttp.open("POST", "importaImmaginiAndroid.php?", true);
-        xmlhttp.send();
-    }
-    function newGridSpinner(message,container,spinnerContainerStyle,spinnerStyle,messageStyle)
-    {
-        document.getElementById(container).innerHTML='<div id="gridSpinnerContainer"  style="'+spinnerContainerStyle+'"><div  style="'+spinnerStyle+'" class="sk-cube-grid"><div class="sk-cube sk-cube1"></div><div class="sk-cube sk-cube2"></div><div class="sk-cube sk-cube3"></div><div class="sk-cube sk-cube4"></div><div class="sk-cube sk-cube5"></div> <div class="sk-cube sk-cube6"></div><div class="sk-cube sk-cube7"></div><div class="sk-cube sk-cube8"></div><div class="sk-cube sk-cube9"></div></div><div id="messaggiSpinner" style="'+messageStyle+'">'+message+'</div></div>';
-    }
-    function getFotoOrdini()
-    {
-        newCircleSpinner("Caricamento in corso...");
-        
-        document.getElementById("registrazioniProduzioneContainer").innerHTML ="";
-        
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() 
-        {
-            if (this.readyState == 4 && this.status == 200) 
-            {
-                removeCircleSpinner();
-                document.getElementById("registrazioniProduzioneContainer").innerHTML =this.responseText;
-            }
-        };
-        xmlhttp.open("POST", "getFotoOrdini.php?", true);
-        xmlhttp.send();
-    }
-    function getFotoStazioni(ordine)
-    {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() 
-        {
-            if (this.readyState == 4 && this.status == 200) 
-            {
-                document.getElementById("registrazioniProduzioneContainer").innerHTML =this.responseText;
-            }
-        };
-        xmlhttp.open("POST", "getFotoStazioni.php?ordine="+ordine, true);
-        xmlhttp.send();
-    }
-    function getFotoImmagini(ordine,stazione)
-    {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() 
-        {
-            if (this.readyState == 4 && this.status == 200) 
-            {
-                document.getElementById("registrazioniProduzioneContainer").innerHTML =this.responseText;
-            }
-        };
-        xmlhttp.open("POST", "getFotoImmagini.php?ordine="+ordine+"&stazione="+stazione, true);
-        xmlhttp.send();
-    }
-    function seacrhTable() 
-    {
-        var value = $('#searchInputRegistrazioniProduzione').val().toLowerCase();
-        $(".myTableElencoRegistrazioniRowNormal").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    }
-    function seacrhOrdine()
-    {
-        var value = $('#searchInputRegistrazioniProduzione').val().toLowerCase();
-        $(".folderOrdine").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    }
-    function seacrhImmagine()
-    {
-        var value = $('#searchInputRegistrazioniProduzione').val().toLowerCase();
-        $(".imgOrdiniContainer").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    }
+                    document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                    document.getElementsByClassName("swal2-popup")[0].style.borderRadius="4px";
+                    /*document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";*/
+                },
+        showCloseButton:false,
+        showConfirmButton:false,
+        showCancelButton:false,
+        html:outerContainer.outerHTML
+    });
+}
+function downloadFotoOrdine(src)
+{
+    window.open("downloadFotoOrdine.php?src="+src);
+}
