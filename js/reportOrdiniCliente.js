@@ -30,7 +30,8 @@ var id_utente;
 var stepsSize=500;
 var steps2Size=100;
 var filterMenuAperto;
-var filtroAnni="2019,2020";
+//var filtroAnni="2019,2020";
+var filtroAnni="";
 var raggruppati=false;
 var resizeStep;
 var tableWidth;
@@ -159,7 +160,8 @@ async function onloadActions()
 {
     id_utente=await getSessionValue("id_utente");
     getElencoOrdiniClienteView();
-    importaPdf();
+    getUltimoAggiornamento();
+    //importaPdf();
 }
 function importaPdf()
 {
@@ -2196,4 +2198,66 @@ function getInfoOrdineFornitoreString(colonna,ordine_cliente)
             info.push(ordine[colonna]);
     });
     return info;
+}
+function aggiornaOrdiniClienteView()
+{
+    Swal.fire
+    ({
+        title: "Aggiornamento in corso...",
+        html: '<i style="color:white" class="fad fa-spinner-third fa-spin fa-4x"></i>',
+        showConfirmButton:false,
+        showCloseButton:false,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        background:"transparent",
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+    });
+
+    $.post("aggiornaOrdiniClienteView.php",
+    {
+        id_utente
+    },
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                Swal.fire
+                ({
+                    background:"#404040",
+                    icon:"success",
+                    title: "Dati aggiornati",
+                    showConfirmButton:false,
+                    showCloseButton:true,
+                    onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+                }).then((result) => 
+                {
+                    getUltimoAggiornamento();
+                    getElencoOrdiniClienteView();
+                });
+            }
+        }
+        else
+        {
+            Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+            console.log(status);
+        }
+    });
+}
+function getUltimoAggiornamento()
+{
+    $.get("getUltimoAggiornamentoOrdiniClienteTable.php",
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            document.getElementById("ultimoAggiornamentoLabel").innerHTML=response;
+        }
+    });
 }

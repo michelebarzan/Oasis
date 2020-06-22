@@ -33,7 +33,11 @@
 			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('*')"><span>Esporta tutto</span><i class="far fa-file-excel"></i></button>
 			<button class="action-bar-text-icon-button" id="btnEsportaExcel" style="margin-left:5px" onclick="esportaExcel('ordini_cliente')"><span>Esporta ordini cliente</span><i class="far fa-file-excel"></i></button>
 			<button class="action-bar-text-icon-button" id="btnRipristinaDimensioneColonna" style="margin-left:5px;display:none" onclick="ripristinaDimensioneColonne()"><span>Ripristina dimensione colonne</span><i class="fad fa-redo-alt"></i></button>
-			<div class="action-bar-item" style="margin-left:auto;margin-right:5px" >
+			<div class="action-bar-item" style="margin-left:auto;margin-right:0px" >
+				<span style="margin-right:5px">Ultimo aggiornamento: <b id="ultimoAggiornamentoLabel"></b></span>
+				<button class="action-bar-text-icon-button" style="margin-right:0px" id="btnAggiornaDati" onclick="aggiornaOrdiniClienteView()"><span>Aggiorna</span><i class="fad fa-sync-alt"></i></button>
+			</div>
+			<div class="action-bar-item" style="margin-left:auto;margin-right:5px;display:none" >
 				<button class="action-bar-icon-button" id="btnRangeDati" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold;color:#4C91CB;border:0.5px solid #4C91CB;" onclick="setRangeDati(2)">Ultimi 2 anni</button>
 				<button class="action-bar-icon-button" id="btnRangeDatiTutti" style="font-family:'Quicksand',sans-serif;font-size:12px;font-weight:bold" onclick="setRangeDati('*')">Tutti gli anni</button>
 			</div>

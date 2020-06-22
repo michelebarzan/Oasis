@@ -243,8 +243,8 @@
 
     $ordini=[];
 
-    if(sizeof($filterConditions)==0)
-        $query2="SELECT * FROM (SELECT DISTINCT 
+    /*if(sizeof($filterConditions)==0)
+        $query2="SELECT TOP (100) * FROM (SELECT DISTINCT 
         ordine_cliente, codice_cliente, nome_cliente, data_spedizione, Statistical_group_code, Statistical_group_name, linea_business, tipo, tipo_pagamento, Shipped_Amount AS fatturato_spedito, 
         To_Be_Shipped_Amount AS fatturato_da_spedire, Note AS note, ordine_fornitore, codice_fornitore, nome_fornitore, data_creazione_ordine, importo_ordine_fornitore, data_arrivo_merce, importo_totale, importo_incassato, 
         importo_da_pagare, CASE WHEN DocStatus = 'C' THEN 'Chiuso' ELSE 'Aperto' END AS stato
@@ -329,7 +329,7 @@ FROM            (SELECT        ordine_cliente, codice_cliente, nome_cliente, dat
         }
         
         $filterConditionsString=substr($filterConditionsString, 0, -3);
-        $query2="SELECT * FROM (SELECT DISTINCT 
+        $query2="SELECT TOP (100) * FROM (SELECT DISTINCT 
         ordine_cliente, codice_cliente, nome_cliente, data_spedizione, Statistical_group_code, Statistical_group_name, linea_business, tipo, tipo_pagamento, Shipped_Amount AS fatturato_spedito, 
         To_Be_Shipped_Amount AS fatturato_da_spedire, Note AS note, ordine_fornitore, codice_fornitore, nome_fornitore, data_creazione_ordine, importo_ordine_fornitore, data_arrivo_merce, importo_totale, importo_incassato, 
         importo_da_pagare, CASE WHEN DocStatus = 'C' THEN 'Chiuso' ELSE 'Aperto' END AS stato
@@ -405,6 +405,19 @@ FROM            (SELECT        ordine_cliente, codice_cliente, nome_cliente, dat
                                                                                              WHERE        (isnumeric(report_ordini_clienti_view_1.DocNum) = 1)) AS report_ordini_clienti_view_3
                                                                    WHERE        (isnumeric(DocNum) = 1)) AS report_ordini_clienti_view_4 ON report_ordini_clienti_view_2.Order_num = report_ordini_clienti_view_4.ordine_cliente) AS report_ordini_clienti_view_5) 
         AS report_ordini_clienti_view_6) AS report_ordini_clienti_view WHERE $filterConditionsString $orderBy OPTION ( QUERYTRACEON 9481 )";	
+    }*/
+    if(sizeof($filterConditions)==0)
+        $query2="SELECT * FROM report_ordini_cliente_table $orderBy OPTION ( QUERYTRACEON 9481 )";
+    else
+    {
+        foreach ($filterConditions as $JSONfilterConditions) 
+        {
+            $filterConditions = json_decode(json_encode($JSONfilterConditions, true),true);
+            $filterConditionsString.="[".$filterConditions['colonna']."] ".$filterConditions['operatore']." ".$filterConditions['valore']." AND";
+        }
+        
+        $filterConditionsString=substr($filterConditionsString, 0, -3);
+        $query2="SELECT * FROM report_ordini_cliente_table WHERE $filterConditionsString $orderBy OPTION ( QUERYTRACEON 9481 )";	
     }
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)

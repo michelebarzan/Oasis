@@ -46,8 +46,10 @@
             <input type="file" id="cloudFotoInputScatta" style="display: none;" accept="image/*" onchange="checkImage(this,event)" multiple>
 		</div>
         <div id="pathBarCloudFoto">
-            <i class="fas fa-folder"></i>
-            <div id="innerPathBarCloudFoto"></div>
+			<div id="wrapperPathBarCloudFoto">
+				<i class="fas fa-folder"></i>
+				<div id="innerPathBarCloudFoto"></div>
+			</div>
         </div>
         <div id="containerCloudFoto"></div>
 		<div id="footer">
