@@ -723,7 +723,10 @@ async function downloadAllCheckedFiles()
 }
 function getCheckboxes(event,number)
 {
-    event.preventDefault();
+    try {
+        event.preventDefault();
+    } catch (error) {}
+    
     checkedFiles=[];
     if(document.getElementsByClassName(itemClassCheckbox).length==0)
     {
