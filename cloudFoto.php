@@ -18,23 +18,8 @@
 	</head>
 	<body onload="onloadcloudFoto()">
 		<?php include('struttura.php'); ?>
-		<!--<div class="bottom-control-bar">
-            <button class="bottom-control-bar-button" onclick="cloudFotoIndietro()" style="width:33%;align-items:center;justify-content:center">
-            <div><i class="fal fa-long-arrow-left"></i></div>
-            <div><span>Indietro</span></div>
-            </button>
-            <button class="bottom-control-bar-button" onclick="nuovaCarella()" style="width:33%;align-items:center;justify-content:center">
-                <div><i class="fal fa-folder-plus"></i></div>
-                <div><span>Nuova cartella</span></div>
-            </button>
-            <button class="bottom-control-bar-button" onclick="document.getElementById('cloudFotoInputScatta').click()" style="width:33%;align-items:center;justify-content:center">
-                <div><i class="fal fa-camera-alt"></i></div>
-                <div><span>Carica foto</span></div>
-            </button>
-            <input type="file" id="cloudFotoInputScatta" style="display: none;" accept="image/*" onchange="checkImage(this,event)" multiple>
-        </div>-->
         <div class="reusable-control-bar" id="actionBarCloudFoto">
-            <input type="search" id="searcBarCloudFoto" placeholder="Cerca..." class="rcb-input" onkeyup="searchCloudFoto(this.value.toLowerCase())">
+            <input type="search" id="searcBarCloudFoto" placeholder="Cerca..." class="rcb-input" onkeyup="searchCloudFoto(this.value.toLowerCase())" onsearch="searchCloudFoto(this.value.toLowerCase())">
 			<button class="rcb-button-text-icon" onclick="nuovaCarella()">
 				<span>Nuova cartella</span>
 				<i class="fad fa-folder-plus" style="margin-left:5px"></i>
@@ -42,6 +27,14 @@
 			<button class="rcb-button-text-icon" onclick="document.getElementById('cloudFotoInputScatta').click()">
 				<span>Carica foto</span>
 				<i class="fad fa-camera-alt" style="margin-left:5px"></i>
+            </button>
+            <button class="rcb-button-text-icon" onclick="getCheckboxes()">
+				<span>Seleziona</span>
+				<i class="fad fa-check-square" style="margin-left:5px"></i>
+			</button>
+			<button class="rcb-button-text-icon" onclick="getPopupImpostazioni()">
+				<span>Impostazioni</span>
+				<i class="fal fa-cog" style="margin-left:5px"></i>
 			</button>
             <input type="file" id="cloudFotoInputScatta" style="display: none;" accept="image/*" onchange="checkImage(this,event)" multiple>
 		</div>

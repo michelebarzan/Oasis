@@ -6,7 +6,7 @@
 		$username= $_REQUEST ['username'];
 		$P=$_REQUEST ['password'];
 		$password=sha1($P);
-		$query="SELECT id_utente, username, password FROM utenti";
+		$query="SELECT id_utente, username, password FROM utenti WHERE eliminato='false'";
 		$result=sqlsrv_query($conn,$query);
 		while($row=sqlsrv_fetch_array($result)) 
 		{	
