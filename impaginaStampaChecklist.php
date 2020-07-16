@@ -61,8 +61,8 @@ include "connessione.php";
 			<br><div id="intestazione" class="intestazione" contenteditable><br>
 			PACKING LIST<br>
 			CUSTOMER: <br>
-			INVOICE N. <br>
-			OF 
+			ORDER N. <br>
+			INVOICE N. 
 			<br><br></div>
 			<br>
 			<div>
