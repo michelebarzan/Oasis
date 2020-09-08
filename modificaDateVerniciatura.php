@@ -88,8 +88,10 @@
 			
 			if($weekStart>$weekDest)
 			{
-				updateTabellaPto($conn,$weekPto,$docnum,$stmt5);
-				updateSapPto($conn,$UDF1,$docnum,$stmt6);
+				/*updateTabellaPto($conn,$weekPto,$docnum,$stmt5);
+				updateSapPto($conn,$UDF1,$docnum,$stmt6);*/
+				$stmt5=true;
+				$stmt6=true;
 			}
 			else
 			{
