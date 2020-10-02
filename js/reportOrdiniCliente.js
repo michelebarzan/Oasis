@@ -594,7 +594,7 @@ async function getContextMenuOrdineCliente(button,event,ordine)
         link.setAttribute("onclick","closeContextMenuOrdineCliente()");
         var span=document.createElement("span");
         span.setAttribute("class","ordine-cliente-context-menu-item");
-        span.innerHTML="Pdf ordine acquisto";
+        span.innerHTML="Pdf ordine vendita";
         link.appendChild(span);
         var i=document.createElement("i");
         i.setAttribute("class","fal fa-external-link ordine-cliente-context-menu-item");

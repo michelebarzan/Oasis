@@ -1,0 +1,491 @@
+html
+{
+    height: 100%;
+    width: 100%;
+}
+body
+{
+    height: 100%;
+    width: 100%;
+}
+button
+{
+    cursor: pointer;
+}
+button:hover
+{
+    opacity: 0.6;
+}
+#containerSommarioProduzione
+{
+    height: calc(100% - 230px);
+    width: 100%;
+    padding-left: 50px;
+    padding-right: 40px;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin-top:20px;
+    box-sizing: border-box;
+}
+.sommario-produzione-outer-container
+{
+    background-color: white;
+    border-radius: 4px;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    margin-bottom: 10px;
+}
+.sommario-produzione-title-container
+{
+    width: 100%;
+    background-color: #ddd;
+    padding-left:10px;
+    padding-right:10px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    height: 35px;
+}
+.sommario-produzione-title-container span
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Montserrat',sans-serif;
+    font-weight: bold;
+    font-size:12px;
+}
+.sommario-produzione-title-button
+{
+    border:none;
+    outline: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0px;
+	margin:0px;
+	color:black;
+	border-bottom: 1px solid black;
+	padding:2px;
+}
+.sommario-produzione-title-button:hover
+{
+	color:rgb(48, 133, 214);
+	border-bottom: 1px solid rgb(48, 133, 214);
+}
+.sommario-produzione-title-button span
+{
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+}
+.sommario-produzione-title-button i
+{
+	margin-left: 5px;
+	font-size: 16px;
+}
+.sommario-produzione-action-bar
+{
+    height: 40px;
+    width: calc(100% - 10px);
+    background-color: transparent;
+    box-sizing: border-box;
+    padding:0px;
+    margin:0px;
+    margin-left:5px;
+    margin-right:5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+}
+.sommario-produzione-action-bar-button
+{
+    padding:0px;
+    margin:0px;
+    height:30px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-sizing: border-box;
+    padding-left: 10px;
+    padding-right: 10px;
+    border:none;
+    border-radius: 4px;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    border:1px solid gray;
+    outline: none;
+    color:black;
+}
+.sommario-produzione-action-bar-button span
+{
+    font-family: 'Montserrat',sans-serif;
+    font-weight: bold;
+    font-size:12px;
+    white-space: nowrap;
+}
+.sommario-produzione-inner-container
+{
+    width: calc(100% - 10px);
+    border-radius: 4px;
+    margin:5px;
+}
+#produzioneNegliAnniChartContainer,#totaliPerCollezioneChartContainer
+{
+	height: 700px;
+}
+#produzioneSettimanaTChartContainer
+{
+	overflow: auto;
+	height: 700px;
+}
+#produzioneSettimanaGChartContainer
+{
+	height: 300px;
+}
+/*-------------------------------------------------------*/
+#tableProduzioneSettimana
+{
+    border-collapse: collapse;
+    border-radius: 4px;
+    max-height: 100%;
+    width: 100%;
+}
+#tableProduzioneSettimana thead
+{
+    background-color: #404040;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+#tableProduzioneSettimana th
+{
+    font-family: 'Montserrat',sans-serif;
+    color:white;
+    font-weight: normal;
+    font-size:12px;
+    text-align: left;
+    background-color: transparent;
+    padding:10px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#tableProduzioneSettimana td
+{
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Montserrat',sans-serif;
+    color:black;
+    font-weight: normal;
+    font-size:12px;
+    padding:5px;
+}
+#tableProduzioneSettimana tbody tr:nth-child(odd) 
+{
+    background-color:white;
+}
+#tableProduzioneSettimana tbody tr:nth-child(even) 
+{
+    background-color:rgba(76, 146, 203, 0.199);
+}
+#tableProduzioneSettimana tbody 
+{
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+/*-------------------------------------------------------*/
+.reusable-control-bar
+{
+	background-color: rgba(0, 0, 0, 0.068);
+	display: flex;
+	align-items: start;
+	justify-content: start;
+	box-sizing: border-box;
+	padding-left: 5px;
+    width:100%;
+    max-width: 1820px;
+	height:40px;
+	border-radius: 4px;
+	flex-direction: row;
+	margin-top: 100px;
+	width:calc(100% - 100px);
+	margin-left: 50px;
+    margin-right:50px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+#actionBarSommarioProduzione
+{
+	align-items: center;
+	max-width: calc(100% - 100px);
+}
+.reusable-control-bar-margin
+{
+	margin:5px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.rcb-button-text-icon
+{
+	height:30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background-color: rgba(255, 255, 255, 0.7);
+	box-sizing: border-box;
+	padding-left: 10px;
+	padding-right: 10px;
+	border:none;
+	border-radius: 2px;
+	cursor: pointer;
+	outline:none;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.rcb-button-text-icon:hover
+{
+	background-color: rgba(255, 255, 255, 0.95);
+}
+.rcb-button-text-icon span
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+}
+.rcb-button-text-icon i
+{
+	color:black;
+	font-weight: normal;
+	font-size:14px;
+}
+.rcb-select-container
+{
+	height:30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background-color: rgba(255, 255, 255, 0.7);
+	box-sizing: border-box;
+	padding-left: 10px;
+	padding-right: 10px;
+	border:none;
+	border-radius: 2px;
+	outline:none;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: start;
+}
+.rcb-select-container:hover
+{
+	background-color: rgba(255, 255, 255, 0.95);
+}
+.rcb-select-container i
+{
+	color:black;
+	margin-right: 5px;
+}
+.rcb-select-container span
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	margin:0px;
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+}
+.rcb-select-container select
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	margin:0px;
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+	height:30px;
+	text-decoration: underline;
+}
+.rcb-select-container select option
+{
+	font-weight: normal;
+}
+#selectGruppoSviluppi
+{
+	max-width:165px;
+	text-decoration:none;
+}
+.rcb-input-icon-container
+{
+	height:30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background-color: rgba(255, 255, 255, 0.7);
+	box-sizing: border-box;
+	padding-left: 10px;
+	padding-right: 10px;
+	border:none;
+	border-radius: 2px;
+	outline:none;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: start;
+}
+.rcb-input-icon-container select
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	margin:0px;
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+	height:30px;
+}
+.rcb-input-icon-container input
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	margin:0px;
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+	height:30px;
+}
+.rcb-input-icon-container span
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	margin:0px;
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+}
+.rcb-input-icon-container i
+{
+	color:black;
+	cursor: pointer;
+}
+.rcb-input-icon-container:hover
+{
+	background-color: rgba(255, 255, 255, 0.95);
+}
+.rcb-input-icon-container:focus
+{
+	background-color: white;
+}
+.rcb-input-icon-container textarea
+{
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	height: calc(100% - 5px);
+	padding:0px;
+	background-color: transparent;
+	border:none;
+	outline: none;
+	border:1px solid #ddd;
+	margin-left:10px;
+	margin-right:10px;
+	border-radius:2px;
+	padding:3.5px;
+	resize: horizontal;
+}
+.rcb-input
+{
+	height:30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	background-color: rgba(255, 255, 255, 0.7);
+	box-sizing: border-box;
+	padding-left: 10px;
+	padding-right: 10px;
+	border:none;
+	border-radius: 2px;
+	outline:none;
+	font-family: 'Montserrat',sans-serif;
+	color:black;
+	font-weight: normal;
+	font-size:12px;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.rcb-input:hover
+{
+	background-color: rgba(255, 255, 255, 0.95);
+}
+.rcb-input:focus
+{
+	background-color: white;
+}
+.reusable-row-container
+{
+	display: flex;
+	border-radius: 4px;
+	flex-direction: row;
+	width:100%;
+}
+.reusable-column-container
+{
+	display: flex;
+	border-radius: 4px;
+	flex-direction: column;
+	height:100%;
+}
+.reusable-inner-container
+{
+	background-color: rgba(255, 255, 255, 0.8);
+	box-sizing: border-box;
+	border-radius: 4px;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.reusable-inner-container-margin
+{
+	margin:10px;
+}
+/*----------------------------------------------*/
+#inputNomeFileEsportaExcel
+{
+    width:250px;
+    margin-top:10px;
+    padding:7px;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    color:black;
+    background-color: white;
+    border: 1px solid #bbb;
+    outline: none;
+    border-radius: 4px;
+}
