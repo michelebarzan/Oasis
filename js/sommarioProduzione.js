@@ -126,6 +126,12 @@ function getTotaliPerCollezione()
 
     var button=document.createElement("button");
     button.setAttribute("class","sommario-produzione-action-bar-button totali-per-collezione-action-bar-button");
+    button.setAttribute("onclick","setTotaliPerCollezioneFilter(this,'Fatturato','€','fatturato')");
+    button.innerHTML='<span>Fatturato</span>';
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("class","sommario-produzione-action-bar-button totali-per-collezione-action-bar-button");
     button.setAttribute("onclick","setTotaliPerCollezioneFilter(this,'M.Q.','mq','mq')");
     button.innerHTML='<span>M.Q.</span>';
     actionBar.appendChild(button);
@@ -219,9 +225,14 @@ async function getChartTotaliPerCollezione()
     });
     dataPoints.forEach(dot =>
     {
+        if(totaliPerCollezioneFilter.colonna=="fatturato")
+            var indexLabel="Più venduta";
+        else
+            var indexLabel="Più prodotta";
+
         if(max.label==dot.label)
         {
-            dot.indexLabel = "Più prodotta";
+            dot.indexLabel = indexLabel;
             dot.indexLabelFontSize= 10;
             dot.indexLabelFontColor= "black";
             dot.indexLabelFontWeight= "bold";
@@ -230,9 +241,13 @@ async function getChartTotaliPerCollezione()
     });
     dataPoints.forEach(dot =>
     {
+        if(totaliPerCollezioneFilter.colonna=="fatturato")
+            var indexLabel="Più venduta";
+        else
+            var indexLabel="Più prodotta";
         if(max.label==dot.label)
         {
-            dot.indexLabel = "Più prodotta";
+            dot.indexLabel = indexLabel;
             dot.indexLabelFontSize= 10;
             dot.indexLabelFontColor= "black";
             dot.indexLabelFontWeight= "bold";
@@ -266,6 +281,7 @@ async function getChartTotaliPerCollezione()
             {
                 animationEnabled: true,
                 backgroundColor:"white",
+                zoomEnabled: true, 
                 theme: "light2",
                 axisX:
                 {
@@ -278,7 +294,7 @@ async function getChartTotaliPerCollezione()
                 },
                 axisY:
                 {
-                    labelAngle: -45,
+                    
                     labelFontSize: 10,
                     labelFontColor: "black",
                     labelFontWeight: "bold",
@@ -289,7 +305,16 @@ async function getChartTotaliPerCollezione()
                     lineColor: "black"
                 },
                 toolTip: {
-                    shared: true
+                    contentFormatter: function (e)
+                    {
+                        var content = " ";
+                        for (var i = 0; i < e.entries.length; i++)
+                        {
+                            content += "Collezione: "+e.entries[i].dataPoint.label + "<br>"+totaliPerCollezioneFilter.colonna + ": <strong>" + e.entries[i].dataPoint.y + "</strong>";
+                            content += "<br/>";
+                        }
+                        return content;
+                    }
                 },
                 data: [
                 {
@@ -910,10 +935,11 @@ async function getChartProduzioneNegliAnni()
 {
     document.getElementById("produzioneNegliAnniChartContainer").innerHTML="<div style='width:100%;height:100%;display:flex;align-items:center;justify-content:center'><i class='fad fa-spinner-third fa-spin fa-2x'></i></div>";
 
-    var anni=[];
-    var dataPointsArray=await getDataProduzioneNegliAnni();
+    var array_response=await getDataProduzioneNegliAnni();
+    var dataPointsArray=array_response[0];
+    var fatturatoDataPointsArray=array_response[1];
 
-    if(dataPointsArray.length==0)
+    if(dataPointsArray.length==0 || fatturatoDataPointsArray.length==0)
     {
         document.getElementById("produzioneSettimanaGChartContainer").innerHTML="";
 
@@ -933,6 +959,12 @@ async function getChartProduzioneNegliAnni()
     }
     else
     {
+        var colors=["DodgerBlue","green","orange","purple","SlateBlue","black","gray","Violet","brown","GoldenRod"];
+        /*------------------------------------------------------------------------------------------*/
+        var anni=[];
+        var data=[];
+        var uniqueAnni = [];
+
         var avg=
         {
             1:0,
@@ -972,11 +1004,10 @@ async function getChartProduzioneNegliAnni()
         {
             anni.push(dataPoints.anno);
         });
-        var uniqueAnni = [];
         $.each(anni, function(i, el){
             if($.inArray(el, uniqueAnni) === -1) uniqueAnni.push(el);
         });
-        var data=[];
+        var i=0;
         uniqueAnni.forEach(anno => 
         {
             var dots=[];
@@ -988,33 +1019,137 @@ async function getChartProduzioneNegliAnni()
                     dots.push(dot);
                 }
             });
+            var visible = false;
+            if(anno==new Date().getFullYear()||anno=="media")
+                visible=true;
             if(anno=="media")
             {
                 var set=
                 {
-                    name:anno.toString(),
+                    name:anno.toString()+" "+produzioneNegliAnniFilter.colonna,
                     type:"spline",
                     lineThickness: 4,
-                    lineDashType: "dash",
                     color:"red",
                     markerSize: 8,
                     showInLegend: true,
-                    dataPoints: dots
+                    axisYType: "primary",
+                    dataPoints: dots,
+                    visible
                 }
             }
             else
             {
                 var set=
                 {
-                    name:anno.toString(),
+                    name:produzioneNegliAnniFilter.colonna+" "+anno.toString(),
                     type:"spline",
                     markerSize: 8,
                     showInLegend: true,
-                    dataPoints: dots
+                    axisYType: "primary",
+                    color:colors[i],
+                    dataPoints: dots,
+                    visible
                 }
             }
             data.push(set);
+            i++;
         });
+        /*------------------------------------------------------------------------------------------*/
+        var anni=[];
+        var uniqueAnni = [];
+        var avg=
+        {
+            1:0,
+            2:0,
+            3:0,
+            4:0,
+            5:0,
+            6:0,
+            7:0,
+            8:0,
+            9:0,
+            10:0,
+            11:0,
+            12:0
+        };
+        fatturatoDataPointsArray.forEach(dot =>
+        {
+            //console.log(dot);
+            avg[dot.x]+=dot.y;
+        });
+        for (let index = 1; index < 13; index++)
+        {
+            avg[index]=avg[index]/5;
+        }
+        for (let index = 1; index < 13; index++)
+        {
+            var newDot=
+            {
+                x:index,
+                y:avg[index],
+                anno:"media"
+            }
+            fatturatoDataPointsArray.push(newDot);
+        }
+
+        fatturatoDataPointsArray.forEach(dataPoints => 
+        {
+            anni.push(dataPoints.anno);
+        });
+        var uniqueAnni = [];
+        $.each(anni, function(i, el){
+            if($.inArray(el, uniqueAnni) === -1) uniqueAnni.push(el);
+        });
+        var i=0;
+        uniqueAnni.forEach(anno => 
+        {
+            var dots=[];
+            fatturatoDataPointsArray.forEach(dataPoints => 
+            {
+                if(dataPoints.anno==anno)
+                {
+                    var dot={x:dataPoints.x,y:dataPoints.y}
+                    dots.push(dot);
+                }
+            });
+            var visible = false;
+            if(anno==new Date().getFullYear()||anno=="media")
+                visible=true;
+            if(anno=="media")
+            {
+                var set=
+                {
+                    name:anno.toString()+" fatturato",
+                    type:"spline",
+                    lineThickness: 4,
+                    lineDashType: "dash",
+                    color:"red",
+                    markerSize: 8,
+                    showInLegend: true,
+                    axisYType: "secondary",
+                    dataPoints: dots,
+                    visible
+                }
+            }
+            else
+            {
+                var set=
+                {
+                    name:"fatturato "+anno.toString(),
+                    type:"spline",
+                    lineDashType: "dash",
+                    markerSize: 8,
+                    showInLegend: true,
+                    axisYType: "secondary",
+                    color:colors[i],
+                    dataPoints: dots,
+                    visible
+                }
+            }
+            data.push(set);
+            i++;
+        });
+        /*------------------------------------------------------------------------------------------*/
         data.forEach(set =>
         {
             if(set.dataPoints.length<12)
@@ -1046,17 +1181,38 @@ async function getChartProduzioneNegliAnni()
         
             set.dataPoints.sort( compare );
         });
-        
-        //console.log(data);
+        /*------------------------------------------------------------------------------------------*/
+
+        console.log(data);
+
         setTimeout(function()
         {
             produzioneNegliAnniChart = new CanvasJS.Chart("produzioneNegliAnniChartContainer",
             {
                 animationEnabled: true,
+                zoomEnabled: true, 
                 backgroundColor:"white",
                 title:
                 {
 
+                },
+                toolTip: {
+                    shared: true,
+                    contentFormatter: function (e)
+                    {
+                        var content = " ";
+                        for (var i = 0; i < e.entries.length; i++)
+                        {
+                            if(e.entries[i].dataSeries.visible)
+                            {
+                                content += "<span style='color:"+e.entries[i].dataSeries.color+"'>"+e.entries[i].dataSeries.name + ":</span> " + "<strong>" + e.entries[i].dataPoint.y + "</strong>";
+                                content += "<br/>";
+                            }
+                            //console.log(e.entries[i].dataSeries.name)
+                            /**/
+                        }
+                        return content;
+                    }
                 },
                 axisX:
                 {
@@ -1070,7 +1226,11 @@ async function getChartProduzioneNegliAnni()
                 },
                 axisY:
                 {
-                    labelAngle: -45,
+                    title:produzioneNegliAnniFilter.colonna.toUpperCase(),
+                    titleFontSize: 14,
+                    titleFontColor: "black",
+                    titleFontWeight: "bold",
+                    titleFontFamily: "'Montserrat',sans-serif",
                     labelFontSize: 10,
                     labelFontColor: "black",
                     labelFontWeight: "bold",
@@ -1080,16 +1240,31 @@ async function getChartProduzioneNegliAnni()
                     lineThickness: 1,
                     lineColor: "black"
                 },
-                legend:{
+                axisY2:
+                {
+                    title:"FATTURATO",
+                    titleFontSize: 14,
+                    titleFontColor: "black",
+                    titleFontWeight: "bold",
+                    titleFontFamily: "'Montserrat',sans-serif",
+                    labelFontSize: 10,
+                    labelFontColor: "black",
+                    labelFontWeight: "bold",
+                    labelFontFamily: "'Montserrat',sans-serif",
+                    gridThickness: 1,
+                    gridColor: "#ddd",
+                    gridDashType:"dash",
+                    lineThickness: 1,
+                    lineColor: "black"
+                },
+                legend:
+                {
                     cursor: "pointer",
                     fontSize: 12,
                     itemclick: toggleDataSeries,
                     fontFamily: "'Montserrat',sans-serif",
                     horizontalAlign: "left", // "center" , "right"
                     verticalAlign: "bottom",  // "top" , "bottom"
-                },
-                toolTip:{
-                    shared: true
                 },
                 data
             });

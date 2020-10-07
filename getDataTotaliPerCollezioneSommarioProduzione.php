@@ -35,9 +35,10 @@ if($totaliPerCollezioneFilter["colonna"]=="ordini")
 else
 {
     $query2="SELECT collezione AS label, SUM(".$totaliPerCollezioneFilter['colonna'].") AS y
-            FROM (SELECT registrazioni_produzione.docnum, registrazioni_produzione.mq, registrazioni_produzione.basi_portalavabo, registrazioni_produzione.basi_accostabili, registrazioni_produzione.pensili, 
-                registrazioni_produzione.colonne, registrazioni_produzione.Altro, registrazioni_produzione.totale_pezzi, registrazioni_produzione.stazione, registrazioni_produzione.mese, registrazioni_produzione.anno, 
-                ISNULL(dbo.collezione.collezione, 'Nessuna') AS collezione
+            FROM (SELECT registrazioni_produzione.docnum, MAX(registrazioni_produzione.mq) AS mq, MAX(registrazioni_produzione.basi_portalavabo) AS basi_portalavabo, MAX(registrazioni_produzione.basi_accostabili) 
+                AS basi_accostabili, MAX(registrazioni_produzione.pensili) AS pensili, MAX(registrazioni_produzione.colonne) AS colonne, MAX(registrazioni_produzione.Altro) AS Altro, MAX(registrazioni_produzione.totale_pezzi) 
+                AS totale_pezzi, registrazioni_produzione.stazione, MAX(registrazioni_produzione.mese) AS mese, registrazioni_produzione.anno, MAX(ISNULL(dbo.collezione.collezione, 'Nessuna')) AS collezione, 
+                MAX(ISNULL(dbo.fatturato_ordini.fatturato, 0)) AS fatturato
                 FROM (SELECT derivedtbl_1.docnum, derivedtbl_1.mq, derivedtbl_1.basi_portalavabo, derivedtbl_1.basi_accostabili, derivedtbl_1.pensili, derivedtbl_1.colonne, derivedtbl_1.Altro, derivedtbl_1.totale_pezzi, 
                 derivedtbl_1.stazione, DATEPART(mm, dbo.Calendar.[data-]) AS mese, DATEPART(yy, dbo.Calendar.[data-]) AS anno
                 FROM (SELECT docnum, mq, basi_portalavabo, basi_accostabili, pensili, colonne, Altro, dataConsegna, totale_pezzi, stazione, settimana, stato
@@ -48,9 +49,12 @@ else
                 UNION ALL
                 SELECT docnum, mq, basi_portalavabo, basi_accostabili, pensili, colonne, Altro, dataConsegna, totale_pezzi, stazione, settimana, stato
                 FROM dbo.sommario_produzione_punto_punto) AS derivedtbl_1 INNER JOIN
-                dbo.Calendar ON derivedtbl_1.settimana = dbo.Calendar.KW_ID WHERE (dbo.Calendar.[data-] BETWEEN '$dataInizio' AND '$dataFine')) AS registrazioni_produzione LEFT OUTER JOIN
+                dbo.Calendar ON derivedtbl_1.settimana = dbo.Calendar.KW_ID
+                WHERE (dbo.Calendar.[data-] BETWEEN '$dataInizio' AND '$dataFine')) AS registrazioni_produzione LEFT OUTER JOIN
+                dbo.fatturato_ordini ON registrazioni_produzione.docnum = dbo.fatturato_ordini.ordine LEFT OUTER JOIN
                 dbo.collezione ON registrazioni_produzione.docnum = dbo.collezione.DocNum
-            WHERE (registrazioni_produzione.stazione = '$stazione')) AS t
+                GROUP BY registrazioni_produzione.docnum, registrazioni_produzione.stazione, registrazioni_produzione.anno
+            HAVING (registrazioni_produzione.stazione = '$stazione')) AS t
             GROUP BY collezione";
 }
 
