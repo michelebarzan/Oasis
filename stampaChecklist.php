@@ -40,11 +40,9 @@
 	<body onload="checkFlexDirection();getElencoPick()">
 		<?php include('struttura.php'); ?>
 		<div class="top-action-bar" id="stampaChecklistActionBar">
-			<!--<button class="action-bar-text-icon-button" style="margin-left:0px" onclick="anteprimaDiStampa()"><span>Anteprima di stampa</span><i class="fad fa-print"></i></button>
-			<button class="action-bar-text-icon-button" onclick="stampaImmediata()"><span>Stampa immediata</span><i class="fad fa-print"></i></button>-->
 			<div class="action-bar-item" style="margin-left:5px" ><b>Visualizzazione</b>
-				<button class="action-bar-icon-button" id="btnFlexDirectionRow" onclick="changeFlexDirection()"><i class="fad fa-line-columns"></i></button>
-				<button class="action-bar-icon-button" id="btnFlexDirectionColumn" onclick="changeFlexDirection()"><i class="fad fa-line-height"></i></button>
+				<button class="action-bar-icon-button" id="btnFlexDirectionRow" style="width:30px" onclick="changeFlexDirection()"><i class="fad fa-line-columns"></i></button>
+				<button class="action-bar-icon-button" id="btnFlexDirectionColumn" style="width:30px" onclick="changeFlexDirection()"><i class="fad fa-line-height"></i></button>
 			</div>
 			<div class="action-bar-item"><b>Righe</b>
 				<input type="number" class="action-bar-input" id="inputFilterTop" onfocusout="getElencoPick()" value="200">
@@ -59,6 +57,7 @@
 				<button class="action-bar-text-icon-button" style="margin-right:-5px" id="bntOrderNPick" style="margin-right:0px" onclick="orderBy='n_Pick';getElencoPick()"><span>N pick</span><i class="fas fa-sort-numeric-down-alt"></i></button>
 				<button class="action-bar-text-icon-button" id="bntOrderData" style="margin-right:0px" onclick="orderBy='DataPick';getElencoPick()"><span>Data</span><i class="far fa-calendar-alt"></i></button>
 			</div>
+			<button class="action-bar-text-icon-button" id="bntAggiornaCarichi" style="margin-left:5px" onclick="aggiornaCarichi()"><span>Aggiorna carichi</span><i class="fad fa-redo-alt"></i></button>
 		</div>
 		<input type="text" id="stampaChecklistSearchBar" placeholder="Cerca..." onkeyup="searchPicks(this)">
 		<div id="stampaChecklistContainer"></div>
