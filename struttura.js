@@ -46,7 +46,11 @@
 
 					var mainNavBarSectionRowLink=document.createElement("a");
 					mainNavBarSectionRowLink.setAttribute("class","main-nav-bar-section-row-link");
-					mainNavBarSectionRowLink.setAttribute("href",pagina['pagina']);
+					switch (pagina['pagina'])
+					{
+						case "callPresenze":mainNavBarSectionRowLink.setAttribute("onclick",'gotopath("callPresenze")');break;
+						default:mainNavBarSectionRowLink.setAttribute("href",pagina['pagina']);break;
+					}
 
 					//icona------------------------------------------------------------------------
 					var mainNavBarSectionRowItem=document.createElement("div");
@@ -115,7 +119,11 @@
 
 						var mainNavBarSectionRowLink=document.createElement("a");
 						mainNavBarSectionRowLink.setAttribute("class","main-nav-bar-section-row-link");
-						mainNavBarSectionRowLink.setAttribute("href",pagina['pagina']);
+						switch (pagina['pagina'])
+						{
+							case "callPresenze":mainNavBarSectionRowLink.setAttribute("onclick",'gotopath("callPresenze")');break;
+							default:mainNavBarSectionRowLink.setAttribute("href",pagina['pagina']);break;
+						}
 
 						//icona------------------------------------------------------------------------
 						var mainNavBarSectionRowItem=document.createElement("div");
@@ -255,7 +263,11 @@
 	}
 	function gotopath(path)
 	{
-		window.location = path;
+		switch (path)
+		{
+			case "callPresenze":window.open("http://192.168.6.31/oasis/presenze.php",'_blank',`toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=380,height=800`);break;
+			default:window.location = path;break;
+		}
 	}
 	function homepage()
 	{
