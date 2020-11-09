@@ -265,7 +265,7 @@
 	{
 		switch (path)
 		{
-			case "callPresenze":window.open("http://192.168.6.31/oasis/presenze.php",'_blank',`toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=380,height=800`);break;
+			case "callPresenze":window.open("http://remote.oasisgroup.it/oasis/presenze.php",'_blank',`toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=380,height=800`);break;
 			default:window.location = path;break;
 		}
 	}

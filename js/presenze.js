@@ -136,6 +136,7 @@ async function getPopupDettagliRegistrazioni(data)
         allowOutsideClick:false,
         showCloseButton:false,
         showConfirmButton:false,
+        allowEscapeKey:false,
         showCancelButton:false,
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
@@ -522,9 +523,23 @@ function inserisciNuovaRegistrazione()
 {
     return new Promise(function (resolve, reject) 
     {
+        var month=(today.getMonth()+1).toString();
+        if(month.length==1)
+            month="0"+month;
+        var day=today.getDate().toString();
+        if(day.length==1)
+            day="0"+day;
+        var hours=today.getHours().toString();
+        if(hours.length==1)
+            hours="0"+hours;
+        var minutes=today.getMinutes().toString();
+        if(minutes.length==1)
+            minutes="0"+minutes;
+        var datetime = today.getFullYear() + "-" + month +"-" + day +" " + hours + ":"  + minutes;
         $.post("inserisciNuovaRegistrazionePresenze.php",
         {
-            id_utente
+            id_utente,
+            datetime
         },
         function(response, status)
         {
