@@ -234,11 +234,11 @@ async function getTrackingOrdine()
                 rowItem.setAttribute("class","pick-item-row-item");
                 rowItem.setAttribute("style","flex-direction:row;align-items:center;box-sizing:border-box;padding:20px;background-color:rgb(236, 236, 236);border-radius:4px;box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);height:100%");
                 
-                var info=document.createElement("div");
+                /*var info=document.createElement("div");
                 info.setAttribute("class","pick-item-info-container");
                 info.setAttribute("style","display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-left:10px");
                 info.innerHTML="<b style='color:#4C91CB'>"+parseFloat(infoOrdine.mq).toFixed(2)+"</b><b>MQ</b>";
-                rowItem.appendChild(info);
+                rowItem.appendChild(info);*/
                 
                 var info=document.createElement("div");
                 info.setAttribute("class","pick-item-info-container");
@@ -396,7 +396,7 @@ async function getTrackingOrdine()
                 {
                     var infoOrdineContainer=document.createElement("div");
                     infoOrdineContainer.setAttribute("class","info-ordine-icon-container");
-                    infoOrdineContainer.setAttribute("style","color:#DA6969");
+                    infoOrdineContainer.setAttribute("style","color:#DA6969;margin-top:20px;");
     
                     var i=document.createElement("i");
                     i.setAttribute("class","fad fa-exclamation-circle");
@@ -830,7 +830,7 @@ async function getTrackingOrdine()
 
                 var pickingOrdineOuterContainer=document.createElement("div");
 
-                if(infoPicking.length==0)
+                if(!infoPicking.trovato)
                 {
                     pickingOrdineOuterContainer.setAttribute("class","info-ordine-outer-container");
 

@@ -6,7 +6,7 @@
 
     $info_ordine["trovato"]=false;
 
-    $query2="SELECT derivedtbl_2.docnum, derivedtbl_2.dataConsegna, derivedtbl_2.collezione, MAX(derivedtbl_2.mq) AS mq, MAX(derivedtbl_2.basi_portalavabo) AS basi_portalavabo, MAX(derivedtbl_2.basi_accostabili) AS basi_accostabili, 
+    /*$query2="SELECT derivedtbl_2.docnum, derivedtbl_2.dataConsegna, derivedtbl_2.collezione, MAX(derivedtbl_2.mq) AS mq, MAX(derivedtbl_2.basi_portalavabo) AS basi_portalavabo, MAX(derivedtbl_2.basi_accostabili) AS basi_accostabili, 
                 MAX(derivedtbl_2.pensili) AS pensili, MAX(derivedtbl_2.colonne) AS colonne, MAX(derivedtbl_2.Altro) AS Altro, MAX(derivedtbl_2.totale_pezzi) AS totale_pezzi, dbo.report_ordini_clienti_view.nome_cliente, 
                 dbo.report_ordini_clienti_view.Statistical_group_code, dbo.report_ordini_clienti_view.Statistical_group_name, dbo.report_ordini_clienti_view.linea_business, dbo.report_ordini_clienti_view.tipo, 
                 dbo.report_ordini_clienti_view.tipo_pagamento, dbo.report_ordini_clienti_view.note, ISNULL(dbo.report_ordini_clienti_view.importo_totale,0) AS importo_totale
@@ -26,21 +26,23 @@
                 dbo.report_ordini_clienti_view ON derivedtbl_2.docnum = dbo.report_ordini_clienti_view.ordine_cliente
             GROUP BY derivedtbl_2.docnum, derivedtbl_2.dataConsegna, derivedtbl_2.collezione, dbo.report_ordini_clienti_view.nome_cliente, dbo.report_ordini_clienti_view.Statistical_group_code, 
                 dbo.report_ordini_clienti_view.Statistical_group_name, dbo.report_ordini_clienti_view.linea_business, dbo.report_ordini_clienti_view.tipo, dbo.report_ordini_clienti_view.tipo_pagamento, dbo.report_ordini_clienti_view.note, 
-                dbo.report_ordini_clienti_view.importo_totale";	
+                dbo.report_ordini_clienti_view.importo_totale";	*/
+	$query2="SELECT * FROM anagrafica_ordini WHERE ordine='$ordine' OPTION ( QUERYTRACEON 9481 )";			
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
         while($row2=sqlsrv_fetch_array($result2))
         {
             $info_ordine["trovato"]=true;
-            $info_ordine["ordine"]=$row2['docnum'];
+            //$info_ordine["ordine"]=$row2['docnum'];
+			$info_ordine["ordine"]=$row2['ordine'];
             $info_ordine["dataConsegna"]=$row2['dataConsegna'];
             if($row2['dataConsegna']==null)
                 $info_ordine['dataConsegna']=null;
             else
                 $info_ordine["dataConsegnaString"]=$row2['dataConsegna']->format("d/m/Y");
             $info_ordine["collezione"]=utf8_encode($row2['collezione']);
-            $info_ordine["mq"]=$row2['mq'];
+            //$info_ordine["mq"]=$row2['mq'];
             $info_ordine["basi_portalavabo"]=$row2['basi_portalavabo'];
             $info_ordine["basi_accostabili"]=$row2['basi_accostabili'];
             $info_ordine["pensili"]=$row2['pensili'];

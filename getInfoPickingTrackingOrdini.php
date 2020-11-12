@@ -3,6 +3,8 @@
     include "connessione.php";
 
     $ordine=$_REQUEST["ordine"];
+	
+	$pick["trovato"]=false;
 
     $query2="SELECT dbo.view_stampa_checklist.n_Pick, dbo.view_stampa_checklist.DataPick, dbo.view_stampa_checklist.descrPick, MAX(dbo.view_stampa_checklist.chiuso) AS chiuso, MAX(dbo.view_stampa_checklist.dataChiusura) 
                 AS dataChiusura, MAX(dbo.view_stampa_checklist.controllato) AS controllato, MAX(dbo.view_stampa_checklist.dataControllato) AS dataControllato, MAX(dbo.view_stampa_checklist.stampato) AS stampato, 
@@ -19,6 +21,8 @@
     {
         while($row2=sqlsrv_fetch_array($result2))
         {
+			$pick["trovato"]=true;
+			
             $pick["n_Pick"]=$row2['n_Pick'];
             if($row2['DataPick']==NULL)
                 $pick["DataPick"]="";
