@@ -1,0 +1,224 @@
+#immagineLogo
+{
+    margin-top:90px;
+}
+.homepageLinkContainer
+{
+	/*width:100%;*/
+	height:auto;
+	box-sizing:border-box;
+    margin-top:20px;
+    width: auto;
+    margin-bottom:60px;
+}
+.homepageSectionContainer
+{
+	width:260px;
+	float:left;
+	display: block;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	margin:20px;
+	box-sizing: border-box;
+	padding-left:10px;
+    padding-bottom:10px;
+    border-radius: 4px;
+    /*background-color: white;*/
+}
+.homepageSectionTitle
+{
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+	height:40px;
+	width:calc(100% + 10px);
+	float: left;
+	display: block;
+	line-height: 40px;
+	font-family: 'Quicksand', sans-serif;
+	font-size:12px;
+	box-sizing: border-box;
+	padding-left:15px;
+	margin-left:-10px;
+	padding-right:10px;
+	color:#EBEBEB;
+	background-color:#404040 ;
+	font-weight:bold;
+	text-transform: uppercase;
+	margin-bottom:10px;
+}
+.homepageButtonAggiungiPreferiti
+{
+	height: 25px;
+	width: 25px;
+	text-align: center;
+	border-radius: 50%;
+	float:right;
+	display: block;
+	margin-top: 7.5px;
+	background-color: transparent;
+	border:none;
+	cursor: pointer;
+	color:#F2CE5A;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	outline:none;
+}
+.homepageButtonAggiungiPreferiti:hover
+{
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	background-color:#616161;
+}
+.listaPagineAggiungiPreferitiHomepage
+{
+	list-style-type: none;
+	color:black;
+	padding:0;
+}
+.listaPagineAggiungiPreferitiHomepage li
+{
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	height:25px;
+	line-height: 25px;
+	margin:10px;
+	background-color: #F6F6F6;
+	text-align: left;
+}
+.listaPagineAggiungiPreferitiHomepage li i
+{
+	margin-left:10px;
+}
+.listaPagineAggiungiPreferitiHomepage li span
+{
+	margin-left:10px;
+}
+.listaPagineAggiungiPreferitiHomepage li button
+{
+	height: 25px;
+	width: 25px;
+	text-align: center;
+	float:right;
+	display: block;
+	margin-right: 15px;
+	background-color: transparent;
+	border:none;
+	cursor: pointer;
+	color:#F2CE5A;
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	outline:none;
+}
+.homepageLink
+{
+	width:100px;
+	height:100px;
+	display:inline-block;
+	float:left;
+	/*-webkit-transition: all .3s ;
+	-moz-transition: all .3s ;
+	-ms-transition: all .3s ;
+	-o-transition: all .3s ;
+	transition: all .3s ;*/
+	transition: all 0.8s cubic-bezier(.25,.8,.25,1);
+	text-align:center;
+	margin:10px;
+	cursor:pointer;
+	color:#404040;
+}
+.homepageLink:hover
+{
+	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+	background-color:#4C91CB;
+	background: -webkit-linear-gradient(to left, #00B4DB, #0083b0); /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to left, #00B4DB, #0083b0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	color:#fff;
+}
+.homepageLink i
+{
+	float:center;
+	height:35px;
+	margin-top:15px;
+	
+	font-size:180%;
+	width:100%;
+	cursor:pointer;
+}
+.homepageLink div
+{
+	width:100%;
+	height:35px;
+	margin-bottom:15px;
+	/*font-family:'Montserrat',sans-serif;*/
+	/*font-family: 'Raleway', sans-serif;*/
+	font-family: 'Quicksand', sans-serif;
+	/*font-family: 'Nunito', sans-serif;*/
+	font-weight:bold;
+	text-align:center;
+	box-sizing:border-box;
+	font-size:12px;
+	
+	cursor:pointer;
+	padding:5px;
+	overflow:hidden;
+	word-wrap:break-word;
+}
+[data-tooltip] {
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  margin-bottom: 5px;
+  margin-left: -80px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 11px;
+  font-family:'Montserrat',sans-serif;
+  line-height: 1.2;
+  text-align:left;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  margin-left: -5px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
