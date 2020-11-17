@@ -18,35 +18,6 @@
 		<link rel="stylesheet" href="js_libraries/spinners/spinner.css" />
 		<script src="js_libraries/spinners/spinner.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-		<style>
-		.logoHeader{display:none}
-		.swal2-title
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:18px;
-			}
-			.swal2-content
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:13px;
-			}
-			.swal2-confirm,.swal2-cancel
-			{
-				font-family:'Montserrat',sans-serif;
-				font-size:13px;
-			}
-			.swal2-container
-			{
-				z-index: 98;
-			}
-			body
-			{
-				display:flex;
-				flex-direction:column;
-				align-items:center;
-				justify-content:flex-start;
-			}
-		</style>
 	</head>
 	<body onload="getPagineHomepage()">
 		<?php include('struttura.php'); ?>

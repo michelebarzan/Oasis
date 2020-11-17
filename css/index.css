@@ -1,3 +1,30 @@
+.logoHeader{display:none}
+.swal2-title
+{
+	font-family:'Montserrat',sans-serif;
+	font-size:18px;
+}
+.swal2-content
+{
+	font-family:'Montserrat',sans-serif;
+	font-size:13px;
+}
+.swal2-confirm,.swal2-cancel
+{
+	font-family:'Montserrat',sans-serif;
+	font-size:13px;
+}
+.swal2-container
+{
+	z-index: 98;
+}
+body
+{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-start;
+}
 #immagineLogo
 {
     margin-top:90px;
@@ -16,7 +43,7 @@
 	width:260px;
 	float:left;
 	display: block;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	margin:20px;
 	box-sizing: border-box;
 	padding-left:10px;
