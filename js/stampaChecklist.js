@@ -467,6 +467,17 @@ async function getElencoPick()
         info.setAttribute("style","display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-left:10px");
         info.innerHTML="<b style='color:#4C91CB'>"+pick.righeChiuse+"/"+pick.righe+"</b><b>Chiuse</b>";
         rowItem.appendChild(info);
+        /*var info=document.createElement("div");
+        info.setAttribute("class","pick-item-info-container");
+        info.setAttribute("style","display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-left:10px");
+        info.innerHTML="<i class='fad fa-file-search fa-2x' style=''></i>";
+        rowItem.appendChild(info);*/
+        var button=document.createElement("button");
+        button.setAttribute("class","pick-item-btn-dettaglio");
+        button.setAttribute("onclick","getPopupDettaglioRighePick("+pick.n_Pick+")");
+        button.setAttribute("title","Dettaglio righe");
+        button.innerHTML="<i class='fad fa-file-search'></i>";
+        rowItem.appendChild(button);
         row.appendChild(rowItem);
 
         var rowItem2=document.createElement("div");
@@ -592,5 +603,126 @@ function aggiornaCarichi()
         }
         else
             reject({status});
+    });
+}
+async function getPopupDettaglioRighePick(n_Pick)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var righe_pick=await getDettaglioRighePick(n_Pick);
+    console.log(righe_pick);
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","popup-dettaglio-righe-pick-outer-container");
+
+    var tabellaDettaglioRighePick=document.createElement("table");
+    tabellaDettaglioRighePick.setAttribute("id","tabellaDettaglioRighePick");
+
+    var tr=document.createElement("tr");
+
+    var th=document.createElement("th");th.innerHTML="#";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Ordine";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Riga";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Item code";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Descrizione";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Qnt";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Volume";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Peso netto";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Peso lordo";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    righe_pick.forEach(riga =>
+    {
+        var tr=document.createElement("tr");
+
+        var td=document.createElement("td");td.innerHTML=riga.id_picking;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.docNum;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.lineNum;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.itemCode;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.dscription;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.quantity;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.volume;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.pesoNetto;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.pesoLordo;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
+        var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+
+        tabellaDettaglioRighePick.appendChild(tr);
+    });
+
+    outerContainer.appendChild(tabellaDettaglioRighePick);
+
+    Swal.fire
+    ({
+        title: "Dettaglio righe pick "+n_Pick,
+        html:outerContainer.outerHTML,
+        showConfirmButton:false,
+        showCloseButton:true,
+        //position:"top",
+        width:"90%",
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="12px";
+            document.getElementsByClassName("swal2-title")[0].style.color="white";
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-header")[0].style.backgroundColor="#404040";
+            document.getElementsByClassName("swal2-header")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-header")[0].style.borderTopLeftRadius="4px";
+            document.getElementsByClassName("swal2-header")[0].style.borderTopRightRadius="4px";
+            document.getElementsByClassName("swal2-title")[0].style.boxSizing="border-box";
+            document.getElementsByClassName("swal2-title")[0].style.marginTop="15px";
+            document.getElementsByClassName("swal2-title")[0].style.paddingLeft="10px";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+            document.getElementsByClassName("swal2-content")[0].style.padding="0px";
+        }
+    });
+}
+function getDettaglioRighePick(n_Pick)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getDettaglioRighePick.php",
+        {
+            n_Pick
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire
+                    ({
+                        icon: 'error',
+                        title: "Errore. Se il problema persiste contatta l' amministratore"
+                    });
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                    resolve(JSON.parse(response));
+            }
+            else
+                reject({status});
+        });
     });
 }

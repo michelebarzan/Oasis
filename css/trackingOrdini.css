@@ -611,3 +611,78 @@ button:hover
 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
+.pick-item-btn-dettaglio
+{
+    background-color: transparent;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right:10px;
+    margin-left:10px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.pick-item-btn-dettaglio:hover
+{
+    color: rgb(48, 133, 214);
+}
+.popup-dettaglio-righe-pick-outer-container
+{
+    max-height: 800px;
+    max-width: 100%;
+    overflow-y:auto;
+    overflow-x: hidden;
+}
+#tabellaDettaglioRighePick
+{
+    width: 100%;
+	border-collapse: collapse;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+#tabellaDettaglioRighePick tr
+{
+
+}
+#tabellaDettaglioRighePick th
+{
+    background-color: #404040;
+    height: 40px;
+    font-family: 'Montserrat',sans-serif;
+    color:white;
+    font-size: 12px;
+    font-weight: normal;
+    padding-left:10px;
+	padding-right:10px;
+	padding-top:5px;
+	padding-bottom:5px;
+    white-space: nowrap;
+    overflow: hidden;
+	text-align: left;
+}
+#tabellaDettaglioRighePick tr:nth-child(even) {background: rgba(76, 146, 203, 0.199)}
+#tabellaDettaglioRighePick tr:nth-child(odd) {background: rgb(235, 235, 235)}
+#tabellaDettaglioRighePick td
+{
+	text-align: left;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:5px;
+	padding-bottom:5px;
+	border-right:1px solid #ccc;
+	font-family: 'Montserrat',sans-serif;
+    color:black;
+    font-size: 12px;
+	font-weight: normal;
+	white-space: nowrap;
+    overflow: hidden;
+}
+#tabellaDettaglioRighePick td i
+{
+    font-size: 15px;
+}
