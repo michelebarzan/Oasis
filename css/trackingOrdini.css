@@ -2,11 +2,13 @@ html
 {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 body
 {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 .swal2-title
 {
@@ -494,6 +496,7 @@ button:hover
 }
 .info-ordine-images-slider img
 {
+    cursor: pointer;
     width: 150px;
     height: 150px;
     min-width: 150px;

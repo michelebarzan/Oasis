@@ -449,6 +449,7 @@ async function getTrackingOrdine()
                             {
                                 var img=document.createElement("img");
                                 img.setAttribute("src",foto.percorso);
+                                img.setAttribute("onclick","getPopupImmagine(this.src)");
                                 imagesSlider.appendChild(img);
                             }
                         });
@@ -545,12 +546,11 @@ async function getTrackingOrdine()
                     tr.appendChild(th);
 
                     var th=document.createElement("th");
-                    th.setAttribute("style","text-align:center");
-                    th.innerHTML="Chiuso";
+                    th.innerHTML="Data arrivo merce";
                     tr.appendChild(th);
 
                     var th=document.createElement("th");
-                    th.innerHTML="Data arrivo merce";
+                    th.innerHTML="Stato";
                     tr.appendChild(th);
 
                     ordiniFornitoriTable.appendChild(tr);
@@ -591,15 +591,11 @@ async function getTrackingOrdine()
                         tr.appendChild(td);
 
                         var td=document.createElement("td");
-                        td.setAttribute("style","text-align:center");
-                        if(ordineFornitore.chiuso=="true")
-                            td.innerHTML='<i class="fad fa-check-circle" style="color:#70B085;font-size:14px"></i>';
-                        else
-                            td.innerHTML='<i class="fad fa-times-circle" style="color:#DA6969;font-size:14px"></i>';
+                        td.innerHTML=ordineFornitore.data_arrivo_merceString;
                         tr.appendChild(td);
 
                         var td=document.createElement("td");
-                        td.innerHTML=ordineFornitore.data_arrivo_merceString;
+                        td.innerHTML=ordineFornitore.stato;
                         tr.appendChild(td);
 
                         ordiniFornitoriTable.appendChild(tr);
@@ -1341,4 +1337,22 @@ function getDettaglioRighePick(n_Pick)
                 reject({status});
         });
     });
+}
+function getPopupImmagine(src)
+{
+    var div=document.createElement("div");
+    div.setAttribute("style","position:absolute;left:0px;right:0px;top:0px;bottom:0px;width:100%;max-width:100%;min-width:100%;height:100%;max-height:100%;min-height:100%;overflow:hidden;background-color: rgba(0, 0, 0, 0.28);box-sizing:border-box;padding:100px");
+
+    var img=document.createElement("img");
+    img.setAttribute("src",src);
+    img.setAttribute("style","object-fit: cover;width:100%;max-width:100%;min-width:100%;height:100%;max-height:100%;min-height:100%;border-radius:10px;box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);");
+    div.appendChild(img);
+
+    var closeButton=document.createElement("button");
+    closeButton.setAttribute("style","outline:none;cursor:pointer;margin:0px;background-color:transparent;border:none;display:flex;align-items:center;justify-content:center;position:absolute;right:100px;top:100px;height:50px;width:50px;color:#DA6969");
+    closeButton.setAttribute("onclick","this.parentElement.remove()");
+    closeButton.innerHTML='<i class="fal fa-times fa-3x"></i>';
+    div.appendChild(closeButton);
+
+    document.body.appendChild(div);
 }

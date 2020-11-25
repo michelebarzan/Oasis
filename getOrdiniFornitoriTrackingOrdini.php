@@ -6,13 +6,14 @@
 
     $ordini_fornitori=[];
 
-    $query2="SELECT dbo.report_ordini_clienti_view.ordine_cliente, dbo.report_ordini_clienti_view.ordine_fornitore, dbo.report_ordini_clienti_view.nome_fornitore, dbo.report_ordini_clienti_view.data_creazione_ordine, 
-                ISNULL(dbo.report_ordini_clienti_view.importo_ordine_fornitore,0) AS importo_ordine_fornitore, dbo.report_ordini_clienti_view.data_arrivo_merce, dbo.registrazioni_ricevimento_merci.chiuso, dbo.registrazioni_ricevimento_merci.ricevuto, 
-                dbo.registrazioni_ricevimento_merci.dataOra, dbo.utenti.username
-            FROM dbo.utenti INNER JOIN
-                dbo.registrazioni_ricevimento_merci ON dbo.utenti.id_utente = dbo.registrazioni_ricevimento_merci.utente RIGHT OUTER JOIN
-                dbo.report_ordini_clienti_view ON dbo.registrazioni_ricevimento_merci.ordine_acquisto = dbo.report_ordini_clienti_view.ordine_fornitore
-            WHERE (dbo.report_ordini_clienti_view.ordine_cliente = N'$ordine') AND (dbo.report_ordini_clienti_view.ordine_fornitore IS NOT NULL)";	
+    $query2="SELECT        dbo.report_ordini_clienti_view.ordine_cliente, dbo.report_ordini_clienti_view.ordine_fornitore, dbo.report_ordini_clienti_view.nome_fornitore, dbo.report_ordini_clienti_view.data_creazione_ordine, 
+    ISNULL(dbo.report_ordini_clienti_view.importo_ordine_fornitore, 0) AS importo_ordine_fornitore, dbo.report_ordini_clienti_view.data_arrivo_merce, dbo.registrazioni_ricevimento_merci.ricevuto, 
+    dbo.registrazioni_ricevimento_merci.dataOra, dbo.utenti.username, dbo.stato_ordini_fornitori.stato
+FROM            dbo.stato_ordini_fornitori INNER JOIN
+    dbo.report_ordini_clienti_view ON dbo.stato_ordini_fornitori.ordine = dbo.report_ordini_clienti_view.ordine_fornitore LEFT OUTER JOIN
+    dbo.utenti INNER JOIN
+    dbo.registrazioni_ricevimento_merci ON dbo.utenti.id_utente = dbo.registrazioni_ricevimento_merci.utente ON dbo.report_ordini_clienti_view.ordine_fornitore = dbo.registrazioni_ricevimento_merci.ordine_acquisto
+WHERE        (dbo.report_ordini_clienti_view.ordine_cliente = N'$ordine') AND (dbo.report_ordini_clienti_view.ordine_fornitore IS NOT NULL)";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -33,7 +34,7 @@
             else
                 $ordine_fornitore["data_arrivo_merce_previstaString"]=$row2['data_arrivo_merce']->format("d/m/Y H:i:s");
             $ordine_fornitore["ricevuto"]=$row2['ricevuto'];
-            $ordine_fornitore["chiuso"]=$row2['chiuso'];
+            $ordine_fornitore["stato"]=$row2['stato'];
             $ordine_fornitore["data_arrivo_merce"]=$row2['dataOra'];
             if($row2['dataOra']==null)
                 $ordine_fornitore['data_arrivo_merceString']=null;
