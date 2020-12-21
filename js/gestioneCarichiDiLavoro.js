@@ -1567,6 +1567,16 @@ function stampaSettimana(week)
 							removeCircleSpinner();
 							if(response.indexOf("generato1")>-1)
 							{
+								var a=document.createElement("a");
+								var anno = week.slice(0,4);
+								var sett=week.replace(anno,anno+"-");
+								//console.log(sett);
+								a.setAttribute("href","http://remote.oasisgroup.it/Oasis/files/stampe_settimane/"+stazione+"_"+sett+".pdf");
+								a.setAttribute("id","scaricaPdfSettimanaLink");
+								a.setAttribute("download","download");
+								document.body.appendChild(a);
+								document.getElementById("scaricaPdfSettimanaLink").click();
+						
 								document.getElementById('scaricaPdfSettimanaFormSettimana').value=week;
 								document.getElementById('scaricaPdfSettimanaFormStazione').value=stazione;
 								document.getElementById('scaricaPdfSettimanaForm').submit();
@@ -1624,9 +1634,19 @@ function stampaSettimana(week)
 					removeCircleSpinner();
 					if(response.indexOf("generato1")>-1)
 					{
-						document.getElementById('scaricaPdfSettimanaFormSettimana').value=week;
+						var a=document.createElement("a");
+						var anno = week.slice(0,4);
+						var sett=week.replace(anno,anno+"-");
+						//console.log(sett);
+						a.setAttribute("href","http://remote.oasisgroup.it/Oasis/files/stampe_settimane/"+stazione+"_"+sett+".pdf");
+						a.setAttribute("id","scaricaPdfSettimanaLink");
+						a.setAttribute("download","download");
+						document.body.appendChild(a);
+						document.getElementById("scaricaPdfSettimanaLink").click();
+						
+						/*document.getElementById('scaricaPdfSettimanaFormSettimana').value=week;
 						document.getElementById('scaricaPdfSettimanaFormStazione').value=stazione;
-						document.getElementById('scaricaPdfSettimanaForm').submit();
+						document.getElementById('scaricaPdfSettimanaForm').submit();*/
 						autoSalvaStato();
 					}
 					if(response.indexOf("generato0")>-1)

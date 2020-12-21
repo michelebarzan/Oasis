@@ -620,8 +620,9 @@ async function getPopupDettaglioRighePick(n_Pick)
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
-    var righe_pick=await getDettaglioRighePick(n_Pick);
-    console.log(righe_pick);
+    var arrayResponse=await getDettaglioRighePick(n_Pick);
+    var righe_pick=arrayResponse.righe_pick;
+    var totali=arrayResponse.totali;
 
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","popup-dettaglio-righe-pick-outer-container");
@@ -643,6 +644,24 @@ async function getPopupDettaglioRighePick(n_Pick)
     var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+    tr.setAttribute("style","background-color:#DA6969");
+
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML="TOTALI";tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.ordini+" ordini";tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.volume.toFixed(2);tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoNetto.toFixed(2);tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
 
     tabellaDettaglioRighePick.appendChild(tr);
 
@@ -689,12 +708,103 @@ async function getPopupDettaglioRighePick(n_Pick)
             document.getElementsByClassName("swal2-title")[0].style.boxSizing="border-box";
             document.getElementsByClassName("swal2-title")[0].style.marginTop="15px";
             document.getElementsByClassName("swal2-title")[0].style.paddingLeft="10px";
+            document.getElementsByClassName("swal2-title")[0].style.alignItems="center";
+            document.getElementsByClassName("swal2-title")[0].style.margin="10px";
             document.getElementsByClassName("swal2-title")[0].style.width="100%";
             document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
             document.getElementsByClassName("swal2-close")[0].style.outline="none";
             document.getElementsByClassName("swal2-content")[0].style.padding="0px";
+
+            var button=document.createElement("button");
+            button.setAttribute("style","margin-left:auto;margin-right: 50px;height:25px;cursor:pointer;color:white;background-color:#217346;border:none;outline:none;border-radius:2px;box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);padding:0px;padding-left:5px;padding-right:5px");
+            button.setAttribute("onclick","esportaDettaglioRighePick()");
+            var span=document.createElement("span");
+            span.setAttribute("style","font-family: 'Montserrat',sans-serif;font-size:12px;margin-right:5px");
+            span.innerHTML="Esporta";
+            button.appendChild(span);
+            var i=document.createElement("i");
+            i.setAttribute("class","fad fa-file-excel");
+            button.appendChild(i);
+            document.getElementsByClassName("swal2-title")[0].insertBefore(button, document.getElementsByClassName("swal2-title")[0].childNodes[1]); 
         }
     });
+}
+function esportaDettaglioRighePick()
+{
+    var tbody=document.getElementById("tabellaDettaglioRighePick").getElementsByTagName("tbody")[0];
+    var newRow=document.createElement("tr");
+    var oldRow=tbody.getElementsByTagName("tr")[0];
+    for (let index = 0; index < oldRow.childNodes.length; index++)
+    {
+        const th = oldRow.getElementsByTagName("th")[index];
+        var td=document.createElement("td");
+        td.innerHTML=th.innerHTML;
+        newRow.appendChild(td);
+    }
+    tbody.insertBefore(newRow, tbody.childNodes[0]);
+    oldRow.remove();
+
+    var tableOuterHTML=document.getElementById("tabellaDettaglioRighePick").outerHTML;
+
+    Swal.fire
+    ({
+        title: "Scegli il nome del file Excel",
+        html: '<input tyle="text" id="inputNomeFileEsportaExcel" value="esportazione_picking">',
+        confirmButtonText:"Conferma",
+        showCloseButton:true,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="black";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+    }).then((result) => 
+    {
+        if (result.value)
+        {
+            var fileName=document.getElementById("inputNomeFileEsportaExcel").value;
+
+            Swal.fire
+            ({
+                title: "Caricamento in corso... ",
+                background:"transparent",
+                html: '<i style="color:white" class="fad fa-spinner-third fa-spin fa-4x"></i>',
+                showConfirmButton:false,
+                showCloseButton:false,
+                allowEscapeKey:false,
+                allowOutsideClick:false,
+                onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+            });
+
+            setTimeout(function()
+            {
+                var exportTableString="<html>"+tableOuterHTML+"</html>";
+
+                var blob;
+                var wb = {SheetNames:[], Sheets:{}};
+
+                var ws1 = XLSX.read(exportTableString, {type:"binary"}).Sheets.Sheet1;
+                wb.SheetNames.push(fileName); 
+                wb.Sheets[fileName] = ws1;
+
+                blob = new Blob([s2ab(XLSX.write(wb, {bookType:'xlsx', type:'binary'}))],
+                {
+                    type: "application/octet-stream"
+                });
+
+                saveAs(blob, fileName+".xlsx");
+
+                swal.close();
+
+            }, 1500);
+        }
+        else
+            swal.close();
+    });
+}
+function s2ab(s)
+{
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
 }
 function getDettaglioRighePick(n_Pick)
 {

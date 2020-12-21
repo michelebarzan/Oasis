@@ -5,6 +5,11 @@
     $n_Pick=$_REQUEST["n_Pick"];
 
     $righe_pick=[];
+    $totali["ordini"]=0;
+    $totali["volume"]=0;
+    $totali["pesoNetto"]=0;
+    $totali["pesoLordo"]=0;
+    $totali["chiusi"]=0;
 
     $query2="SELECT id_picking, docNum, lineNum, itemCode, dscription, quantity, onHand, prcrmntMtd, bancale, gruppo, sparato, volume, pesoNetto, pesoLordo, Misure, CASE WHEN chiuso='V' THEN 'true' ELSE 'false' END AS chiuso, dataChiusura
             FROM dbo.T_Picking_01
@@ -18,7 +23,7 @@
             $riga["docNum"]=$row2['docNum'];
             $riga["lineNum"]=$row2['lineNum'];
             $riga["itemCode"]=$row2['itemCode'];
-            $riga["dscription"]=$row2['dscription'];
+            $riga["dscription"]=utf8_encode($row2['dscription']);
             $riga["quantity"]=$row2['quantity'];
             $riga["onHand"]=$row2['onHand'];
             $riga["prcrmntMtd"]=$row2['prcrmntMtd'];
@@ -36,12 +41,22 @@
             else
                 $riga["dataChiusuraString"]="";
 
+            $totali["ordini"]++;
+            $totali["volume"]+=$row2['volume'];
+            $totali["pesoNetto"]+=$row2['pesoNetto'];
+            $totali["pesoLordo"]+=$row2['pesoLordo'];
+            if($row2['chiuso']=="true")
+                $totali["chiusi"]++;
+
             array_push($righe_pick,$riga);
         }
     }
     else
         die("error");
 
-    echo json_encode($righe_pick);
+    $arrayResponse["righe_pick"]=$righe_pick;
+    $arrayResponse["totali"]=$totali;
+
+    echo json_encode($arrayResponse);
 
 ?>

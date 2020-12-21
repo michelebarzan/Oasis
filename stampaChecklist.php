@@ -19,6 +19,8 @@
 		<script src="js/stampaChecklist.js"></script>
 		<link rel="stylesheet" href="css/stampaChecklist.css" />
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
+		<script src="js_libraries/fileSaver.min.js"></script>
+        <script src="js_libraries/xlsx.full.min.js"></script>
 		<style>
 			.swal2-title
 			{
