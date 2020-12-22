@@ -1232,8 +1232,8 @@ async function getPopupDettaglioRighePick(n_Pick)
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
-    var righe_pick=await getDettaglioRighePick(n_Pick);
-    console.log(righe_pick);
+    var arrayResponse=await getDettaglioRighePick(n_Pick);
+    var righe_pick=arrayResponse.righe_pick;
 
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","popup-dettaglio-righe-pick-outer-container");

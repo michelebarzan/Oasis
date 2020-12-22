@@ -3,6 +3,10 @@
     include "connessione.php";
 
     $n_Pick=$_REQUEST["n_Pick"];
+    if(isset($_REQUEST["orderBy"]))
+        $orderBy=$_REQUEST["orderBy"];
+    else
+        $orderBy="docnum";
 
     $righe_pick=[];
     $totali["ordini"]=0;
@@ -11,9 +15,14 @@
     $totali["pesoLordo"]=0;
     $totali["chiusi"]=0;
 
-    $query2="SELECT id_picking, docNum, lineNum, itemCode, dscription, quantity, onHand, prcrmntMtd, bancale, gruppo, sparato, volume, pesoNetto, pesoLordo, Misure, CASE WHEN chiuso='V' THEN 'true' ELSE 'false' END AS chiuso, dataChiusura
-            FROM dbo.T_Picking_01
-            WHERE (n_Pick = '$n_Pick')";	
+    $query2="SELECT dbo.T_Picking_01.id_picking, dbo.T_Picking_01.docNum, dbo.T_Picking_01.lineNum, dbo.T_Picking_01.itemCode, dbo.T_Picking_01.dscription, dbo.T_Picking_01.quantity, dbo.T_Picking_01.onHand, 
+                dbo.T_Picking_01.prcrmntMtd, dbo.T_Picking_01.bancale, dbo.T_Picking_01.gruppo, dbo.T_Picking_01.sparato, dbo.T_Picking_01.volume, dbo.T_Picking_01.pesoNetto, dbo.T_Picking_01.pesoLordo, dbo.T_Picking_01.Misure, 
+                CASE WHEN chiuso = 'V' THEN 'true' ELSE 'false' END AS chiuso, dbo.T_Picking_01.dataChiusura, dbo.bancali.nome, dbo.bancali.numero, dbo.bancali.peso, dbo.bancali.lunghezza, dbo.bancali.larghezza, dbo.bancali.altezza, 
+                dbo.bancali.note
+            FROM dbo.T_Picking_01 INNER JOIN
+                dbo.bancali ON dbo.T_Picking_01.bancale = dbo.bancali.id_bancale
+            WHERE (dbo.T_Picking_01.n_Pick = '$n_Pick')
+            ORDER BY $orderBy";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -48,11 +57,31 @@
             if($row2['chiuso']=="true")
                 $totali["chiusi"]++;
 
+            $riga["nomeBancale"]=$row2['nome'];
+            $riga["numeroBancale"]=$row2['numero'];
+            $riga["pesoBancale"]=$row2['peso'];
+            $riga["lunghezzaBancale"]=$row2['lunghezza'];
+            $riga["larghezzaBancale"]=$row2['larghezza'];
+            $riga["altezzaBancale"]=$row2['altezza'];
+            $riga["noteBancale"]=$row2['note'];
+
             array_push($righe_pick,$riga);
         }
     }
     else
         die("error");
+
+    $query3="SELECT COUNT(*) AS nBancali FROM bancali WHERE (n_Pick = '$n_Pick')";	
+    $result3=sqlsrv_query($conn,$query3);
+    if($result3==TRUE)
+    {
+        while($row3=sqlsrv_fetch_array($result3))
+        {
+            $totali["bancali"]=$row3['nBancali'];
+        }
+    }
+    else
+        die("error");    
 
     $arrayResponse["righe_pick"]=$righe_pick;
     $arrayResponse["totali"]=$totali;

@@ -620,12 +620,14 @@ async function getPopupDettaglioRighePick(n_Pick)
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
-    var arrayResponse=await getDettaglioRighePick(n_Pick);
-    var righe_pick=arrayResponse.righe_pick;
-    var totali=arrayResponse.totali;
-
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","popup-dettaglio-righe-pick-outer-container");
+    outerContainer.setAttribute("id","tabellaDettaglioRighePickContainer");
+    //outerContainer.setAttribute("style","overflow:auto");
+
+    var arrayResponse=await getDettaglioRighePick(n_Pick,"docnum");
+    var righe_pick=arrayResponse.righe_pick;
+    var totali=arrayResponse.totali;
 
     var tabellaDettaglioRighePick=document.createElement("table");
     tabellaDettaglioRighePick.setAttribute("id","tabellaDettaglioRighePick");
@@ -636,7 +638,7 @@ async function getPopupDettaglioRighePick(n_Pick)
     var th=document.createElement("th");th.innerHTML="Ordine";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Riga";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Item code";tr.appendChild(th);
-    var th=document.createElement("th");th.innerHTML="Descrizione";tr.appendChild(th);
+    var th=document.createElement("th");th.setAttribute("style","color:white");th.innerHTML="Descrizione";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Qnt";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Volume";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Peso netto";tr.appendChild(th);
@@ -694,7 +696,7 @@ async function getPopupDettaglioRighePick(n_Pick)
         showConfirmButton:false,
         showCloseButton:true,
         //position:"top",
-        width:"90%",
+        width:"98%",
         onOpen : function()
         {
             document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
@@ -712,28 +714,256 @@ async function getPopupDettaglioRighePick(n_Pick)
             document.getElementsByClassName("swal2-title")[0].style.margin="10px";
             document.getElementsByClassName("swal2-title")[0].style.width="100%";
             document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.backgroundColor="transparent";
             document.getElementsByClassName("swal2-close")[0].style.outline="none";
             document.getElementsByClassName("swal2-content")[0].style.padding="0px";
 
             var button=document.createElement("button");
-            button.setAttribute("style","margin-left:auto;margin-right: 50px;height:25px;cursor:pointer;color:white;background-color:#217346;border:none;outline:none;border-radius:2px;box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);padding:0px;padding-left:5px;padding-right:5px");
+            button.setAttribute("style","background-color:#217346;margin-left:auto;margin-right: 50px;");
             button.setAttribute("onclick","esportaDettaglioRighePick()");
+            button.setAttribute("class","button-dettaglio-righe-pick");
             var span=document.createElement("span");
-            span.setAttribute("style","font-family: 'Montserrat',sans-serif;font-size:12px;margin-right:5px");
             span.innerHTML="Esporta";
             button.appendChild(span);
             var i=document.createElement("i");
             i.setAttribute("class","fad fa-file-excel");
             button.appendChild(i);
             document.getElementsByClassName("swal2-title")[0].insertBefore(button, document.getElementsByClassName("swal2-title")[0].childNodes[1]); 
+
+            var button=document.createElement("button");
+            button.setAttribute("style","margin-left:10px;border:1px solid #4C91CB;color:#4C91CB");
+            button.setAttribute("onclick","getTabellaDettaglioRighePick('raggruppato',this,"+n_Pick+")");
+            button.setAttribute("class","button-dettaglio-righe-pick button-tabella-dettaglio-righe-pick");
+            var span=document.createElement("span");
+            span.innerHTML="Raggruppato";
+            button.appendChild(span);
+            document.getElementsByClassName("swal2-title")[0].insertBefore(button, document.getElementsByClassName("swal2-title")[0].childNodes[1]); 
+            
+            var button=document.createElement("button");
+            button.setAttribute("style","margin-left:10px;border:1px solid #4C91CB;color:white;background-color:#4C91CB");
+            button.setAttribute("onclick","getTabellaDettaglioRighePick('esploso',this,"+n_Pick+")");
+            button.setAttribute("class","button-dettaglio-righe-pick button-tabella-dettaglio-righe-pick");
+            var span=document.createElement("span");
+            span.innerHTML="Esploso";
+            button.appendChild(span);
+            document.getElementsByClassName("swal2-title")[0].insertBefore(button, document.getElementsByClassName("swal2-title")[0].childNodes[1]); 
         }
     });
 }
+async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
+{
+    var container=document.getElementById("tabellaDettaglioRighePickContainer");
+    container.innerHTML="";
+
+    var buttons=document.getElementsByClassName("button-tabella-dettaglio-righe-pick");
+    for (let index = 0; index < buttons.length; index++)
+    {
+        const button = buttons[index];
+        button.style.backgroundColor="transparent";
+        button.style.color="#4C91CB";
+    }
+    btn.style.backgroundColor="#4C91CB";
+    btn.style.color="white";
+
+    if(tipo=="esploso")
+    {
+        var arrayResponse=await getDettaglioRighePick(n_Pick,"docnum");
+        var righe_pick=arrayResponse.righe_pick;
+        var totali=arrayResponse.totali;
+    
+        var tabellaDettaglioRighePick=document.createElement("table");
+        tabellaDettaglioRighePick.setAttribute("id","tabellaDettaglioRighePick");
+    
+        var tr=document.createElement("tr");
+    
+        var th=document.createElement("th");th.innerHTML="#";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Ordine";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Riga";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Item code";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Descrizione";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Qnt";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Volume";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Peso netto";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Peso lordo";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+    
+        tabellaDettaglioRighePick.appendChild(tr);
+    
+        var tr=document.createElement("tr");
+        tr.setAttribute("style","background-color:#DA6969");
+    
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML="TOTALI";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.ordini+" ordini";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.volume.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoNetto.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    
+        tabellaDettaglioRighePick.appendChild(tr);
+    
+        righe_pick.forEach(riga =>
+        {
+            var tr=document.createElement("tr");
+    
+            var td=document.createElement("td");td.innerHTML=riga.id_picking;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.docNum;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.lineNum;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.itemCode;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.dscription;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.quantity;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.volume;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.pesoNetto;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.pesoLordo;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
+            var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+    
+            tabellaDettaglioRighePick.appendChild(tr);
+        });
+    
+        container.appendChild(tabellaDettaglioRighePick);
+    }
+    else
+    {
+        var arrayResponse=await getDettaglioRighePick(n_Pick,"bancale");
+        var righe_pick=arrayResponse.righe_pick;
+        var totali=arrayResponse.totali;
+    
+        var tabellaDettaglioRighePick=document.createElement("table");
+        tabellaDettaglioRighePick.setAttribute("id","tabellaDettaglioRighePick");
+    
+        var tr=document.createElement("tr");
+    
+        var th=document.createElement("th");th.innerHTML="#";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Ordine";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Riga";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Item code";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Descrizione";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Qnt";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Volume";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Peso netto";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Peso lordo";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Bancale";tr.appendChild(th);
+    
+        tabellaDettaglioRighePick.appendChild(tr);
+    
+        var tr=document.createElement("tr");
+        tr.setAttribute("style","background-color:#DA6969");
+    
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML="TOTALI";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.ordini+" ordini";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.volume.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoNetto.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.bancali+" bancali";tr.appendChild(td);
+    
+        tabellaDettaglioRighePick.appendChild(tr);
+    
+        var bancaleBefore;
+        var bancaleBeforeObj;
+        var pesoNetto=0;
+        var pesoLordo=0;
+        righe_pick.forEach(riga =>
+        {
+            var tr=document.createElement("tr");
+    
+            var td=document.createElement("td");td.innerHTML=riga.id_picking;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.docNum;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.lineNum;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.itemCode;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.dscription;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.quantity;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.volume;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.pesoNetto;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.pesoLordo;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
+            var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+            var td=document.createElement("td");td.setAttribute("style","background-color:#F9EF62");td.innerHTML=riga.nomeBancale;tr.appendChild(td);
+
+            tabellaDettaglioRighePick.appendChild(tr);
+
+            if(riga.bancale!=bancaleBefore && bancaleBefore!=null)
+            {
+                var tr=document.createElement("tr");
+                tr.setAttribute("style","background-color:#F9EF62;border-bottom:2px solid gray");
+    
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoNetto.toFixed(2);tr.appendChild(td);
+                //var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="<b>"+bancaleBeforeObj.pesoBancale+" (pesato)</b><b style='float:right'>"+pesoLordo.toFixed(2)+"</b>";tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoLordo.toFixed(2)+" - "+bancaleBeforeObj.pesoBancale+" (pesato)";tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="L."+bancaleBeforeObj.lunghezzaBancale+" H."+bancaleBeforeObj.altezzaBancale+" P."+bancaleBeforeObj.larghezzaBancale;tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=bancaleBeforeObj.nomeBancale;tr.appendChild(td);
+    
+                tabellaDettaglioRighePick.insertBefore(tr, tabellaDettaglioRighePick.lastChild); 
+
+                pesoNetto=riga.pesoNetto;
+                pesoLordo=riga.pesoLordo;
+            }
+            else
+            {
+                pesoNetto+=riga.pesoNetto;
+                pesoLordo+=riga.pesoLordo;
+            }
+
+            bancaleBefore=riga.bancale;
+            bancaleBeforeObj=riga;    
+        });
+
+        var tr=document.createElement("tr");
+        tr.setAttribute("style","background-color:#F9EF62;border-bottom:2px solid gray");
+
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoNetto.toFixed(2);tr.appendChild(td);
+        //var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="<b>"+bancaleBeforeObj.pesoBancale+" (pesato)</b><b style='float:right'>"+pesoLordo.toFixed(2)+"</b>";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoLordo.toFixed(2)+" - "+bancaleBeforeObj.pesoBancale+" (pesato)";tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="L."+bancaleBeforeObj.lunghezzaBancale+" H."+bancaleBeforeObj.altezzaBancale+" P."+bancaleBeforeObj.larghezzaBancale;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=bancaleBeforeObj.nomeBancale;tr.appendChild(td);
+
+        tabellaDettaglioRighePick.appendChild(tr);
+    
+        container.appendChild(tabellaDettaglioRighePick);
+    }
+}
 function esportaDettaglioRighePick()
 {
-    var tbody=document.getElementById("tabellaDettaglioRighePick").getElementsByTagName("tbody")[0];
+    var table=document.getElementById("tabellaDettaglioRighePick");
     var newRow=document.createElement("tr");
-    var oldRow=tbody.getElementsByTagName("tr")[0];
+    var oldRow=table.getElementsByTagName("tr")[0];
     for (let index = 0; index < oldRow.childNodes.length; index++)
     {
         const th = oldRow.getElementsByTagName("th")[index];
@@ -741,7 +971,7 @@ function esportaDettaglioRighePick()
         td.innerHTML=th.innerHTML;
         newRow.appendChild(td);
     }
-    tbody.insertBefore(newRow, tbody.childNodes[0]);
+    table.insertBefore(newRow, table.childNodes[0]);
     oldRow.remove();
 
     var tableOuterHTML=document.getElementById("tabellaDettaglioRighePick").outerHTML;
@@ -806,13 +1036,13 @@ function s2ab(s)
     for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
     return buf;
 }
-function getDettaglioRighePick(n_Pick)
+function getDettaglioRighePick(n_Pick,orderBy)
 {
     return new Promise(function (resolve, reject) 
     {
         $.get("getDettaglioRighePick.php",
         {
-            n_Pick
+            n_Pick,orderBy
         },
         function(response, status)
         {
