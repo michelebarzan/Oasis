@@ -2,11 +2,15 @@
 	include "session.php";
 	include "connessione.php";
 		
+	set_time_limit(240);
+	
 	$stato=$_REQUEST['stato'];
 	$settimana=$_REQUEST['settimana'];
+	$stato_righe=$_REQUEST['stato_righe'];
 	
 	$docNumList = array();
-	$queryPickChiusi="SELECT * FROM statoPick WHERE stato='$stato' AND settimana LIKE '%$settimana%' ORDER BY N_Pick DESC";
+	//$queryPickChiusi="SELECT * FROM statoPick WHERE $stato AND settimana LIKE '%$settimana%' ORDER BY N_Pick DESC";
+	$queryPickChiusi="SELECT * FROM statoPick WHERE stato='$stato' AND stato_righe='$stato_righe' AND settimana LIKE '%$settimana%' ORDER BY N_Pick DESC";
 	$resultPickChiusi=sqlsrv_query($conn,$queryPickChiusi);
 	if($resultPickChiusi==FALSE)
 	{

@@ -1273,14 +1273,6 @@ html
 	color:#2f444e;
 	font-size:110%;
 }
-#controllaPickContainer
-{
-	width:80%;
-	text-align:left;
-	margin-left:10%;
-	overflow:hidden;
-	margin-top:130px;
-}
 .selectControlloPick
 {
 	border:none;
