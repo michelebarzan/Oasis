@@ -18,7 +18,7 @@
     $query2="SELECT dbo.T_Picking_01.id_picking, dbo.T_Picking_01.docNum, dbo.T_Picking_01.lineNum, dbo.T_Picking_01.itemCode, dbo.T_Picking_01.dscription, dbo.T_Picking_01.quantity, dbo.T_Picking_01.onHand, 
                 dbo.T_Picking_01.prcrmntMtd, dbo.T_Picking_01.bancale, dbo.T_Picking_01.gruppo, dbo.T_Picking_01.sparato, dbo.T_Picking_01.volume, dbo.T_Picking_01.pesoNetto, dbo.T_Picking_01.pesoLordo, dbo.T_Picking_01.Misure, 
                 CASE WHEN chiuso = 'V' THEN 'true' ELSE 'false' END AS chiuso, dbo.T_Picking_01.dataChiusura, dbo.bancali.nome, dbo.bancali.numero, dbo.bancali.peso, dbo.bancali.lunghezza, dbo.bancali.larghezza, dbo.bancali.altezza, 
-                dbo.bancali.note
+                dbo.bancali.note, dbo.T_Picking_01.codiceDoganale, dbo.T_Picking_01.descriptionLang
             FROM dbo.T_Picking_01 INNER JOIN
                 dbo.bancali ON dbo.T_Picking_01.bancale = dbo.bancali.id_bancale
             WHERE (dbo.T_Picking_01.n_Pick = '$n_Pick')
@@ -44,6 +44,8 @@
             $riga["pesoLordo"]=$row2['pesoLordo'];
             $riga["Misure"]=$row2['Misure'];
             $riga["chiuso"]=$row2['chiuso'] === 'true'? true: false;
+            $riga["codiceDoganale"]=$row2['codiceDoganale'];
+            $riga["descriptionLang"]=utf8_encode($row2['descriptionLang']);
             $riga["dataChiusura"]=$row2['dataChiusura'];
             if($riga["dataChiusura"]!="")
                 $riga["dataChiusuraString"]=$row2['dataChiusura']->format("d/m/Y H:i:s");

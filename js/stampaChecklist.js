@@ -646,6 +646,8 @@ async function getPopupDettaglioRighePick(n_Pick)
     var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
     var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Codice doganale";tr.appendChild(th);
+    var th=document.createElement("th");th.innerHTML="Descrizione in lingua";tr.appendChild(th);
 
     tabellaDettaglioRighePick.appendChild(tr);
 
@@ -663,6 +665,8 @@ async function getPopupDettaglioRighePick(n_Pick)
     var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
     var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
     var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+    var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
     var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
 
     tabellaDettaglioRighePick.appendChild(tr);
@@ -683,6 +687,8 @@ async function getPopupDettaglioRighePick(n_Pick)
         var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
         var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
         var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.codiceDoganale;tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga.descriptionLang;tr.appendChild(td);
 
         tabellaDettaglioRighePick.appendChild(tr);
     });
@@ -788,6 +794,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
         var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
         var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
         var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Codice doganale";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Descrizione in lingua";tr.appendChild(th);
     
         tabellaDettaglioRighePick.appendChild(tr);
     
@@ -805,6 +813,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
         var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
     
         tabellaDettaglioRighePick.appendChild(tr);
@@ -825,6 +835,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
             var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
             var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
             var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.codiceDoganale;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.descriptionLang;tr.appendChild(td);
     
             tabellaDettaglioRighePick.appendChild(tr);
         });
@@ -854,6 +866,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
         var th=document.createElement("th");th.innerHTML="Misure";tr.appendChild(th);
         var th=document.createElement("th");th.innerHTML="Chiuso";tr.appendChild(th);
         var th=document.createElement("th");th.innerHTML="Data chiusura";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Codice doganale";tr.appendChild(th);
+        var th=document.createElement("th");th.innerHTML="Descrizione in lingua";tr.appendChild(th);
         var th=document.createElement("th");th.innerHTML="Bancale";tr.appendChild(th);
     
         tabellaDettaglioRighePick.appendChild(tr);
@@ -872,6 +886,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
         var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.pesoLordo.toFixed(2);tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.chiusi+"/"+totali.ordini;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","color:white");td.innerHTML=totali.bancali+" bancali";tr.appendChild(td);
     
@@ -897,6 +913,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
             var td=document.createElement("td");td.innerHTML=riga.Misure;tr.appendChild(td);
             var td=document.createElement("td");var icon=document.createElement("i");if(riga.chiuso){icon.setAttribute("class","fas fa-check-square");icon.setAttribute("style","color:rgb(48, 133, 214)");}else{icon.setAttribute("class","far fa-square");}td.appendChild(icon);tr.appendChild(td);
             var td=document.createElement("td");td.innerHTML=riga.dataChiusuraString;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.codiceDoganale;tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML=riga.descriptionLang;tr.appendChild(td);
             var td=document.createElement("td");td.setAttribute("style","background-color:#F9EF62");td.innerHTML=riga.nomeBancale;tr.appendChild(td);
 
             tabellaDettaglioRighePick.appendChild(tr);
@@ -917,6 +935,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
                 //var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="<b>"+bancaleBeforeObj.pesoBancale+" (pesato)</b><b style='float:right'>"+pesoLordo.toFixed(2)+"</b>";tr.appendChild(td);
                 var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoLordo.toFixed(2)+" - "+bancaleBeforeObj.pesoBancale+" (pesato)";tr.appendChild(td);
                 var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="L."+bancaleBeforeObj.lunghezzaBancale+" H."+bancaleBeforeObj.altezzaBancale+" P."+bancaleBeforeObj.larghezzaBancale;tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+                var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
                 var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
                 var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
                 var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=bancaleBeforeObj.nomeBancale;tr.appendChild(td);
@@ -950,6 +970,8 @@ async function getTabellaDettaglioRighePick(tipo,btn,n_Pick)
         //var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="<b>"+bancaleBeforeObj.pesoBancale+" (pesato)</b><b style='float:right'>"+pesoLordo.toFixed(2)+"</b>";tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=pesoLordo.toFixed(2)+" - "+bancaleBeforeObj.pesoBancale+" (pesato)";tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML="L."+bancaleBeforeObj.lunghezzaBancale+" H."+bancaleBeforeObj.altezzaBancale+" P."+bancaleBeforeObj.larghezzaBancale;tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
+        var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","font-weight:bold");tr.appendChild(td);
         var td=document.createElement("td");td.setAttribute("style","font-weight:bold");td.innerHTML=bancaleBeforeObj.nomeBancale;tr.appendChild(td);
