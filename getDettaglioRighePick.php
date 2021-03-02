@@ -19,8 +19,7 @@
                 dbo.T_Picking_01.prcrmntMtd, dbo.T_Picking_01.bancale, dbo.T_Picking_01.gruppo, dbo.T_Picking_01.sparato, dbo.T_Picking_01.volume, dbo.T_Picking_01.pesoNetto, dbo.T_Picking_01.pesoLordo, dbo.T_Picking_01.Misure, 
                 CASE WHEN chiuso = 'V' THEN 'true' ELSE 'false' END AS chiuso, dbo.T_Picking_01.dataChiusura, dbo.bancali.nome, dbo.bancali.numero, dbo.bancali.peso, dbo.bancali.lunghezza, dbo.bancali.larghezza, dbo.bancali.altezza, 
                 dbo.bancali.note, dbo.T_Picking_01.codiceDoganale, dbo.T_Picking_01.descriptionLang
-            FROM dbo.T_Picking_01 INNER JOIN
-                dbo.bancali ON dbo.T_Picking_01.bancale = dbo.bancali.id_bancale
+            FROM dbo.T_Picking_01 LEFT OUTER JOIN dbo.bancali ON dbo.T_Picking_01.bancale = dbo.bancali.id_bancale
             WHERE (dbo.T_Picking_01.n_Pick = '$n_Pick')
             ORDER BY $orderBy";	
     $result2=sqlsrv_query($conn,$query2);

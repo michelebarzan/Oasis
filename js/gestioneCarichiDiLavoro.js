@@ -1526,6 +1526,8 @@ function stampaPopupDettaglio()
 }
 function stampaSettimana(week)
 {
+	if(document.getElementById("scaricaPdfSettimanaLink")!=null)
+		document.getElementById("scaricaPdfSettimanaLink").remove();
 	if(week!="Stampa sett.")
 	{
 		newCircleSpinner("Creazione file in corso...");
@@ -1570,7 +1572,8 @@ function stampaSettimana(week)
 								var a=document.createElement("a");
 								var anno = week.slice(0,4);
 								var sett=week.replace(anno,anno+"-");
-								//console.log(sett);
+								console.log(stazione);
+								console.log(sett);
 								a.setAttribute("href","http://remote.oasisgroup.it/Oasis/files/stampe_settimane/"+stazione+"_"+sett+".pdf");
 								a.setAttribute("id","scaricaPdfSettimanaLink");
 								a.setAttribute("download","download");

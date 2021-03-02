@@ -354,7 +354,7 @@ function riempiTabella($conn,$N_Pick)
 			echo '<tr>';
 			echo '<td>'.$rowRighe['docNum'].'</td>';
 			echo '<td>'.$rowRighe['itemCode'].'</td>';
-			echo '<td>'.$rowRighe['descriptionLang'].'</td>';
+			echo '<td>'.utf8_encode($rowRighe['descriptionLang']).'</td>';
 			echo '<td>'.$rowRighe['quantity'].'</td>';
 			echo '<td>'.$rowRighe['pesoNetto'].'</td>';
 			echo '<td>'.$rowRighe['pesoLordo'].'</td>';
@@ -370,7 +370,7 @@ function riempiTabella($conn,$N_Pick)
 			$lunghezzaOld=$rowRighe['lunghezza'];
 			$altezzaOld=$rowRighe['altezza'];
 			
-			riempiStampaPalletTemp($conn,$rowRighe['docNum'],$rowRighe['itemCode'],$rowRighe['descriptionLang'],$rowRighe['quantity'],$rowRighe['pesoNetto'],$rowRighe['pesoLordo'],$rowRighe['codiceDoganale'],$rowRighe['Misure'],$rowRighe['gruppo'],$rowRighe['cliente'],$rowRighe['itemCodePadre'],$rowRighe['descrizionePadre']);
+			riempiStampaPalletTemp($conn,$rowRighe['docNum'],$rowRighe['itemCode'],utf8_encode($rowRighe['descriptionLang']),$rowRighe['quantity'],$rowRighe['pesoNetto'],$rowRighe['pesoLordo'],$rowRighe['codiceDoganale'],$rowRighe['Misure'],$rowRighe['gruppo'],$rowRighe['cliente'],$rowRighe['itemCodePadre'],$rowRighe['descrizionePadre']);
 			$i++;
 		}
 		echo "<input type='hidden' name='hiddenDiv' id='hiddenDiv' class='hiddenDiv' value='$i' />";
