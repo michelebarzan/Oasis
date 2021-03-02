@@ -604,13 +604,13 @@ function getTipo($bancale)
 {
 	$nome = substr($bancale, 0, 7);
 	if($nome=="BANCALE")
-		$tipo="BANCALE";
+		$tipo="PALLET";
 	else
 	{
 		if($nome=="SCATOLA")
-			$tipo="SCATOLA";
+			$tipo="CARDBOARD BOX";
 		else
-			$tipo="CASSA";
+			$tipo="WOODEN CRATE";
 	}
 	return $tipo;
 }
