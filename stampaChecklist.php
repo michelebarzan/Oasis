@@ -21,17 +21,18 @@
 		<link rel="stylesheet" href="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.css">
 		<script src="js_libraries/fileSaver.min.js"></script>
         <script src="js_libraries/xlsx.full.min.js"></script>
+		<link rel="stylesheet" href="css/darkPopup.css" />
 		<style>
 			.swal2-title
 			{
 				font-family:'Montserrat',sans-serif;
 				font-size:15px;
 			}
-			.swal2-content
+			/*.swal2-content
 			{
 				font-family:'Montserrat',sans-serif;
 				font-size:13px;
-			}
+			}*/
 			.swal2-confirm,.swal2-cancel
 			{
 				font-family:'Montserrat',sans-serif;
@@ -39,7 +40,7 @@
 			}
 		</style>
 	</head>
-	<body onload="checkFlexDirection();getElencoPick()">
+	<body>
 		<?php include('struttura.php'); ?>
 		<div class="top-action-bar" id="stampaChecklistActionBar">
 			<div class="action-bar-item" style="margin-left:5px" ><b>Visualizzazione</b>
@@ -60,13 +61,22 @@
 				<button class="action-bar-text-icon-button" id="bntOrderData" style="margin-right:0px" onclick="orderBy='DataPick';getElencoPick()"><span>Data</span><i class="far fa-calendar-alt"></i></button>
 			</div>
 			<button class="action-bar-text-icon-button" id="bntAggiornaCarichi" style="margin-left:5px" onclick="aggiornaCarichi()"><span>Aggiorna carichi</span><i class="fad fa-redo-alt"></i></button>
+			<!--<button class="action-bar-text-icon-button" id="bntCompilaChecklist" style="margin-left:5px" onclick="getPopupCompilaChecklist()"><span>Compila checklist</span><i class="fal fa-tasks"></i></button>-->
+			<select id="selectCompilaChecklist" class="action-bar-select" disabled style="width:145px;padding-left:5px;padding-right:5px"></select>
 		</div>
 		<input type="text" id="stampaChecklistSearchBar" placeholder="Cerca..." onkeyup="searchPicks(this)">
 		<div id="stampaChecklistContainer"></div>
 		<div id="footer">
 			<b>Oasis Group</b>  |  Via Favola 19 33070 San Giovanni PN  |  Tel. +39 0434654752
 		</div>
-		<script src="https://unpkg.com/multiple-select@1.4.1/dist/multiple-select.min.js"></script>
+
+		<script src="js_libraries/multiple-select/multiple-select.min.js"></script>
+		<script src="js_libraries/multiple-select/multiple-select-it-IT.js"></script>
+		<link rel="stylesheet" href="js_libraries/multiple-select/multiple-select.min.css">
+
+		<script src="js_libraries/handsontable/handsontable.full.min.js"></script>
+		<link href="js_libraries/handsontable/handsontable.full.min.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="js_libraries/handsontable/languages/it-IT.js"></script>
 	</body>
 </html>
 

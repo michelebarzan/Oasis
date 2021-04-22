@@ -27,7 +27,7 @@
             GROUP BY derivedtbl_2.docnum, derivedtbl_2.dataConsegna, derivedtbl_2.collezione, dbo.report_ordini_clienti_view.nome_cliente, dbo.report_ordini_clienti_view.Statistical_group_code, 
                 dbo.report_ordini_clienti_view.Statistical_group_name, dbo.report_ordini_clienti_view.linea_business, dbo.report_ordini_clienti_view.tipo, dbo.report_ordini_clienti_view.tipo_pagamento, dbo.report_ordini_clienti_view.note, 
                 dbo.report_ordini_clienti_view.importo_totale";	*/
-	$query2="SELECT * FROM anagrafica_ordini WHERE ordine='$ordine' OPTION ( QUERYTRACEON 9481 )";			
+	$query2="SELECT * FROM anagrafica_ordini WHERE ordine='$ordine'";			
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

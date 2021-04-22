@@ -1,8 +1,9 @@
 
 <?php
 
-    include "Session.php";
     include "connessione.php";
+
+    set_time_limit(120);
 
     $filterTop=$_REQUEST["filterTop"];
     $filterChiuso=$_REQUEST["filterChiuso"];

@@ -5,7 +5,56 @@ var filterTop;
 var filterChiuso="both";
 var filterControllato="both";
 var filterStampato="both";
+var hotCompilaChecklist;
 
+window.addEventListener("load", async function(event)
+{
+    checkFlexDirection();
+
+    getElencoPick();
+
+    var selectCompilaChecklist=document.getElementById("selectCompilaChecklist");
+    var option=document.createElement("option");
+    option.setAttribute("value","");
+    option.setAttribute("selected","selected");
+    option.setAttribute("disabled","disabled");
+    option.innerHTML="Compila checklist";
+    selectCompilaChecklist.appendChild(option);
+    var picks=await getPicksPopupCompilaChecklist();
+    selectCompilaChecklist.disabled=false;
+    picks.forEach(pick =>
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value",pick.n_pick);
+        option.innerHTML=pick.n_pick;
+        selectCompilaChecklist.appendChild(option);
+    });
+    
+    $("#selectCompilaChecklist").multipleSelect(
+    {
+        single:true,
+        onAfterCreate: function () 
+                {
+                    $(".ms-choice").css({"height":"30px","line-height":"30px","background-color":"transparent","border":"none"});
+                    $(".ms-choice span").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left","color":"black"});
+                    $(".ms-parent").css({"width":"145px"});
+                },
+        onOpen:function()
+        {
+            $(".ms-search input").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left"});
+            $(".optgroup").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left"});
+            $(".ms-drop ul").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left"});
+        },
+        onClose:function()
+        {
+            $(".ms-choice span").innerHTML="Compila checklist";
+            getPopupCompilaChecklist();
+        },
+        filter:true,
+        filterPlaceholder:"Cerca pick...",
+        locale:"it-IT"
+    });
+});
 function checkFlexDirection()
 {
     document.getElementById("btnFlexDirectionRow").style.color="black";
@@ -1088,3 +1137,499 @@ function getDettaglioRighePick(n_Pick,orderBy)
         });
     });
 }
+async function getPopupCompilaChecklist()
+{
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+    if(n_pick!="" && n_pick!=null && n_pick!=undefined)
+    {
+        Swal.fire
+        ({
+            title: "Caricamento in corso...",
+            background: "transparent",
+            html: '<i style="color:white" class="fad fa-spinner-third fa-spin fa-4x"></i>',
+            showConfirmButton:false,
+            showCloseButton:false,
+            allowEscapeKey:false,
+            allowOutsideClick:false,
+            onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+        });
+
+        var outerContainer=document.createElement("div");
+        outerContainer.setAttribute("id","popupCompilaChecklistOuterContainer");
+        outerContainer.setAttribute("class","popup-compila-checklist-outer-container");
+
+        var actionBar=document.createElement("div");
+        actionBar.setAttribute("class","popup-compila-checklist-action-bar");
+
+        var span=document.createElement("span");
+        span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px;margin-right:5px;color:#ddd");
+        span.innerHTML="Pick "+n_pick;
+        actionBar.appendChild(span);
+
+        var aggiungiBancaleButton=document.createElement("button");
+        aggiungiBancaleButton.setAttribute("class","popup-compila-checklist-button");
+        aggiungiBancaleButton.setAttribute("id","popupCompilaChecklistButtonNuovoBancale");
+        aggiungiBancaleButton.setAttribute("onclick","creaNuovoBancaleCompilaChecklist()");
+        aggiungiBancaleButton.innerHTML='<span>Nuovo bancale</span><i class="fad fa-pallet-alt"></i>';
+        actionBar.appendChild(aggiungiBancaleButton);
+
+        var indietroButton=document.createElement("button");
+        indietroButton.setAttribute("class","popup-compila-checklist-button");
+        indietroButton.setAttribute("id","popupCompilaChecklistButtonIndietro");
+        indietroButton.setAttribute("style","display:none");
+        indietroButton.setAttribute("onclick","getPopupCompilaChecklist()");
+        indietroButton.innerHTML='<span>Indietro</span><i class="fad fa-arrow-alt-to-left"></i>';
+        actionBar.appendChild(indietroButton);
+
+        var ripristinaFiltriButton=document.createElement("button");
+        ripristinaFiltriButton.setAttribute("class","popup-compila-checklist-button");
+        ripristinaFiltriButton.setAttribute("id","popupCompilaChecklistButtonRipristinaFiltri");
+        ripristinaFiltriButton.setAttribute("onclick","getHotCompilaChecklist()");
+        ripristinaFiltriButton.innerHTML='<span>Ripristina</span><i class="fas fa-filter"></i>';
+        actionBar.appendChild(ripristinaFiltriButton);
+
+        var chiudiPickButton=document.createElement("button");
+        chiudiPickButton.setAttribute("class","popup-compila-checklist-button");
+        chiudiPickButton.setAttribute("id","popupCompilaChecklistButtonChiudiPick");
+        chiudiPickButton.setAttribute("onclick","chiudiPickCompilaChecklist()");
+        chiudiPickButton.innerHTML='<span>Chiudi pick</span><i class="fas fa-save"></i>';
+        actionBar.appendChild(chiudiPickButton);
+
+        var closeButton=document.createElement("button");
+        closeButton.setAttribute("class","popup-compila-checklist-close-button");
+        closeButton.setAttribute("onclick","Swal.close()");
+        closeButton.innerHTML='<i class="fal fa-times"></i>';
+        actionBar.appendChild(closeButton);
+
+        outerContainer.appendChild(actionBar);
+
+        var innerContainer=document.createElement("div");
+        innerContainer.setAttribute("class","popup-compila-checklist-inner-container");
+        innerContainer.setAttribute("id","popupCompilaChecklistInnerContainer");
+        outerContainer.appendChild(innerContainer);
+
+        Swal.fire
+        ({
+            background:"#363636",
+            width:"90%",
+            html:outerContainer.outerHTML,
+            allowOutsideClick:false,
+            showCloseButton:false,
+            showConfirmButton:false,
+            allowEscapeKey:false,
+            showCancelButton:false,
+            animation:false,
+            onOpen : function()
+                    {
+                        document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                        document.getElementsByClassName("swal2-popup")[0].style.height="90%";
+                        document.getElementsByClassName("swal2-content")[0].style.padding="0px";
+                        document.getElementsByClassName("swal2-content")[0].style.height="100%";
+                        document.getElementsByClassName("swal2-content")[0].style.width="100%";
+
+                        getHotCompilaChecklist();
+                    }
+        });
+    }
+}
+function chiudiPickCompilaChecklist()
+{
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+
+    document.getElementById("popupCompilaChecklistButtonChiudiPick").remove();
+    document.getElementById("popupCompilaChecklistButtonNuovoBancale").remove();
+    document.getElementById("popupCompilaChecklistButtonRipristinaFiltri").setAttribute("onclick","getHotchiudiPick()");
+    document.getElementById("popupCompilaChecklistButtonIndietro").style.display="flex";
+
+    getHotchiudiPick();
+
+    $.get("chiudiPickCompilaChecklist.php",{n_pick},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+        }
+    });
+}
+async function getHotchiudiPick()
+{
+    var containerId="popupCompilaChecklistInnerContainer";
+
+    var container = document.getElementById(containerId);
+    container.innerHTML="";
+
+    var div=document.createElement("div");
+    div.setAttribute("style","display:flex;flex-direction:row;align-items:center;color:#ddd;margin:10px");
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-spinner-third fa-spin");
+    i.setAttribute("style","font-size:22px");
+    div.appendChild(i);
+    var span=document.createElement("span");
+    span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px");
+    span.innerHTML="Caricamento in corso...";
+    div.appendChild(span);
+    container.appendChild(div);
+
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+
+    var response=await getHotDataChiudiPick(n_pick);
+    console.log(response);
+    container.innerHTML="";
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+		try {
+            hotCompilaChecklist.destroy();
+        } catch (error) {}
+        
+        hotCompilaChecklist = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                width:"100%",
+                //colWidths:[100,100,100,200,600,200,100],
+                columnSorting: true,
+                height,
+                columns:response.columns,
+                afterChange: (changes) =>
+                {
+                    if(changes!=null)
+                    {
+                        changes.forEach(([row, prop, oldValue, newValue]) =>
+                        {
+                            if(prop!="bancale" && prop!="id_bancale")
+                            {
+                                var id_bancale=hotCompilaChecklist.getDataAtCell(row, 0);
+                                aggiornaRigaHotChiudiPick(id_bancale,prop,newValue);
+                            }
+                        });
+                    }
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htDropdownMenu")[0].style.zIndex="9999";
+                    document.getElementsByClassName("htFiltersMenuCondition")[0].parentElement.style.display="none";
+                }
+            }
+        );
+        document.getElementById("hot-display-license-info").remove();
+        $(".handsontable .changeType").css
+        ({
+            "background": "#eee",
+            "border-radius": "0",
+            "border": "none",
+            "color": "#404040",
+            "font-size": "14px",
+            "line-height": "normal",
+            "padding": "0px",
+            "margin": "0px",
+            "float": "right"
+        });
+    }
+}
+function getHotDataChiudiPick(n_pick)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getHotDataChiudiPick.php",{n_pick},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function creaNuovoBancaleCompilaChecklist()
+{
+    try {
+        hotCompilaChecklist.destroy();
+
+        var containerId="popupCompilaChecklistInnerContainer";
+
+        var container = document.getElementById(containerId);
+        container.innerHTML="";
+
+        var div=document.createElement("div");
+        div.setAttribute("style","display:flex;flex-direction:row;align-items:center;color:#ddd;margin:10px");
+        var i=document.createElement("i");
+        i.setAttribute("class","fad fa-spinner-third fa-spin");
+        i.setAttribute("style","font-size:22px");
+        div.appendChild(i);
+        var span=document.createElement("span");
+        span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px");
+        span.innerHTML="Caricamento in corso...";
+        div.appendChild(span);
+        container.appendChild(div);
+    } catch (error) {}
+    
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+    $.post("creaNuovoBancaleCompilaChecklist.php",{n_pick},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                getHotCompilaChecklist();
+            }
+        }
+    });
+}
+async function getHotCompilaChecklist()
+{
+    var containerId="popupCompilaChecklistInnerContainer";
+
+    var container = document.getElementById(containerId);
+    container.innerHTML="";
+
+    var div=document.createElement("div");
+    div.setAttribute("style","display:flex;flex-direction:row;align-items:center;color:#ddd;margin:10px");
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-spinner-third fa-spin");
+    i.setAttribute("style","font-size:22px");
+    div.appendChild(i);
+    var span=document.createElement("span");
+    span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px");
+    span.innerHTML="Caricamento in corso...";
+    div.appendChild(span);
+    container.appendChild(div);
+
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+
+    var response=await getHotDataCompilaChecklist(n_pick);
+    container.innerHTML="";
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+		try {
+            hotCompilaChecklist.destroy();
+        } catch (error) {}
+        
+        hotCompilaChecklist = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                width:"100%",
+                colWidths:[100,100,100,200,600,200,100],
+                columnSorting: true,
+                height,
+                columns:response.columns,
+                afterChange: (changes) =>
+                {
+                    if(changes!=null)
+                    {
+                        changes.forEach(([row, prop, oldValue, newValue]) =>
+                        {
+                            if(prop=="bancale" || prop=="gruppo")
+                            {
+                                var id_picking=hotCompilaChecklist.getDataAtCell(row, 0);
+                                aggiornaRigaHotCompilaChecklist(id_picking,prop,newValue);
+                            }
+                        });
+                    }
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htDropdownMenu")[0].style.zIndex="9999";
+                    document.getElementsByClassName("htFiltersMenuCondition")[0].parentElement.style.display="none";
+                }
+            }
+        );
+        document.getElementById("hot-display-license-info").remove();
+        $(".handsontable .changeType").css
+        ({
+            "background": "#eee",
+            "border-radius": "0",
+            "border": "none",
+            "color": "#404040",
+            "font-size": "14px",
+            "line-height": "normal",
+            "padding": "0px",
+            "margin": "0px",
+            "float": "right"
+        });
+    }
+}
+function aggiornaRigaHotChiudiPick(id_bancale,colonna,valore)
+{
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+    if(colonna=="peso" || colonna=="lunghezza" || colonna=="larghezza" || colonna=="altezza")
+    {
+        if(isNaN(valore) || valore=="" || valore==null)
+        {
+            valore="NULL";
+        }
+    }
+    $.post("aggiornaRigaHotChiudiPick.php",{id_bancale,colonna,valore,n_pick},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                if(colonna=="tipo")
+                {
+                    getHotchiudiPick();
+                }
+            }
+        }
+    });
+}
+function aggiornaRigaHotCompilaChecklist(id_picking,colonna,valore)
+{
+    var n_pick=$("#selectCompilaChecklist").multipleSelect('getSelects')[1];
+    if(colonna=="gruppo")
+    {
+        if(isNaN(valore) || valore=="" || valore==null)
+        {
+            valore="NULL";
+        }
+    }
+    $.post("aggiornaRigaHotCompilaChecklist.php",{id_picking,colonna,valore,n_pick},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+            {
+                if(valore=="Nuovo bancale")
+                {
+                    getHotCompilaChecklist();
+                }
+            }
+        }
+    });
+}
+function getHotDataCompilaChecklist(n_pick)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getHotDataCompilaChecklist.php",{n_pick},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getPicksPopupCompilaChecklist()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getPicksPopupCompilaChecklist.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}    

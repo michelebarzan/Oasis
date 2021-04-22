@@ -608,9 +608,9 @@ function getTipo($bancale)
 	else
 	{
 		if($nome=="SCATOLA")
-			$tipo="CARDBOARD BOX";
+			$tipo="C. BOX";
 		else
-			$tipo="WOODEN CRATE";
+			$tipo="W. CRATE";
 	}
 	return $tipo;
 }
