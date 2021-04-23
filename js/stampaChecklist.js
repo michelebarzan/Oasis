@@ -26,7 +26,7 @@ window.addEventListener("load", async function(event)
     {
         var option=document.createElement("option");
         option.setAttribute("value",pick.n_pick);
-        option.innerHTML=pick.n_pick;
+        option.innerHTML="<b>"+pick.n_pick+"</b> ("+pick.descrizione_pick+")";
         selectCompilaChecklist.appendChild(option);
     });
     
@@ -38,6 +38,7 @@ window.addEventListener("load", async function(event)
                     $(".ms-choice").css({"height":"30px","line-height":"30px","background-color":"transparent","border":"none"});
                     $(".ms-choice span").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left","color":"black"});
                     $(".ms-parent").css({"width":"145px"});
+                    $(".ms-drop").css({"width":"350px"});
                 },
         onOpen:function()
         {
@@ -1197,7 +1198,7 @@ async function getPopupCompilaChecklist()
 
         var closeButton=document.createElement("button");
         closeButton.setAttribute("class","popup-compila-checklist-close-button");
-        closeButton.setAttribute("onclick","Swal.close()");
+        closeButton.setAttribute("onclick","getElencoPick()");
         closeButton.innerHTML='<i class="fal fa-times"></i>';
         actionBar.appendChild(closeButton);
 

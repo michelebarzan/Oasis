@@ -146,7 +146,10 @@
             $rowObj=[];
             foreach ($colHeaders as $column)
             {
-                $rowObj[$column]=$row3[$column];
+                if($column=="itemCode" || $column=="descrizione")
+                    $rowObj[$column]=utf8_encode($row3[$column]);
+                else
+                    $rowObj[$column]=$row3[$column];
             }
             array_push($data,$rowObj);
         }
