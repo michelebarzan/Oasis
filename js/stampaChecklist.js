@@ -534,11 +534,18 @@ async function getElencoPick()
         rowItem2.setAttribute("class","pick-item-row-item");
         rowItem2.setAttribute("style","flex-direction:row;width:450px;height:45px;align-items:center;margin-left:auto;margin-top:10px;");
 
-        var buttonAnteprimaDiStampa=document.createElement("button");
+        /*var buttonAnteprimaDiStampa=document.createElement("button");
         buttonAnteprimaDiStampa.setAttribute("class","pick-item-print-button");
         buttonAnteprimaDiStampa.setAttribute("onclick","anteprimaDiStampa("+pick.n_Pick+")");
         buttonAnteprimaDiStampa.innerHTML='<span>Anteprima di stampa</span><i class="fad fa-print"></i>';
-        rowItem2.appendChild(buttonAnteprimaDiStampa);
+        rowItem2.appendChild(buttonAnteprimaDiStampa);*/
+
+        var buttonStampaExcel=document.createElement("button");
+        buttonStampaExcel.setAttribute("class","pick-item-print-button");
+        buttonStampaExcel.setAttribute("style","background-color:#217346");
+        buttonStampaExcel.setAttribute("onclick","stampaPickConExcel("+pick.n_Pick+")");
+        buttonStampaExcel.innerHTML='<span>Stampa Excel</span><i class="fad fa-file-excel"></i>';
+        rowItem2.appendChild(buttonStampaExcel);
 
         var buttonStampaImmediata=document.createElement("button");
         buttonStampaImmediata.setAttribute("class","pick-item-print-button");
@@ -1633,4 +1640,241 @@ function getPicksPopupCompilaChecklist()
             }
         });
     });
-}    
+}
+async function stampaPickConExcel(n_Pick)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    try {
+        document.getElementById("tabellaStampaExcel").remove();
+    } catch (error) {}
+
+    var righe_pick=await getDataStampaPickConExcel(n_Pick);
+
+    var tabellaDettaglioRighePick=document.createElement("table");
+    tabellaDettaglioRighePick.setAttribute("id","tabellaStampaExcel");
+
+    var tr=document.createElement("tr");
+
+    var td=document.createElement("td");td.innerHTML="Order";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Item code";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Description";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Qnt";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Net Weight";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Gross Weight";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Measures";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="Boxes";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="INTRA Code";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var bancaleBefore;
+    var bancaleBeforeObj;
+    var pesoNetto=0;
+    var pesoLordo=0;
+    righe_pick.forEach(riga =>
+    {
+        var tr=document.createElement("tr");
+
+        var td=document.createElement("td");td.innerHTML=riga["Order"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Item code"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Description"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Qnt"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Net Weight"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Gross Weight"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Measures"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["Boxes"];tr.appendChild(td);
+        var td=document.createElement("td");td.innerHTML=riga["INTRA Code"];tr.appendChild(td);
+
+        tabellaDettaglioRighePick.appendChild(tr);
+
+        if(riga.bancale!=bancaleBefore && bancaleBefore!=null)
+        {
+            var tr=document.createElement("tr");
+            tr.setAttribute("style","background-color:#F9EF62;border-bottom:2px solid gray");
+
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");
+            try {
+                td.innerHTML='1 '+getTipoBancale(bancaleBeforeObj.nomeBancale)+': L.'+bancaleBeforeObj.lunghezzaBancale+' X '+bancaleBeforeObj.larghezzaBancale+' X H.'+bancaleBeforeObj.altezzaBancale+' | NET WEIGHT: '+bancaleBeforeObj.pesoBancale+' | GROSS WEIGHT: '+pesoLordo.toFixed(2);
+            } catch (error) {}
+            tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+            var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+            tabellaDettaglioRighePick.insertBefore(tr, tabellaDettaglioRighePick.lastChild); 
+
+            pesoNetto=riga["Net Weight"];
+            pesoLordo=riga["Gross Weight"];
+        }
+        else
+        {
+            pesoNetto+=riga["Net Weight"];
+            pesoLordo+=riga["Gross Weight"];
+        }
+
+        bancaleBefore=riga.bancale;
+        bancaleBeforeObj=riga;    
+    });
+
+    var tr=document.createElement("tr");
+    tr.setAttribute("style","background-color:#F9EF62;border-bottom:2px solid gray");
+
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");
+    try {
+        td.innerHTML='1 '+getTipoBancale(bancaleBeforeObj.nomeBancale)+': L.'+bancaleBeforeObj.lunghezzaBancale+' X '+bancaleBeforeObj.larghezzaBancale+' X H.'+bancaleBeforeObj.altezzaBancale+' | NET WEIGHT: '+bancaleBeforeObj.pesoBancale+' | GROSS WEIGHT: '+pesoLordo.toFixed(2);
+    } catch (error) {}
+    tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    document.body.appendChild(tabellaDettaglioRighePick);
+
+    var tableOuterHTML=document.getElementById("tabellaStampaExcel").outerHTML;
+
+    Swal.fire
+    ({
+        title: "Scegli il nome del file Excel",
+        html: '<input tyle="text" id="inputNomeFileEsportaExcel" value="checklist_excel_'+n_Pick+'">',
+        confirmButtonText:"Conferma",
+        showCloseButton:true,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="black";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+    }).then((result) => 
+    {
+        if (result.value)
+        {
+            stampato(n_Pick);
+
+            var fileName=document.getElementById("inputNomeFileEsportaExcel").value;
+
+            Swal.fire
+            ({
+                title: "Caricamento in corso... ",
+                background:"transparent",
+                html: '<i style="color:white" class="fad fa-spinner-third fa-spin fa-4x"></i>',
+                showConfirmButton:false,
+                showCloseButton:false,
+                allowEscapeKey:false,
+                allowOutsideClick:false,
+                onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+            });
+
+            setTimeout(function()
+            {
+                var exportTableString="<html>"+tableOuterHTML+"</html>";
+
+                var blob;
+                var wb = {SheetNames:[], Sheets:{}};
+
+                var ws1 = XLSX.read(exportTableString, {type:"binary"}).Sheets.Sheet1;
+                wb.SheetNames.push(fileName); 
+                wb.Sheets[fileName] = ws1;
+
+                blob = new Blob([s2ab(XLSX.write(wb, {bookType:'xlsx', type:'binary'}))],
+                {
+                    type: "application/octet-stream"
+                });
+
+                saveAs(blob, fileName+".xlsx");
+
+                swal.close();
+
+                try {
+                    document.getElementById("tabellaStampaExcel").remove();
+                } catch (error) {}            
+
+                getElencoPick();
+            }, 1500);
+        }
+        else
+            swal.close();
+    });
+}
+function stampato(N_Pick)
+{
+    var stampato = true ;
+    
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() 
+    {
+        if (this.readyState == 4 && this.status == 200) 
+        {
+            console.log(this.responseText);
+            //location.reload();
+            //document.getElementById("controllato"+N_Pick).style.backgroundColor ="green" ;
+        }
+    };
+    xmlhttp.open("POST", "setStampato.php?N_Pick=" + N_Pick + "&stampato=" + stampato, true);
+    xmlhttp.send();
+    //if(controllato==false)
+        //location.reload();
+}
+function getDataStampaPickConExcel(n_Pick)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getDataStampaPickConExcel.php",{n_Pick},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getTipoBancale(nomeBancale)
+{
+	var nome = nomeBancale.substr(0, 7);
+	if(nome=="BANCALE")
+        var tipo="PALLET";
+	else
+	{
+		if(nome=="SCATOLA")
+            var tipo="C. BOX";
+		else
+            var tipo="W. CRATE";
+	}
+	return tipo;
+}

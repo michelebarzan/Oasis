@@ -82,12 +82,12 @@ function creaTabellaStampabile($conn)
 		echo "<div id='colonna1' class='colonna1' contenteditable>ORDER<br>CUSTOMER</div>";
 		echo "<div id='colonna2' class='colonna2' contenteditable>ITEM CODE</div>";
 		echo "<div id='colonna3' class='colonna3' contenteditable>DESCRIPTION</div>";
-		echo "<div id='colonna4' class='colonna4' contenteditable>QUANTITY</div>";
-		echo "<div id='colonna5' class='colonna5' contenteditable>NET W.</div>";
-		echo "<div id='colonna6' class='colonna6' contenteditable>GROSS W.</div>";
-		echo "<div id='colonna7' class='colonna7' contenteditable>COD. DOG.</div>";
-		echo "<div id='colonna8' class='colonna8'>MEASURES</div>";
-		echo "<div id='colonna9' class='colonna9' style='border-right:none;'>GROUP</div>";
+		echo "<div id='colonna4' class='colonna4' contenteditable>QNT</div>";
+		echo "<div id='colonna5' class='colonna5' contenteditable>NET WEIGHT</div>";
+		echo "<div id='colonna6' class='colonna6' contenteditable>GROSS WEIGHT</div>";
+		echo "<div id='colonna7' class='colonna7' contenteditable>MEASURES</div>";
+		echo "<div id='colonna8' class='colonna8'>BOXES</div>";
+		echo "<div id='colonna9' class='colonna9' style='border-right:none;'>INTRA CODE</div>";
 	echo "</div>";
 
 	
@@ -115,30 +115,30 @@ function creaTabellaStampabile($conn)
 						echo '<div id="tcolonna4" class="tcolonna4" contenteditable>'.$rowRighe['quantity'].'</div>';
 						echo '<div id="tcolonna5" class="tcolonna5" contenteditable>'.$rowRighe['netWeight'].'</div>';
 						echo '<div id="tcolonna6" class="tcolonna6" contenteditable>'.$rowRighe['grossWeight'].'</div>';
-						echo '<div id="tcolonna7" class="tcolonna7" contenteditable>'.$rowRighe['codDog'].'</div>';
 						$misure=$rowRighe['misure'];
 						$L=substr($misure,0,strrpos($misure,'H'));
 						$misure=strstr($misure, 'H');
 						$H=substr($misure,0,strrpos($misure,'P'));
 						$misure=strstr($misure, 'P');
 						$P=$misure;
-						echo '<div id="tcolonna8" class="tcolonna8" style="line-height:140%;" contenteditable>'.$L.'<br>'.$H.'<br>'.$P.'</div>';
-						echo '<div id="tcolonna9" class="tcolonna9" contenteditable style="border-right:none;">'.$rowRighe['group'].'</div>';
+						echo '<div id="tcolonna7" class="tcolonna7" contenteditable>'.$L.'<br>'.$H.'<br>'.$P.'</div>';
+						echo '<div id="tcolonna8" class="tcolonna8" style="line-height:140%;" contenteditable>Box n. '.$rowRighe['group'].'</div>';
+						echo '<div id="tcolonna9" class="tcolonna9" contenteditable style="border-right:none;">'.$rowRighe['codDog'].'</div>';
 					echo "</div>";
 			}
 			else
 			{
 				echo "<div id='riga' class='riga' style='border-bottom:2px solid black;'>";
 					echo '<div id="tcolonna1" class="tcolonna1" contenteditable>'.$rowRighe['order'].'</div>';
-					echo '<div id="tcolonna2" class="tcolonna2" style="background-color:#CFD1DC;font-weight:bold;color:black" contenteditable>'.$rowRighe['itemCode'].'</div>';
+					echo '<div id="tcolonna2" class="tcolonna2" style="background-color:#CFD1DC;font-weight:bold;color:black" contenteditable>'.getTipo($rowRighe['itemCode']).'</div>';
 					$words = explode('|', $rowRighe['description']);
-					echo '<div id="tcolonna3" class="tcolonna3" style="background-color:#F9EF62;font-weight:bold;color:black;width:25%;" contenteditable>'.$words[0].'<br>'.$words[1].'<br>'.$words[2].'</div>';
+					echo '<div id="tcolonna3" class="tcolonna3" style="background-color:#F9EF62;font-weight:bold;color:black;width:25%;" contenteditable>'.$words[0].'<br>'.$words[2].'<br>'.$words[1].'</div>';
 					echo '<div id="tcolonna4" class="tcolonna4" style="font-weight:bold;color:black" contenteditable>'.$rowRighe['quantity'].'</div>';
 					echo '<div id="tcolonna5" class="tcolonna5" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['netWeight'].'</div>';
 					echo '<div id="tcolonna6" class="tcolonna6" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['grossWeight'].'</div>';
-					echo '<div id="tcolonna7" class="tcolonna7" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['codDog'].'</div>';
-					echo '<div id="tcolonna8" class="tcolonna8" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['misure'].'</div>';
-					echo '<div id="tcolonna9" class="tcolonna9" contenteditable style="border-right:none;outline:none">'.$rowRighe['group'].'</div>';
+					echo '<div id="tcolonna7" class="tcolonna7" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['misure'].'</div>';
+					echo '<div id="tcolonna8" class="tcolonna8" style="font-weight:bold;color:red" contenteditable>'.$rowRighe['group'].'</div>';
+					echo '<div id="tcolonna9" class="tcolonna9" contenteditable style="border-right:none;outline:none">'.$rowRighe['codDog'].'</div>';
 				echo "</div>";
 			}
 			
@@ -165,5 +165,21 @@ function riempiTabellaStampabile($conn)
 	{
 		return $resultRighe;
 	}
+}
+function getTipo($bancale)
+{
+	$help=str_replace(substr($bancale, 0, 7),"",$bancale);
+	$help=explode(".",$help);
+	$nome = substr($bancale, 0, 7);
+	if($nome=="BANCALE")
+		$tipo="PALLET";
+	else
+	{
+		if($nome=="SCATOLA")
+			$tipo="C. BOX";
+		else
+			$tipo="W. CRATE";
+	}
+	return $tipo.$help[0].".".$help[1];
 }
 ?>

@@ -117,7 +117,7 @@
         else
         {
             if($minutes<0)
-                return 0;
+                return null;
             else
             {
                 $seconds=$minutes*60;
