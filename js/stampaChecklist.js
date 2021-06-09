@@ -1667,6 +1667,76 @@ async function stampaPickConExcel(n_Pick)
 
     var tr=document.createElement("tr");
 
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="PACKING LIST";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="CUSTOMER";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="ORDER N.";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="INVOICE N.";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+    var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
+
+    tabellaDettaglioRighePick.appendChild(tr);
+
+    var tr=document.createElement("tr");
+
     var td=document.createElement("td");td.innerHTML="Order";tr.appendChild(td);
     var td=document.createElement("td");td.innerHTML="Item code";tr.appendChild(td);
     var td=document.createElement("td");td.innerHTML="Description";tr.appendChild(td);
@@ -1740,7 +1810,7 @@ async function stampaPickConExcel(n_Pick)
     var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
     var td=document.createElement("td");
     try {
-        td.innerHTML='1 '+getTipoBancale(bancaleBeforeObj.nomeBancale)+': L.'+bancaleBeforeObj.lunghezzaBancale+' X '+bancaleBeforeObj.larghezzaBancale+' X H.'+bancaleBeforeObj.altezzaBancale+' | NET WEIGHT: '+bancaleBeforeObj.pesoBancale+' | GROSS WEIGHT: '+pesoLordo.toFixed(2);
+        td.innerHTML='1 '+getTipoBancale(bancaleBeforeObj.nomeBancale)+': L.'+bancaleBeforeObj.lunghezzaBancale+' X '+bancaleBeforeObj.larghezzaBancale+' X H.'+bancaleBeforeObj.altezzaBancale+' | NET WEIGHT: '+pesoNetto.toFixed(2)+' | GROSS WEIGHT: '+pesoLordo.toFixed(2);
     } catch (error) {}
     tr.appendChild(td);
     var td=document.createElement("td");td.innerHTML="";tr.appendChild(td);
