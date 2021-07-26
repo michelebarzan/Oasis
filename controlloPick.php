@@ -59,6 +59,9 @@
 					<option value="aperto">tutti gli ordini</option>
                 </select>
 			</div>-->
+			<div class="rcb-input-icon-container" style="display:flex;flex-direction:row;align-items:center">
+				<input type="search" placeholder="Cerca pick..." onsearch="cerca(this)">
+			</div>
 			<div class="rcb-select-container" style="display:flex;flex-direction:row;align-items:center">
                 <span>Stato:</span>
                 <select id="selectStatoControlloPick" onchange="getElencoPick()" style="text-decoration:none">
