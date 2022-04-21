@@ -63,6 +63,7 @@
 			<button class="action-bar-text-icon-button" id="bntAggiornaCarichi" style="margin-left:5px" onclick="aggiornaCarichi()"><span>Aggiorna carichi</span><i class="fad fa-redo-alt"></i></button>
 			<!--<button class="action-bar-text-icon-button" id="bntCompilaChecklist" style="margin-left:5px" onclick="getPopupCompilaChecklist()"><span>Compila checklist</span><i class="fal fa-tasks"></i></button>-->
 			<select id="selectCompilaChecklist" class="action-bar-select" disabled style="width:145px;padding-left:5px;padding-right:5px"></select>
+			<button class="action-bar-text-icon-button" id="bntOrdiniAperti" style="margin-left:5px" onclick="getPopupOrdiniAperti()"><span>Ordini aperti</span><i class="fad fa-list"></i></button>
 		</div>
 		<input type="text" id="stampaChecklistSearchBar" placeholder="Cerca..." onkeyup="searchPicks(this)">
 		<div id="stampaChecklistContainer"></div>

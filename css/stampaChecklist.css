@@ -596,3 +596,26 @@ html
     background-color: #404040;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+#fileNameInputSwal
+{
+	margin-top:20px;
+	margin-bottom:20px;
+	height:25px;
+	font-family:'Montserrat',sans-serif;
+	font-size:14px;
+	outline:none;
+	border:none;
+	border-bottom:1px solid gray;
+	background-color:transparent;
+	transition:all .5s;
+	color:black;
+}
+#fileNameInputSwal
+{
+	width:80%;
+}
+#fileNameInputSwal:hover
+{
+	color:#79A5D1;
+	border-bottom:1px solid #79A5D1;
+}
