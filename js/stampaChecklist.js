@@ -6,6 +6,7 @@ var filterChiuso="both";
 var filterControllato="both";
 var filterStampato="both";
 var hotCompilaChecklist;
+var hotOrdiniAperti;
 
 window.addEventListener("load", async function(event)
 {
@@ -1947,4 +1948,262 @@ function getTipoBancale(nomeBancale)
             var tipo="W. CRATE";
 	}
 	return tipo;
+}
+function getPopupOrdiniAperti()
+{
+    Swal.fire
+    ({
+        title: "Caricamento in corso...",
+        background: "transparent",
+        html: '<i style="color:white" class="fad fa-spinner-third fa-spin fa-4x"></i>',
+        showConfirmButton:false,
+        showCloseButton:false,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="white";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+    });
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("id","popupPopupOrdiniOuterContainer");
+    outerContainer.setAttribute("class","popup-compila-checklist-outer-container");
+
+    var actionBar=document.createElement("div");
+    actionBar.setAttribute("class","popup-compila-checklist-action-bar");
+
+    var span=document.createElement("span");
+    span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px;margin-right:5px;color:#ddd");
+    span.innerHTML="Ordini aperti";
+    actionBar.appendChild(span);
+
+    var esportaButton=document.createElement("button");
+    esportaButton.setAttribute("class","popup-compila-checklist-button");
+    esportaButton.setAttribute("id","popupPopupOrdiniButtonChiudiPick");
+    esportaButton.setAttribute("onclick","esportaExcelOrdiniAperti()");
+    esportaButton.innerHTML='<span>Esporta</span><i class="fad fa-file-excel"></i>';
+    actionBar.appendChild(esportaButton);
+
+    var closeButton=document.createElement("button");
+    closeButton.setAttribute("class","popup-compila-checklist-close-button");
+    closeButton.setAttribute("onclick","getElencoPick()");
+    closeButton.innerHTML='<i class="fal fa-times"></i>';
+    actionBar.appendChild(closeButton);
+
+    outerContainer.appendChild(actionBar);
+
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","popup-compila-checklist-inner-container");
+    innerContainer.setAttribute("id","popupPopupOrdiniInnerContainer");
+    outerContainer.appendChild(innerContainer);
+
+    Swal.fire
+    ({
+        background:"#363636",
+        width:"90%",
+        html:outerContainer.outerHTML,
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        animation:false,
+        onOpen : function()
+                {
+                    document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                    document.getElementsByClassName("swal2-popup")[0].style.height="90%";
+                    document.getElementsByClassName("swal2-content")[0].style.padding="0px";
+                    document.getElementsByClassName("swal2-content")[0].style.height="100%";
+                    document.getElementsByClassName("swal2-content")[0].style.width="100%";
+
+                    getHotOrdiniAperti();
+                }
+    });
+}
+async function getHotOrdiniAperti()
+{
+    var containerId="popupPopupOrdiniInnerContainer";
+
+    var container = document.getElementById(containerId);
+    container.innerHTML="";
+
+    var div=document.createElement("div");
+    div.setAttribute("style","display:flex;flex-direction:row;align-items:center;color:#ddd;margin:10px");
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-spinner-third fa-spin");
+    i.setAttribute("style","font-size:22px");
+    div.appendChild(i);
+    var span=document.createElement("span");
+    span.setAttribute("style","font-family:'Montserrat',sans-serif;font-size:12px;margin-left:10px");
+    span.innerHTML="Caricamento in corso...";
+    div.appendChild(span);
+    container.appendChild(div);
+
+    var response=await getHotDataOrdiniAperti();
+    container.innerHTML="";
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+		try {
+            hotOrdiniAperti.destroy();
+        } catch (error) {}
+        
+        hotOrdiniAperti = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                width:"100%",
+                columnSorting: true,
+                height,
+                columns:response.columns,
+                beforeChange: (changes) =>
+                {
+                    return false;
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htDropdownMenu")[0].style.zIndex="9999";
+                    document.getElementsByClassName("htFiltersMenuCondition")[0].parentElement.style.display="none";
+                }
+            }
+        );
+        document.getElementById("hot-display-license-info").remove();
+    }
+}
+function getHotDataOrdiniAperti()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getHotDataOrdiniAperti.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function esportaExcelOrdiniAperti()
+{
+    var inputNomeFile=document.createElement("input");
+    inputNomeFile.setAttribute("type","text");
+    inputNomeFile.setAttribute("value","ordini_aperti");
+    inputNomeFile.setAttribute("id","fileNameInputSwal");
+    Swal.fire
+    ({
+        type: 'question',
+        title: 'Scegli il nome del file',
+        html : inputNomeFile.outerHTML,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="black";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";document.getElementsByClassName("swal2-close")[0].style.outline="none";}
+    }).then((result) => 
+    {
+        if (result.value)
+        {
+            swal.close();
+            var filename=document.getElementById("fileNameInputSwal").value;
+            if(filename==null || filename=='')
+            {
+                var filename="ordini_aperti";
+            }
+
+            try {
+                document.getElementById("esportaOrdiniApertiTable").remove();
+            } catch (error) {}
+        
+            var table=document.createElement("table");
+            table.setAttribute("style","display:none");
+            table.setAttribute("id","esportaOrdiniApertiTable");
+        
+            var tr=document.createElement("tr");
+            hotOrdiniAperti.getColHeader().forEach(header =>
+            {
+                var th=document.createElement("th");
+                th.innerHTML=header;
+                tr.appendChild(th);
+            });
+            table.appendChild(tr);
+        
+            var data=hotOrdiniAperti.getData();
+            data.forEach(row =>
+            {
+                var tr=document.createElement("tr");
+                row.forEach(cell =>
+                {
+                    var td=document.createElement("td");
+                    td.innerHTML=cell;
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+        
+            document.body.appendChild(table);
+            exportTableToExcel("esportaOrdiniApertiTable", filename);
+        }
+        else
+            swal.close();
+    });
+}
+function exportTableToExcel(tableID, filename = '')
+{
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
 }
