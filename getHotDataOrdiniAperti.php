@@ -5,7 +5,7 @@
     $columns=[];
     $colHeaders=[];
 
-    $q2="SELECT COLUMN_NAME, CASE WHEN DATA_TYPE = 'varchar' THEN 'text' when DATA_TYPE = 'int' then 'numeric' when DATA_TYPE = 'float' then 'numeric'  when DATA_TYPE = 'datetime' then 'date' END AS type
+    $q2="SELECT COLUMN_NAME, CASE WHEN DATA_TYPE = 'varchar' THEN 'text' WHEN DATA_TYPE = 'nvarchar' THEN 'text' when DATA_TYPE = 'int' then 'numeric' when DATA_TYPE = 'float' then 'numeric'  when DATA_TYPE = 'datetime' then 'date' END AS type
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE (TABLE_NAME = N'view_ordini_aperti')";
     $r2=sqlsrv_query($conn,$q2);
