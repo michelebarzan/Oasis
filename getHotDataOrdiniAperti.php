@@ -29,7 +29,7 @@
 
     $data=[];
 
-    $q3="select * from view_ordini_aperti ORDER BY dataConsegna DESC, docNum, lineNum";
+    $q3="SELECT DISTINCT * FROM view_ordini_aperti ORDER BY dataConsegna DESC, docNum, lineNum";
     $r3=sqlsrv_query($conn,$q3);
     if($r3==FALSE)
     {
