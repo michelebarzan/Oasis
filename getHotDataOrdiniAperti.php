@@ -5,7 +5,7 @@
     $columns=[];
     $colHeaders=[];
 
-    $q2="SELECT COLUMN_NAME, CASE WHEN DATA_TYPE = 'varchar' THEN 'text' when DATA_TYPE = 'int' then 'numeric' when DATA_TYPE = 'float' then 'numeric'  when DATA_TYPE = 'datetime' then 'date' END AS type
+    $q2="SELECT COLUMN_NAME, CASE WHEN DATA_TYPE = 'varchar' THEN 'text' WHEN DATA_TYPE = 'nvarchar' THEN 'text' when DATA_TYPE = 'int' then 'numeric' when DATA_TYPE = 'float' then 'numeric'  when DATA_TYPE = 'datetime' then 'date' END AS type
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE (TABLE_NAME = N'view_ordini_aperti')";
     $r2=sqlsrv_query($conn,$q2);
@@ -20,7 +20,7 @@
             array_push($colHeaders,$row2["COLUMN_NAME"]);
 
             $column["data"]=$row2["COLUMN_NAME"];
-            $column["type"]=$row2["type"];
+			$column["type"]=$row2["type"];
             $column["readOnly"]=true;
             
             array_push($columns,$column);
@@ -29,7 +29,7 @@
 
     $data=[];
 
-    $q3="select * from view_ordini_aperti ORDER BY dataConsegna DESC, docNum, lineNum";
+    $q3="SELECT DISTINCT * FROM view_ordini_aperti ORDER BY dataConsegna DESC, docNum, lineNum";
     $r3=sqlsrv_query($conn,$q3);
     if($r3==FALSE)
     {

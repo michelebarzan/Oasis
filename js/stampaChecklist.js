@@ -2079,6 +2079,11 @@ async function getHotOrdiniAperti()
                 },
                 afterDropdownMenuShow: (dropdownMenu) =>
                 {
+                    document.getElementsByClassName("htUIMultipleSelectSearch")[0].getElementsByTagName("input")[0].addEventListener("click", function()
+                    {
+                        document.getElementsByClassName("htUIClearAll")[0].getElementsByTagName("a")[0].click();
+                    });
+                    
                     document.getElementsByClassName("htDropdownMenu")[0].style.zIndex="9999";
                     document.getElementsByClassName("htFiltersMenuCondition")[0].parentElement.style.display="none";
                 }
