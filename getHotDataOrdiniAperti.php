@@ -20,7 +20,7 @@
             array_push($colHeaders,$row2["COLUMN_NAME"]);
 
             $column["data"]=$row2["COLUMN_NAME"];
-            $column["type"]=$row2["type"];
+			$column["type"]=$row2["type"];
             $column["readOnly"]=true;
             
             array_push($columns,$column);
