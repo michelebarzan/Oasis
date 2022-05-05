@@ -31,11 +31,19 @@
                 </button>
 				<button class="in-page-nav-bar-button" id="btn_produzione_lotto" onclick="getMascheraProduzioneLotto(this)">
 					<span>Messa in produzione lotto</span>
-                    <i class="fad fa-layer-plus"></i>
+					<i class="fa-duotone fa-screwdriver-wrench"></i>
                 </button>
 				<button class="in-page-nav-bar-button" id="btn_anagrafica_articoli" onclick="getMascheraAnagraficaArticoli(this)">
 					<span>Anagrafica articoli</span>
                     <i class="fad fa-database"></i>
+                </button>
+				<button class="in-page-nav-bar-button" id="btn_anagrafica_stazioni" onclick="getMascheraAnagraficaStazioni(this)">
+					<span>Anagrafica stazioni</span>
+                    <i class="fa-duotone fa-industry-windows"></i>
+                </button>
+				<button class="in-page-nav-bar-button" id="btn_percorso_produttivo_articoli" onclick="getMascheraPercorsoProduttivoArticoli(this)">
+					<span>Percorso produttivo articoli</span>
+					<i class="fa-duotone fa-diagram-project"></i>
                 </button>
 			</div>
 		</div>

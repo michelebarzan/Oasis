@@ -1284,7 +1284,7 @@ function getArticoliLotto(id_lotto)
                         },
                     });
                     console.log(response);
-                    resolve({});
+                    resolve([]);
                 }
                 else
                 {
@@ -1305,7 +1305,7 @@ function getArticoliLotto(id_lotto)
                             },
                         });
                         console.log(response);
-                        resolve({});
+                        resolve([]);
                     }
                 }
             }
@@ -1349,6 +1349,32 @@ function validateInput(input,event)
         event.preventDefault();
         return;
     }
+}
+function checkEnter(event,callback)
+{
+    if (event.key === "Enter")
+        callback();
+}
+function esportaExcelHot(filename)
+{
+    exportPlugin1.downloadFile('csv',
+    {
+        bom: false,
+        columnDelimiter: '\t',
+        columnHeaders: true,
+        exportHiddenColumns: true,
+        exportHiddenRows: true,
+        fileExtension: 'xls',
+        filename,
+        mimeType: 'text/csv',
+        rowDelimiter: '\r\n',
+        rowHeaders: false
+    });
+}
+function getView()
+{
+    if(view!=null)
+        document.getElementById("btn_"+view).click();
 }
 //---------------------------------------------------------------------------------------------------------------------------------------------
 async function getMascheraProduzioneLotto(button)
@@ -1663,22 +1689,6 @@ function getHotDataAnagraficaArticoli()
         });
     });
 }
-function esportaExcelHot(filename)
-{
-    exportPlugin1.downloadFile('csv',
-    {
-        bom: false,
-        columnDelimiter: '\t',
-        columnHeaders: true,
-        exportHiddenColumns: true,
-        exportHiddenRows: true,
-        fileExtension: 'xls',
-        filename,
-        mimeType: 'text/csv',
-        rowDelimiter: '\r\n',
-        rowHeaders: false
-    });
-}
 function getPopupCreaNuovoArticolo()
 {        
     var outerContainer=document.createElement("div");
@@ -1764,11 +1774,6 @@ function getPopupCreaNuovoArticolo()
         }
     });
 }
-function checkEnter(event,callback)
-{
-    if (event.key === "Enter")
-        callback();
-}
 function creaNuovoArticolo()
 {
     var codice_articolo = document.getElementById("codice_articolo").value;
@@ -1820,4 +1825,958 @@ function creaNuovoArticolo()
             }
         });
     }
+}
+//-------------------------------------------------------------------------------------------
+
+function getMascheraAnagraficaStazioni(button)
+{
+    view="anagrafica_stazioni";
+
+    $(".in-page-nav-bar-button").css({"border-bottom-color":"","font-weight":""});
+    button.style.borderBottomColor="#4C91CB";
+    button.style.fontWeight="bold";
+
+    document.getElementById("actionBarGestioneLottiProduzione").style.display="";
+    document.getElementById("actionBarGestioneLottiProduzione").innerHTML="";
+
+    document.getElementById("gestioneLottiProduzioneContainer").style.display="";
+    document.getElementById("gestioneLottiProduzioneContainer").innerHTML="";
+
+    var actionBar=document.getElementById("actionBarGestioneLottiProduzione");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","getPopupCreaNuovaStazione()");
+    var span=document.createElement("span");
+    span.innerHTML="Crea nuova stazione";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","esportaExcelHot('anagrafica_stazioni')");
+    var span=document.createElement("span");
+    span.innerHTML="Esporta";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-file-excel");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var containerAnagraficaStazioni = document.createElement("div");
+    containerAnagraficaStazioni.setAttribute("class","container-anagrafica-stazioni");
+    containerAnagraficaStazioni.setAttribute("id","containerAnagraficaStazioni");
+    document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerAnagraficaStazioni);
+
+    getHotAnagraficaStazioni();
+}
+async function getHotAnagraficaStazioni()
+{
+    try {hot.destroy();} catch (error) {}
+
+    var container = document.getElementById('containerAnagraficaStazioni');
+    container.innerHTML="";
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var response=await getHotDataAnagraficaStazioni();
+
+    Swal.close();
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+        hot = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                manualColumnMove:true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                fixedColumnsLeft:2,
+                columnSorting: true,
+                width:"100%",
+                height,
+                columns:response.columns,
+                afterChange: (changes) =>
+                {
+                    if(changes!=null)
+                    {
+                        changes.forEach(([row, prop, oldValue, newValue]) =>
+                        {
+                            if(prop!="id_stazione")
+                            {
+                                var id_stazione=hot.getDataAtCell(row, 0);
+                                if(oldValue!=newValue)
+                                    aggiornaRigaHotAnagraficaStazioni(id_stazione,prop,newValue);
+                            }
+                        });
+                    }
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htUIMultipleSelectSearch")[0].getElementsByTagName("input")[0].addEventListener("click", function()
+                    {
+                        document.getElementsByClassName("htUIClearAll")[0].getElementsByTagName("a")[0].click();
+                    });
+                }
+            }
+        );
+        hot.getPlugin('columnSorting').sort({ column: 0, sortOrder: 'desc' });
+        exportPlugin1 = hot.getPlugin('exportFile');
+        document.getElementById("hot-display-license-info").remove();
+    }
+}
+function aggiornaRigaHotAnagraficaStazioni(id,colonna,valore)
+{
+    $.get("aggiornaRigaHotAnagraficaStazioniGestioneLottiProduzione.php",{id,colonna,valore},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+        }
+    });
+}
+function getHotDataAnagraficaStazioni()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.post("getHotDataAnagraficaStazioniGestioneLottiProduzione.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                try {
+                    resolve(JSON.parse(response));
+                } catch (error) {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
+}
+function getPopupCreaNuovaStazione()
+{        
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","input-popup-outer-container");
+
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","input-popup-inner-container");
+    
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Nome";
+    row.appendChild(spanNome);
+
+    var inputTesto=document.createElement("input");
+    inputTesto.setAttribute("type","text");
+    inputTesto.setAttribute("class","input-popup-input");
+    inputTesto.setAttribute("onkeydown","validateInput(this,event)");
+    inputTesto.setAttribute("onkeyup","checkEnter(event,creaNuovaStazione)");
+    inputTesto.setAttribute("id", "nome");
+    row.appendChild(inputTesto);
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Descrizione";
+    row.appendChild(spanNome);
+
+    var textarea=document.createElement("textarea");
+    textarea.setAttribute("class","input-popup-input");
+    textarea.setAttribute("onkeydown","validateInput(this,event)");
+    textarea.setAttribute("onkeyup","checkEnter(event,creaNuovaStazione)");
+    textarea.setAttribute("id", "descrizione");
+    row.appendChild(textarea);
+    
+    innerContainer.appendChild(row);
+
+    outerContainer.appendChild(innerContainer);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+    row.setAttribute("style","padding:0px;min-height:30px");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","input-popup-button");
+    button.setAttribute("onclick","creaNuovaStazione()");
+    button.innerHTML='<span>Crea nuova stazione</span><i class="fad fa-plus-circle"></i>';
+    row.appendChild(button);
+
+    outerContainer.appendChild(row);
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Swal.fire
+    ({
+        title: "Crea nuova stazione",
+        background:"#f1f1f1",
+        html: outerContainer.outerHTML,
+        showConfirmButton:true,
+        showCloseButton:true,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+            document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-header")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-header")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-title")[0].style.color="black";
+
+            document.getElementsByClassName("swal2-actions")[0].style.display="none";
+
+            document.getElementById("nome").focus();
+        }
+    });
+}
+function creaNuovaStazione()
+{
+    var nome = document.getElementById("nome").value;
+    var descrizione = document.getElementById("descrizione").value;
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    if(nome == "" || nome == null)
+    {
+        Swal.fire
+        ({
+            icon: "warning",
+            title: "Inserisci un codice stazione valido",
+            onOpen: function ()
+            {
+                document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+            }
+        }).then((result) => {
+            getPopupCreaNuovaStazione();
+        });
+    }
+    else
+    {
+        $.get("creaNuovaStazioneGestioneLottiProduzione.php",{nome,descrizione},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                }
+                else
+                    getHotAnagraficaStazioni();
+            }
+        });
+    }
+}
+//-------------------------------------------------------------------------------------------------------------------
+function getMascheraPercorsoProduttivoArticoli(button)
+{
+    view="percorso_produttivo_articoli";
+
+    $(".in-page-nav-bar-button").css({"border-bottom-color":"","font-weight":""});
+    button.style.borderBottomColor="#4C91CB";
+    button.style.fontWeight="bold";
+
+    document.getElementById("actionBarGestioneLottiProduzione").style.display="";
+    document.getElementById("actionBarGestioneLottiProduzione").innerHTML="";
+
+    document.getElementById("gestioneLottiProduzioneContainer").style.display="";
+    document.getElementById("gestioneLottiProduzioneContainer").innerHTML="";
+
+    var actionBar=document.getElementById("actionBarGestioneLottiProduzione");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("style","display:none");
+    button.setAttribute("id","btnConfermaCopiaPercorsoProduttivoArticoli");
+    button.setAttribute("onclick","confermaCopiaPercorsoProduttivoArticoli(this)");
+    var span=document.createElement("span");
+    span.setAttribute("style","color:#70B085;font-weight:bold");
+    span.innerHTML="Conferma copia assegnaizoni";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-copy");
+    i.setAttribute("style","margin-left:5px;color:#70B085");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("style","display:none");
+    button.setAttribute("id","btnAnnullaCopiaPercorsoProduttivoArticoli");
+    button.setAttribute("onclick","resetCopiaStazioniArticoloArticoliStazioni()");
+    var span=document.createElement("span");
+    span.setAttribute("style","color:#DA6969;font-weight:bold");
+    span.innerHTML="Annullla copia assegnaizoni";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-copy");
+    i.setAttribute("style","margin-left:5px;color:#DA6969");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var containerPercorsoProduttivoArticoli = document.createElement("div");
+    containerPercorsoProduttivoArticoli.setAttribute("class","container-percorso-produttivo-articoli");
+    containerPercorsoProduttivoArticoli.setAttribute("id","containerPercorsoProduttivoArticoli");
+    document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerPercorsoProduttivoArticoli);
+
+    getChartPercorsoProduttivoArticoli();
+}
+async function getChartPercorsoProduttivoArticoli()
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var containerPercorsoProduttivoArticoli = document.getElementById("containerPercorsoProduttivoArticoli");
+    containerPercorsoProduttivoArticoli.innerHTML="";
+
+    var articoli = await getArticoli();
+    var stazioni = await getStazioni();
+    var articoli_stazioni = await getArticoliStazioni();
+
+    Swal.close();
+
+    var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100)) / stazioni.length;
+    if(itemStazioneWidth<30)
+    {
+        stazioni = stazioni.slice(0, (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100))/30);
+        var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100)) / stazioni.length;
+
+        Swal.fire
+        ({
+            icon: 'warning',
+            title:"La risoluzione dello schermo utilizzato permette di visualizzare solo le prime "+stazioni.length+" stazioni. Utilizza uno schermo con risoluzione maggiore o contatta l'amministratore",
+            onOpen: function ()
+            {
+                document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+            },
+        });
+    }
+
+    var percorsoProduttivoArticoliHeader = document.createElement("div");
+    percorsoProduttivoArticoliHeader.setAttribute("class","percorso-produttivo-articoli-header");
+
+    var itemArticolo = document.createElement("div");
+    itemArticolo.setAttribute("class","percorso-produttivo-articoli-item-articolo");
+    itemArticolo.setAttribute("style","box-sizing:border-box;padding-left:10px");
+    var i = document.createElement("i");
+    i.setAttribute("class","fad fa-database");
+    itemArticolo.appendChild(i);
+    var span = document.createElement("span");
+    span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
+    span.innerHTML="Articolo";
+    itemArticolo.appendChild(span);
+    percorsoProduttivoArticoliHeader.appendChild(itemArticolo);
+
+    var itemAction = document.createElement("div");
+    itemAction.setAttribute("class","percorso-produttivo-articoli-item-action");
+    itemAction.setAttribute("style","justify-content:center");
+    var i = document.createElement("i");
+    i.setAttribute("class","fad fa-cog");
+    itemAction.appendChild(i);
+    var span = document.createElement("span");
+    span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
+    span.innerHTML="Azione";
+    itemAction.appendChild(span);
+    percorsoProduttivoArticoliHeader.appendChild(itemAction);
+
+    for (let index = 0; index < stazioni.length; index++)
+    {
+        const stazione = stazioni[index];
+
+        var itemStazione = document.createElement("div");
+        itemStazione.setAttribute("class","percorso-produttivo-articoli-item-stazione");
+        itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px");
+        itemStazione.setAttribute("title",stazione.nome);
+        var span = document.createElement("span");
+        span.innerHTML=stazione.nome;
+        itemStazione.appendChild(span);
+        percorsoProduttivoArticoliHeader.appendChild(itemStazione);
+    }
+
+    containerPercorsoProduttivoArticoli.appendChild(percorsoProduttivoArticoliHeader);
+
+    var percorsoProduttivoArticoliBody = document.createElement("div");
+    percorsoProduttivoArticoliBody.setAttribute("class","percorso-produttivo-articoli-body");
+
+    for (let index2 = 0; index2 < articoli.length; index2++)
+    {
+        const articolo = articoli[index2];
+
+        var percorsoProduttivoArticoloRow = document.createElement("div");
+        percorsoProduttivoArticoloRow.setAttribute("class","percorso-produttivo-articoli-row");
+        percorsoProduttivoArticoloRow.setAttribute("id","percorsoProduttivoArticoliRow"+articolo.id_articolo);
+        
+        var itemArticolo = document.createElement("div");
+        itemArticolo.setAttribute("class","percorso-produttivo-articoli-item-articolo");
+        itemArticolo.setAttribute("style","background-color:#f0f0f0;padding-left:10px;box-sizing:border-box");
+        var span = document.createElement("span");
+        span.innerHTML="#" + articolo.id_articolo;
+        itemArticolo.appendChild(span);
+        var span = document.createElement("span");
+        span.setAttribute("style","margin-left:10px;color:#4C91CB;font-weight:bold");
+        span.innerHTML=articolo.codice_articolo;
+        itemArticolo.appendChild(span);
+        var checkbox = document.createElement("input");
+        checkbox.setAttribute("type","checkbox");
+        checkbox.setAttribute("class","percorso-produttivo-articoli-item-articolo-checkbox");
+        checkbox.setAttribute("style","display: none;");
+        checkbox.setAttribute("articolo",articolo.id_articolo);
+        itemArticolo.appendChild(checkbox);
+        percorsoProduttivoArticoloRow.appendChild(itemArticolo);
+
+        var itemAction = document.createElement("div");
+        itemAction.setAttribute("class","percorso-produttivo-articoli-item-action");
+        var button = document.createElement("button");
+        button.setAttribute("onclick","eliminaStazioniArticoloArticoliStazioni("+articolo.id_articolo+")");
+        button.setAttribute("title","Rimuovi assegnazioni");
+        var i = document.createElement("i");
+        i.setAttribute("class","fa-duotone fa-eraser");
+        button.appendChild(i);
+        itemAction.appendChild(button);
+        var button = document.createElement("button");
+        button.setAttribute("onclick","copiaStazioniArticoloArticoliStazioni(this,"+articolo.id_articolo+")");
+        button.setAttribute("class","percorso-produttivo-articoli-item-action-button-copy");
+        button.setAttribute("title","Copia assegnazioni");
+        var i = document.createElement("i");
+        i.setAttribute("class","fa-duotone fa-copy");
+        button.appendChild(i);
+        itemAction.appendChild(button);
+        percorsoProduttivoArticoloRow.appendChild(itemAction);
+
+        for (let index = 0; index < stazioni.length; index++)
+        {
+            const stazione = stazioni[index];
+            
+            var articolo_stazione = articoli_stazioni.filter(function (articolo_stazione) {return articolo_stazione.stazione == stazione.id_stazione}).filter(function (articolo_stazione) {return articolo_stazione.articolo == articolo.id_articolo})[0];
+
+            var itemStazione = document.createElement("div");
+            itemStazione.setAttribute("class","percorso-produttivo-articoli-item-stazione");
+            itemStazione.setAttribute("articolo",articolo.id_articolo);
+            itemStazione.setAttribute("stazione",stazione.id_stazione);
+            itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;");
+            
+            var button = document.createElement("button");
+            button.setAttribute("onclick","");
+            if(articolo_stazione==undefined)
+            {
+                button.setAttribute("style","background-color:#ccc;");
+                button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+            }
+            else
+            {
+                button.setAttribute("style","background-color:#70B085;");
+                button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                var i = document.createElement("i");
+                i.setAttribute("class","fa-duotone fa-check-circle");
+                button.appendChild(i);
+            }
+            itemStazione.appendChild(button);
+
+            percorsoProduttivoArticoloRow.appendChild(itemStazione);
+        }
+
+        percorsoProduttivoArticoliBody.appendChild(percorsoProduttivoArticoloRow);
+    }
+
+    containerPercorsoProduttivoArticoli.appendChild(percorsoProduttivoArticoliBody);
+}
+function confermaCopiaPercorsoProduttivoArticoli(button)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var articolo = parseInt(button.getAttribute("articolo"));
+    var articoliIncolla = [];
+
+    var checkboxes = document.getElementsByClassName("percorso-produttivo-articoli-item-articolo-checkbox");
+    for (let index = 0; index < checkboxes.length; index++)
+    {
+        const checkbox = checkboxes[index];
+
+        if(checkbox.checked)
+            articoliIncolla.push(parseInt(checkbox.getAttribute("articolo")));
+    }
+
+    $.post('copiaPercorsoProduttivoArticoliGestioneLottiProduzione.php',{ articolo,articoliIncolla },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                }).then((result) => {
+                    getView();
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+
+                resetCopiaStazioniArticoloArticoliStazioni();
+                getChartPercorsoProduttivoArticoli();
+            }
+        }
+    });
+}
+function copiaStazioniArticoloArticoliStazioni(button,articolo)
+{
+    resetCopiaStazioniArticoloArticoliStazioni();
+
+    document.getElementById("btnConfermaCopiaPercorsoProduttivoArticoli").style.display="";
+    document.getElementById("btnAnnullaCopiaPercorsoProduttivoArticoli").style.display="";
+    
+    document.getElementById("btnConfermaCopiaPercorsoProduttivoArticoli").setAttribute("articolo",articolo);
+
+    document.getElementById("percorsoProduttivoArticoliRow"+articolo).style.backgroundColor = "#4c92cb49";
+    document.getElementById("percorsoProduttivoArticoliRow"+articolo).getElementsByClassName("percorso-produttivo-articoli-item-articolo")[0].style.backgroundColor = "#4c92cb49";
+    button.style.color = "#4C91CB";
+
+    var checkboxes = document.getElementsByClassName("percorso-produttivo-articoli-item-articolo-checkbox");
+    for (let index = 0; index < checkboxes.length; index++)
+    {
+        const checkbox = checkboxes[index];
+
+        if(checkbox.getAttribute("articolo") != articolo)
+            checkbox.style.display="";
+    }
+}
+function resetCopiaStazioniArticoloArticoliStazioni()
+{
+    document.getElementById("btnConfermaCopiaPercorsoProduttivoArticoli").style.display="none";
+    document.getElementById("btnAnnullaCopiaPercorsoProduttivoArticoli").style.display="none";
+    
+    document.getElementById("btnConfermaCopiaPercorsoProduttivoArticoli").removeAttribute("articolo");
+
+    var buttonsCopy = document.getElementsByClassName("percorso-produttivo-articoli-item-action-button-copy");
+    for (let index = 0; index < buttonsCopy.length; index++)
+    {
+        const buttonCopy = buttonsCopy[index];
+        
+        buttonCopy.style.color="";
+    }
+
+    var rows = document.getElementsByClassName("percorso-produttivo-articoli-row");
+    for (let index = 0; index < rows.length; index++)
+    {
+        const row = rows[index];
+        
+        row.style.backgroundColor = "";
+        row.getElementsByClassName("percorso-produttivo-articoli-item-articolo")[0].style.backgroundColor = "#f0f0f0";
+    }
+
+    var checkboxes = document.getElementsByClassName("percorso-produttivo-articoli-item-articolo-checkbox");
+    for (let index = 0; index < checkboxes.length; index++)
+    {
+        const checkbox = checkboxes[index];
+
+        checkbox.checked = false;
+        checkbox.style.display="none";
+    }
+}
+function eliminaStazioniArticoloArticoliStazioni(articolo)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    $.post('eliminaStazioniArticoloArticoliStazioniGestioneLottiProduzione.php',{ articolo },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                }).then((result) => {
+                    getView();
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+                
+                var itemsStazione = document.getElementById("percorsoProduttivoArticoliRow"+articolo).getElementsByClassName("percorso-produttivo-articoli-item-stazione");
+                for (let index = 0; index < itemsStazione.length; index++)
+                {
+                    const itemStazione = itemsStazione[index];
+                    
+                    var button = itemStazione.getElementsByTagName("button")[0];
+                    button.style.backgroundColor="#ccc";
+                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+parseInt(itemStazione.getAttribute("stazione"))+")");
+                    button.innerHTML="";
+                }
+            }
+        }
+    });
+}
+function eliminaRigaArticoliStazioni(button,articolo,stazione)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    $.post('eliminaRigaArticoliStazioniGestioneLottiProduzione.php',{ articolo,stazione },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                }).then((result) => {
+                    getView();
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+                
+                button.style.backgroundColor="#ccc";
+                button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+stazione+")");
+                button.innerHTML="";
+            }
+        }
+    });
+}
+function aggiungiRigaArticoliStazioni(button,articolo,stazione)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    $.post('aggiungiRigaArticoliStazioniGestioneLottiProduzione.php',{ articolo,stazione },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                }).then((result) => {
+                    getView();
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+                
+                button.style.backgroundColor="#70B085";
+                button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo+","+stazione+")");
+                var i = document.createElement("i");
+                i.setAttribute("class","fa-duotone fa-check-circle");
+                button.appendChild(i);
+            }
+        }
+    });
+}
+function getArticoli()
+{
+    return new Promise(function (resolve, reject)
+    {
+        $.get('getArticoliGestioneLottiProduzione.php',
+        function (response, status)
+        {
+            if (status == 'success')
+            {
+                if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                {
+                    Swal.fire
+                    ({
+                        icon: 'error',
+                        title:"Errore. Se il problema persiste contatta l' amministratore",
+                        onOpen: function ()
+                        {
+                            document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                            document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                        },
+                    });
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try
+                    {
+                        resolve(JSON.parse(response));
+                    }
+                    catch (error)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color = 'gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getStazioni()
+{
+    return new Promise(function (resolve, reject)
+    {
+        $.get('getStazioniGestioneLottiProduzione.php',
+        function (response, status)
+        {
+            if (status == 'success')
+            {
+                if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                {
+                    Swal.fire
+                    ({
+                        icon: 'error',
+                        title:"Errore. Se il problema persiste contatta l' amministratore",
+                        onOpen: function ()
+                        {
+                            document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                            document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                        },
+                    });
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try
+                    {
+                        resolve(JSON.parse(response));
+                    }
+                    catch (error)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color = 'gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getArticoliStazioni()
+{
+    return new Promise(function (resolve, reject)
+    {
+        $.get('getArticoliStazioniGestioneLottiProduzione.php',
+        function (response, status)
+        {
+            if (status == 'success')
+            {
+                if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                {
+                    Swal.fire
+                    ({
+                        icon: 'error',
+                        title:"Errore. Se il problema persiste contatta l' amministratore",
+                        onOpen: function ()
+                        {
+                            document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                            document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                        },
+                    });
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try
+                    {
+                        resolve(JSON.parse(response));
+                    }
+                    catch (error)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color = 'gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
 }
