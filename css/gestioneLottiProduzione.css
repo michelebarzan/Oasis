@@ -473,7 +473,8 @@ body
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 	box-sizing: border-box;
 	width: 100%;
 	color: black;
@@ -517,6 +518,8 @@ body
 	padding-left: 5px;
 	padding-right: 5px;
 	height: 30px;
+	min-height: 30px;
+	max-height: 30px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -558,11 +561,14 @@ body
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 	box-sizing: border-box;
 	width: 100%;
 	color: black;
-	height: 36px;
+	height: 31px;
+	box-sizing: border-box;
+	padding-top: 5px;
 }
 .articoli-title-container span
 {
@@ -578,7 +584,7 @@ body
 	flex-direction: column;
 	align-items: flex-start;
 	justify-content: flex-start;
-	height: calc(100% - 36px);
+	height: calc(100% - 31px);
 	box-sizing: border-box;
 	border:5px solid transparent;
 	transition: background 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -608,6 +614,8 @@ body
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 	border: 1px solid rgb(182, 182, 182);
 	width: calc(100% - 10px);
+	max-width: calc(100% - 10px);
+	min-width: calc(100% - 10px);
 }
 .articolo-item:hover
 {
@@ -677,4 +685,37 @@ body
 .articolo-item-button-container input[type=number]
 {
 	-moz-appearance: textfield;
+}
+.creazione-lotto-title-input-search
+{
+	margin-left: auto;
+	height: 25px;
+	border: 1px solid #aaa;
+	background-color: white;
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	color: black;
+	border-radius: 4px;
+	box-sizing: border-box;
+	padding: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: left;
+	width: 200px;
+	outline: none;
+}
+/*-------------------------------------------------------*/
+.container-anagrafica-articoli
+{
+	height: calc(100% - 40px);
+	max-height: calc(100% - 40px);
+	min-height: calc(100% - 40px);
+	width: calc(100% - 100px);
+	max-width: calc(100% - 100px);
+	min-width: calc(100% - 100px);
+	overflow: hidden;
+	margin-left: 50px;
+	margin-right: 50px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }

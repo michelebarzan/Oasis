@@ -7,13 +7,12 @@
     $articoliLotto=[];
     $articoli=[];
 
-    $q="SELECT t.id_articolo, t.codice_articolo, t.lotto, t.articolo, COUNT(t.id_articolo_lotto) AS qnt
-        FROM
-        (SELECT TOP (100) PERCENT articoli.id_articolo, articoli.codice_articolo, articoli_lotti.lotto, articoli_lotti.articolo, articoli_lotti.id_articolo_lotto
+    $q="SELECT TOP (100) PERCENT articoli.id_articolo, articoli.codice_articolo, articoli_lotti.lotto, articoli_lotti.articolo, COUNT(articoli_lotti.id_articolo_lotto) AS qnt, MAX(articoli_lotti.id_articolo_lotto) AS id_articolo_lotto
         FROM oasis_produzione.dbo.articoli AS articoli INNER JOIN oasis_produzione.dbo.articoli_lotti AS articoli_lotti ON articoli.id_articolo = articoli_lotti.articolo
-        WHERE (articoli_lotti.lotto = $id_lotto)
-        ORDER BY articoli_lotti.id_articolo_lotto ASC) AS t
-        GROUP BY t.id_articolo, t.codice_articolo, t.lotto, t.articolo";
+        WHERE articoli.eliminato = 'false'
+        GROUP BY articoli.id_articolo, articoli.codice_articolo, articoli_lotti.lotto, articoli_lotti.articolo
+        HAVING (articoli_lotti.lotto = $id_lotto)
+        ORDER BY id_articolo_lotto";
     $r=sqlsrv_query($conn,$q);
     if($r==FALSE)
     {
@@ -33,7 +32,7 @@
     }
     $q2="SELECT *
         FROM oasis_produzione.dbo.articoli articoli_2
-        WHERE articoli_2.id_articolo NOT IN (SELECT id_articolo FROM oasis_produzione.dbo.articoli articoli INNER JOIN oasis_produzione.dbo.articoli_lotti articoli_lotti ON articoli.id_articolo = articoli_lotti.articolo WHERE (articoli_lotti.lotto = $id_lotto))
+        WHERE articoli_2.id_articolo NOT IN (SELECT id_articolo FROM oasis_produzione.dbo.articoli articoli INNER JOIN oasis_produzione.dbo.articoli_lotti articoli_lotti ON articoli.id_articolo = articoli_lotti.articolo WHERE (articoli_lotti.lotto = $id_lotto)) AND articoli_2.eliminato = 'false'
         ORDER BY articoli_2.codice_articolo";
     $r2=sqlsrv_query($conn,$q2);
     if($r2==FALSE)

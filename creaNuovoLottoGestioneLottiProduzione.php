@@ -2,8 +2,8 @@
 
     include "connessione.php";
 
-    $lotto = $_REQUEST["lotto"];
-    $note = $_REQUEST["note"];
+    $lotto = str_replace("'", "", $_REQUEST["lotto"]);
+    $note = str_replace("'", "", $_REQUEST["note"]);
 
     $q2="INSERT INTO oasis_produzione.dbo.lotti (lotto,note,dataOra,chiuso,producibile) VALUES ('$lotto','$note',GETDATE(),'false','false')";
     $r2=sqlsrv_query($conn,$q2);

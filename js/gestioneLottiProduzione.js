@@ -1,5 +1,6 @@
 var lotti=[];
 var view;
+var hot;
 //--------------------------------------------
 var creazioneLottiVariables=
 {
@@ -8,7 +9,8 @@ var creazioneLottiVariables=
     articoloItemBeingDragged:null,
     articoloItemMousex:null,
     articoloItemMousey:null,
-    articoloItemCoordinates:[]
+    articoloItemCoordinates:[],
+    oldInputQntValue:null
 }
 
 async function getMascheraCreazioneLotto(button)
@@ -35,6 +37,20 @@ async function getMascheraCreazioneLotto(button)
     button.appendChild(span);
     var i=document.createElement("i");
     i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("id","btnGetPopupModificaLotto");
+    button.setAttribute("style","display:none");
+    button.setAttribute("onclick","getPopupModificaLotto()");
+    var span=document.createElement("span");
+    span.innerHTML="Modifica lotto";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-edit");
     i.setAttribute("style","margin-left:5px");
     button.appendChild(i);
     actionBar.appendChild(button);
@@ -102,10 +118,19 @@ async function getContainerLotti()
     option.innerHTML = 'Data';
     select.appendChild(option);
     var option = document.createElement('option');
-    option.setAttribute('value', 'nome');
+    option.setAttribute('value', 'lotto');
     option.innerHTML = 'Nome';
     select.appendChild(option);
     titleContainer.appendChild(select);
+
+    var input = document.createElement("input");
+    input.setAttribute("class","creazione-lotto-title-input-search");
+    input.setAttribute("id","creazioneLottoLottiInputSearch");
+    input.setAttribute("type","search");
+    input.setAttribute("placeholder","Cerca...");
+    input.setAttribute('style', 'margin-left:10px;');
+    input.setAttribute("onsearch","searchLottiCreazioneLotti(this)");
+    titleContainer.appendChild(input);
 
     outerContainer.appendChild(titleContainer);
 
@@ -138,11 +163,64 @@ async function getContainerLotti()
     getElencoLotti(lotti);
     sortFilterLottiCreazioneLotti()
 }
+function searchLottiCreazioneLotti(input)
+{
+    creazioneLottiVariables.id_lotto = null;
+    document.getElementById("btnGetPopupModificaLotto").style.display="none";
+    resetElencoArticoli();
+
+    var value = input.value.toString().toLocaleLowerCase();
+
+    var items = document.getElementById("lottiInnerContainer").getElementsByClassName("lotto-item");
+    for (let index = 0; index < items.length; index++)
+    {
+        const item = items[index];
+        
+        var keep = false;
+        var spans = item.getElementsByTagName("span");
+        for (let index2 = 0; index2 < spans.length; index2++)
+        {
+            const span = spans[index2];
+
+            if(span.innerHTML.toString().toLocaleLowerCase().indexOf(value) > -1)
+                keep = true;
+        }
+        if(keep)
+            item.style.display="";
+        else
+            item.style.display="none";
+    }
+}
+function searchArticoliCreazioneLotti(input,containerId)
+{
+    var value = input.value.toString().toLocaleLowerCase();
+
+    var items = document.getElementById(containerId).getElementsByClassName("articolo-item");
+    for (let index = 0; index < items.length; index++)
+    {
+        const item = items[index];
+        
+        var keep = false;
+        var spans = item.getElementsByTagName("span");
+        for (let index2 = 0; index2 < spans.length; index2++)
+        {
+            const span = spans[index2];
+
+            if(span.innerHTML.toString().toLocaleLowerCase().indexOf(value) > -1)
+                keep = true;
+        }
+        if(keep)
+            item.style.display="";
+        else
+            item.style.display="none";
+    }
+}
 function sortFilterLottiCreazioneLotti()
 {
     var filter=document.getElementById("lottiTitleContainerSelectStato").value;
     var sort=document.getElementById("lottiTitleContainerSelectOrdine").value;
 
+    document.getElementById("creazioneLottoLottiInputSearch").value="";
     resetElencoArticoli();
 
     var filteredLotti=[];
@@ -178,6 +256,7 @@ function sortFilterLottiCreazioneLotti()
 function getElencoLotti(lotti,toSelect)
 {
     creazioneLottiVariables.id_lotto = null;
+    document.getElementById("btnGetPopupModificaLotto").style.display="none";
 
     document.getElementById('lottiInnerContainer').innerHTML="";
 
@@ -187,14 +266,14 @@ function getElencoLotti(lotti,toSelect)
         var lottoItem = document.createElement('div');
         lottoItem.setAttribute('class', 'lotto-item');
         lottoItem.setAttribute('id_lotto', lotto.id_lotto);
-        lottoItem.setAttribute('onclick','getElencoArticoli(' + lotto.id_lotto + ')');
+        lottoItem.setAttribute('onclick','document.getElementById("btnGetPopupModificaLotto").style.display="";getElencoArticoli(' + lotto.id_lotto + ')');
         if (c == 0)
             lottoItem.setAttribute('style','border-top:1px solid #ccc;border-bottom:1px solid #ccc');
         else
             lottoItem.setAttribute('style', 'border-bottom:1px solid #ccc');
 
         var span = document.createElement('span');
-        span.setAttribute('style','color:gray;  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;margin-right:5px;letter-spacing:1px');
+        span.setAttribute('style','color:gray;margin-right:5px;letter-spacing:1px');
         span.innerHTML = '#' + lotto.id_lotto;
         lottoItem.appendChild(span);
 
@@ -246,6 +325,158 @@ function getElencoLotti(lotti,toSelect)
         }, 500);
     }
 }
+function getPopupModificaLotto()
+{
+    var id_lotto = creazioneLottiVariables.id_lotto;
+    var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","input-popup-outer-container");
+
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","input-popup-inner-container");
+    
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Nome lotto";
+    row.appendChild(spanNome);
+
+    var inputTesto=document.createElement("input");
+    inputTesto.setAttribute("type","text");
+    inputTesto.setAttribute("class","input-popup-input");
+    inputTesto.setAttribute("onkeydown","validateInput(this,event)");
+    inputTesto.setAttribute("id", "lotto");
+    inputTesto.setAttribute("value", lotto.lotto);
+    row.appendChild(inputTesto);
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Note";
+    row.appendChild(spanNome);
+
+    var textarea=document.createElement("textarea");
+    textarea.setAttribute("class","input-popup-input");
+    textarea.setAttribute("onkeydown","validateInput(this,event)");
+    textarea.setAttribute("id", "note");
+    console.log(lotto);
+    textarea.innerHTML = lotto.note;
+    row.appendChild(textarea);
+    innerContainer.appendChild(row);
+
+    outerContainer.appendChild(innerContainer);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+    row.setAttribute("style","padding:0px;min-height:30px");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","input-popup-button");
+    button.setAttribute("onclick","salvaModificheLotto()");
+    button.innerHTML='<span>Salva modifiche</span><i class="fad fa-save"></i>';
+    row.appendChild(button);
+
+    outerContainer.appendChild(row);
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Swal.fire
+    ({
+        title: "Modifica lotto "+lotto.lotto,
+        background:"#f1f1f1",
+        html: outerContainer.outerHTML,
+        showConfirmButton:true,
+        showCloseButton:true,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+            document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-header")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-header")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-title")[0].style.color="black";
+
+            document.getElementsByClassName("swal2-actions")[0].style.display="none";
+        }
+    });
+}
+function salvaModificheLotto()
+{
+    var lotto = document.getElementById("lotto").value;
+    var note = document.getElementById("note").value;
+    var id_lotto = creazioneLottiVariables.id_lotto;
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    if(lotto == "" || lotto == null)
+    {
+        Swal.fire
+        ({
+            icon: "warning",
+            title: "Inserisci un nome lotto valido",
+            onOpen: function ()
+            {
+                document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+            }
+        }).then((result) => {
+            getPopupModificaLotto();
+        });
+    }
+    else
+    {
+        $.get("modificaLottoGestioneLottiProduzione.php",{id_lotto,lotto,note},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                }
+                else
+                {
+                    Swal.fire
+                    ({
+                        icon: "success",
+                        title: "Modifiche salvate",
+                        onOpen: function ()
+                        {
+                            document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                            document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+                        }
+                    }).then((result) => {
+                        getLottoByIdLotto(id_lotto);
+                    });
+                }
+            }
+        });
+    }
+}
 function getPopupCreaNuovoLotto()
 {        
     var outerContainer=document.createElement("div");
@@ -267,6 +498,7 @@ function getPopupCreaNuovoLotto()
     inputTesto.setAttribute("type","text");
     inputTesto.setAttribute("class","input-popup-input");
     inputTesto.setAttribute("onkeydown","validateInput(this,event)");
+    inputTesto.setAttribute("onkeyup","checkEnter(event,creaNuovoLotto)");
     inputTesto.setAttribute("id", "lotto");
     row.appendChild(inputTesto);
 
@@ -279,6 +511,7 @@ function getPopupCreaNuovoLotto()
     var textarea=document.createElement("textarea");
     textarea.setAttribute("class","input-popup-input");
     textarea.setAttribute("onkeydown","validateInput(this,event)");
+    textarea.setAttribute("onkeyup","checkEnter(event,creaNuovoLotto)");
     textarea.setAttribute("id", "note");
     row.appendChild(textarea);
     
@@ -324,6 +557,8 @@ function getPopupCreaNuovoLotto()
             document.getElementsByClassName("swal2-title")[0].style.color="black";
 
             document.getElementsByClassName("swal2-actions")[0].style.display="none";
+
+            document.getElementById("lotto").focus();
         }
     });
 }
@@ -385,17 +620,17 @@ function creaNuovoLotto()
                             document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
                         }
                     }).then((result) => {
-                        getNuovoLotto(response);
+                        getLottoByIdLotto(response);
                     });
                 }
             }
         });
     }
 }
-async function getNuovoLotto(id_lotto)
+async function getLottoByIdLotto(id_lotto)
 {
-    if(document.getElementById("lottiTitleContainerSelectStato").value == "chiusi")
-        document.getElementById("lottiTitleContainerSelectStato").value = "aperti";
+    if(document.getElementById("lottiTitleContainerSelectStato").value == "chiusi" || document.getElementById("lottiTitleContainerSelectStato").value == "aperti")
+        document.getElementById("lottiTitleContainerSelectStato").value = "tutti";
 
     Swal.fire
     ({
@@ -417,6 +652,7 @@ async function getNuovoLotto(id_lotto)
 
     getElencoLotti(lotti,id_lotto);
     sortFilterLottiCreazioneLotti();
+    document.getElementById("btnGetPopupModificaLotto").style.display="";
 }
 function getContainerArticoli()
 {    
@@ -438,10 +674,18 @@ function getContainerArticoli()
     span.innerHTML = 'Articoli lotto';
     titleContainerArticoliLotto.appendChild(span);
 
+    var input = document.createElement("input");
+    input.setAttribute("class","creazione-lotto-title-input-search");
+    input.setAttribute("id","creazioneLottoArticoliInputSearch");
+    input.setAttribute("type","search");
+    input.setAttribute("placeholder","Cerca...");
+    input.setAttribute("onsearch","searchArticoliCreazioneLotti(this,'innerContainerArticoliLotto')");
+    titleContainerArticoliLotto.appendChild(input);
+
     outerContainerArticoliLotto.appendChild(titleContainerArticoliLotto);
 
     var innerContainerArticoliLotto = document.createElement('div');
-    innerContainerArticoliLotto.setAttribute('class','articoli-inner-container connectedSortable');
+    innerContainerArticoliLotto.setAttribute('class','articoli-inner-container');
     innerContainerArticoliLotto.setAttribute('id','innerContainerArticoliLotto');
 
     outerContainerArticoliLotto.appendChild(innerContainerArticoliLotto);
@@ -466,10 +710,18 @@ function getContainerArticoli()
     span.innerHTML = 'Tutti gli articoli';
     titleContainerArticoli.appendChild(span);
 
+    var input = document.createElement("input");
+    input.setAttribute("class","creazione-lotto-title-input-search");
+    input.setAttribute("id","creazioneLottoArticoliInputSearch");
+    input.setAttribute("type","search");
+    input.setAttribute("placeholder","Cerca...");
+    input.setAttribute("onsearch","searchArticoliCreazioneLotti(this,'innerContainerArticoli')");
+    titleContainerArticoli.appendChild(input);
+
     outerContainerArticoli.appendChild(titleContainerArticoli);
 
     var innerContainerArticoli = document.createElement('div');
-    innerContainerArticoli.setAttribute('class','articoli-inner-container connectedSortable');
+    innerContainerArticoli.setAttribute('class','articoli-inner-container');
     innerContainerArticoli.setAttribute('id', 'innerContainerArticoli');
 
     outerContainerArticoli.appendChild(innerContainerArticoli);
@@ -530,7 +782,6 @@ async function getElencoArticoli(id_lotto)
     }
 
     var articoliLottoResponse = await getArticoliLotto(id_lotto);
-    console.log(articoliLottoResponse);
 
     var articoliLotto = articoliLottoResponse.articoliLotto;
     var articoli = articoliLottoResponse.articoli;
@@ -576,23 +827,13 @@ function getArticoloItem(container,id_articolo,codice_articolo,qnt)
     span.innerHTML = codice_articolo;
     articoloItem.appendChild(span);
 
-    /*var i = document.createElement('i');
-    i.setAttribute('class', '');
-    i.setAttribute('style', 'margin-left:auto;margin-right:5px;color:#404040');
-    articoloItem.appendChild(i);
-
-    var span = document.createElement('span');
-    span.setAttribute('style','color:black;  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;margin-right:10px');
-    span.innerHTML = "";
-    articoloItem.appendChild(span);*/
-
     if(container.id == "innerContainerArticoliLotto")
     {
         var buttonContainer = document.createElement("div");
         buttonContainer.setAttribute(`class`,`articolo-item-button-container articolo-item-button`);
 
         var button = document.createElement(`button`);
-        button.setAttribute(`onclick`,`decrementaArticoloLotto(${creazioneLottiVariables.id_lotto},${id_articolo})`);
+        button.setAttribute(`onclick`,`decrementaArticoloLotto(this,${creazioneLottiVariables.id_lotto},${id_articolo},'${codice_articolo}')`);
         button.setAttribute(`class`,`articolo-item-button`);
         button.innerHTML = `<i class="fa-solid fa-minus articolo-item-button"></i>`;
         buttonContainer.appendChild(button);
@@ -601,6 +842,8 @@ function getArticoloItem(container,id_articolo,codice_articolo,qnt)
         var input = document.createElement("input");
         input.setAttribute("type","number");
         input.setAttribute("class","articolo-item-button");
+        input.setAttribute("onfocusin","creazioneLottiVariables.oldInputQntValue=this.value;");
+        input.setAttribute("onfocusout",`impostaQuantitaArticoloLotto(this,${creazioneLottiVariables.id_lotto},${id_articolo},'${codice_articolo}',${id_articolo})`);
         input.setAttribute("value",qnt);
         buttonContainer.appendChild(input);
 
@@ -613,9 +856,92 @@ function getArticoloItem(container,id_articolo,codice_articolo,qnt)
 
     container.appendChild(articoloItem);
 }
-function incrementaArticoloLotto(input,id_lotto,id_articolo)
+function impostaQuantitaArticoloLotto(input,id_lotto,id_articolo,codice_articolo)
 {
-    console.log(id_lotto,id_articolo)
+    if(input.value != creazioneLottiVariables.oldInputQntValue)
+    {
+        Swal.fire
+        ({
+            width:"100%",
+            background:"transparent",
+            title:"Caricamento in corso...",
+            html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+            allowOutsideClick:false,
+            showCloseButton:false,
+            showConfirmButton:false,
+            allowEscapeKey:false,
+            showCancelButton:false,
+            onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+        });
+    
+        if(input.value < 1 || input.value == "" || input.value == null || input.value == undefined || isNaN(input.value))
+        {
+            $.post('rimuoviArticoloLottoGestioneLottiProduzione.php',{ id_lotto,id_articolo },
+            function (response, status)
+            {
+                if (status == 'success')
+                {
+                    if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                    }
+                    else
+                    {
+                        Swal.close();
+                        input.parentElement.parentElement.remove();
+                        getArticoloItem(document.getElementById("innerContainerArticoli"),id_articolo,codice_articolo,1);
+                    }
+                }
+            });
+        }
+        else
+        {
+            $.post('impostaQuantitaArticoloLottoGestioneLottiProduzione.php',{ id_lotto,id_articolo,qnt:input.value },
+            function (response, status)
+            {
+                if (status == 'success')
+                {
+                    if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                    }
+                    else
+                    {
+                        Swal.close();
+                    }
+                }
+            });
+        }
+    }
+}
+function incrementaArticoloLotto(button,id_lotto,id_articolo)
+{
+    var oldIcon = button.innerHTML;
+    button.innerHTML = '<i class="fad fa-spinner-third fa-spin"></i>';
+    button.parentElement.getElementsByTagName("button")[0].disabled = true;
+    button.parentElement.getElementsByTagName("input")[0].disabled = true;
+    button.parentElement.getElementsByTagName("button")[1].disabled = true;
+
     $.post('incrementaArticoloLottoGestioneLottiProduzione.php',{ id_lotto,id_articolo },
     function (response, status)
     {
@@ -636,7 +962,59 @@ function incrementaArticoloLotto(input,id_lotto,id_articolo)
                 console.log(response);
             }
             else
-                input.value++;
+            {
+                button.innerHTML = oldIcon;
+                button.parentElement.getElementsByTagName("button")[0].disabled = false;
+                button.parentElement.getElementsByTagName("input")[0].disabled = false;
+                button.parentElement.getElementsByTagName("button")[1].disabled = false;
+
+                button.parentElement.getElementsByTagName("input")[0].value++;
+            }
+        }
+    });
+}
+function decrementaArticoloLotto(button,id_lotto,id_articolo,codice_articolo)
+{
+    var oldIcon = button.innerHTML;
+    button.innerHTML = '<i class="fad fa-spinner-third fa-spin"></i>';
+    button.parentElement.getElementsByTagName("button")[0].disabled = true;
+    button.parentElement.getElementsByTagName("input")[0].disabled = true;
+    button.parentElement.getElementsByTagName("button")[1].disabled = true;
+
+    $.post('decrementaArticoloLottoGestioneLottiProduzione.php',{ id_lotto,id_articolo },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                });
+                console.log(response);
+            }
+            else
+            {
+                button.innerHTML = oldIcon;
+                button.parentElement.getElementsByTagName("button")[0].disabled = false;
+                button.parentElement.getElementsByTagName("input")[0].disabled = false;
+                button.parentElement.getElementsByTagName("button")[1].disabled = false;
+
+                if(button.parentElement.getElementsByTagName("input")[0].value == 1)
+                {
+                    button.parentElement.parentElement.remove();
+                    getArticoloItem(document.getElementById("innerContainerArticoli"),id_articolo,codice_articolo,1)
+                }
+                else
+                    button.parentElement.getElementsByTagName("input")[0].value--;
+            }
         }
     });
 }
@@ -669,6 +1047,10 @@ function startDragArticoloItem(articoloItem,event)
     if(creazioneLottiVariables.articoloItemBeingDragged != null)
         stopDragArticoloItem(event);
     
+    articoloItem.style.width = articoloItem.offsetWidth + "px";
+    articoloItem.style.minWidth = articoloItem.offsetWidth + "px";
+    articoloItem.style.maxWidth = articoloItem.offsetWidth + "px";
+
     creazioneLottiVariables.articoloItemBeingDragged=articoloItem;
     creazioneLottiVariables.articoloItemBeingDragged.setPointerCapture(event.pointerId);
 
@@ -776,7 +1158,7 @@ function stopDragArticoloItem(event)
                 }
             }
             else
-                getArticoloItem(origin,id_articolo,codice_articolo,1);
+                getArticoloItem(origin,id_articolo,codice_articolo,1);//qua
         }
         else
             getArticoloItem(origin,id_articolo,codice_articolo,1)
@@ -1096,3 +1478,346 @@ async function getMascheraProduzioneLotto(button)
     if(callback != null && callback != undefined && callback != "")
         callback();
 }*/
+//----------------------------------------------------------------------------------------------------------------------------------
+function getMascheraAnagraficaArticoli(button)
+{
+    view="anagrafica_articoli";
+
+    $(".in-page-nav-bar-button").css({"border-bottom-color":"","font-weight":""});
+    button.style.borderBottomColor="#4C91CB";
+    button.style.fontWeight="bold";
+
+    document.getElementById("actionBarGestioneLottiProduzione").style.display="";
+    document.getElementById("actionBarGestioneLottiProduzione").innerHTML="";
+
+    document.getElementById("gestioneLottiProduzioneContainer").style.display="";
+    document.getElementById("gestioneLottiProduzioneContainer").innerHTML="";
+
+    var actionBar=document.getElementById("actionBarGestioneLottiProduzione");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","getPopupCreaNuovoArticolo()");
+    var span=document.createElement("span");
+    span.innerHTML="Crea nuovo articolo";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","esportaExcelHot('anagrafica_articoli')");
+    var span=document.createElement("span");
+    span.innerHTML="Esporta";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-file-excel");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
+    var containerAnagraficaArticoli = document.createElement("div");
+    containerAnagraficaArticoli.setAttribute("class","container-anagrafica-articoli");
+    containerAnagraficaArticoli.setAttribute("id","containerAnagraficaArticoli");
+    document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerAnagraficaArticoli);
+
+    getHotAnagraficaArticoli();
+}
+async function getHotAnagraficaArticoli()
+{
+    try {hot.destroy();} catch (error) {}
+
+    var container = document.getElementById('containerAnagraficaArticoli');
+    container.innerHTML="";
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var response=await getHotDataAnagraficaArticoli();
+
+    Swal.close();
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+        hot = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                manualColumnMove:true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                fixedColumnsLeft:2,
+                columnSorting: true,
+                width:"100%",
+                height,
+                columns:response.columns,
+                afterChange: (changes) =>
+                {
+                    if(changes!=null)
+                    {
+                        changes.forEach(([row, prop, oldValue, newValue]) =>
+                        {
+                            if(prop!="id_articolo")
+                            {
+                                if(oldValue!=newValue)
+                                {
+                                    var id_articolo=hot.getDataAtCell(row, 0);
+                                    if(prop == "eliminato")
+                                    {
+                                        if(newValue == "true" || newValue == "false" || newValue == true || newValue == false)
+                                            aggiornaRigaHotAnagraficaArticoli(id_articolo,prop,newValue);
+                                        else
+                                            aggiornaRigaHotAnagraficaArticoli(id_articolo,prop,false);
+
+                                    }
+                                    else
+                                        aggiornaRigaHotAnagraficaArticoli(id_articolo,prop,newValue);
+                                }
+                            }
+                        });
+                    }
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htUIMultipleSelectSearch")[0].getElementsByTagName("input")[0].addEventListener("click", function()
+                    {
+                        document.getElementsByClassName("htUIClearAll")[0].getElementsByTagName("a")[0].click();
+                    });
+                }
+            }
+        );
+        hot.getPlugin('columnSorting').sort({ column: 0, sortOrder: 'desc' });
+        exportPlugin1 = hot.getPlugin('exportFile');
+        document.getElementById("hot-display-license-info").remove();
+    }
+}
+function aggiornaRigaHotAnagraficaArticoli(id,colonna,valore)
+{
+    $.get("aggiornaRigaHotAnagraficaArticoliGestioneLottiProduzione.php",{id,colonna,valore},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+        }
+    });
+}
+function getHotDataAnagraficaArticoli()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.post("getHotDataAnagraficaArticoliGestioneLottiProduzione.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                try {
+                    resolve(JSON.parse(response));
+                } catch (error) {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+            }
+            else
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+                resolve([]);
+            }
+        });
+    });
+}
+function esportaExcelHot(filename)
+{
+    exportPlugin1.downloadFile('csv',
+    {
+        bom: false,
+        columnDelimiter: '\t',
+        columnHeaders: true,
+        exportHiddenColumns: true,
+        exportHiddenRows: true,
+        fileExtension: 'xls',
+        filename,
+        mimeType: 'text/csv',
+        rowDelimiter: '\r\n',
+        rowHeaders: false
+    });
+}
+function getPopupCreaNuovoArticolo()
+{        
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","input-popup-outer-container");
+
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","input-popup-inner-container");
+    
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Codice articolo";
+    row.appendChild(spanNome);
+
+    var inputTesto=document.createElement("input");
+    inputTesto.setAttribute("type","text");
+    inputTesto.setAttribute("class","input-popup-input");
+    inputTesto.setAttribute("onkeydown","validateInput(this,event)");
+    inputTesto.setAttribute("onkeyup","checkEnter(event,creaNuovoArticolo)");
+    inputTesto.setAttribute("id", "codice_articolo");
+    row.appendChild(inputTesto);
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Descrizione";
+    row.appendChild(spanNome);
+
+    var textarea=document.createElement("textarea");
+    textarea.setAttribute("class","input-popup-input");
+    textarea.setAttribute("onkeydown","validateInput(this,event)");
+    textarea.setAttribute("onkeyup","checkEnter(event,creaNuovoArticolo)");
+    textarea.setAttribute("id", "descrizione");
+    row.appendChild(textarea);
+    
+    innerContainer.appendChild(row);
+
+    outerContainer.appendChild(innerContainer);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+    row.setAttribute("style","padding:0px;min-height:30px");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","input-popup-button");
+    button.setAttribute("onclick","creaNuovoArticolo()");
+    button.innerHTML='<span>Crea nuovo articolo</span><i class="fad fa-plus-circle"></i>';
+    row.appendChild(button);
+
+    outerContainer.appendChild(row);
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Swal.fire
+    ({
+        title: "Crea nuovo articolo",
+        background:"#f1f1f1",
+        html: outerContainer.outerHTML,
+        showConfirmButton:true,
+        showCloseButton:true,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+            document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-header")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-header")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-title")[0].style.color="black";
+
+            document.getElementsByClassName("swal2-actions")[0].style.display="none";
+
+            document.getElementById("codice_articolo").focus();
+        }
+    });
+}
+function checkEnter(event,callback)
+{
+    if (event.key === "Enter")
+        callback();
+}
+function creaNuovoArticolo()
+{
+    var codice_articolo = document.getElementById("codice_articolo").value;
+    var descrizione = document.getElementById("descrizione").value;
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    if(codice_articolo == "" || codice_articolo == null)
+    {
+        Swal.fire
+        ({
+            icon: "warning",
+            title: "Inserisci un codice articolo valido",
+            onOpen: function ()
+            {
+                document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+            }
+        }).then((result) => {
+            getPopupCreaNuovoArticolo();
+        });
+    }
+    else
+    {
+        $.get("creaNuovoArticoloGestioneLottiProduzione.php",{codice_articolo,descrizione},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                }
+                else
+                    getHotAnagraficaArticoli();
+            }
+        });
+    }
+}

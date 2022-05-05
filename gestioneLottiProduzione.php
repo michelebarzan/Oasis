@@ -15,9 +15,9 @@
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 		<script src="js/gestioneLottiProduzione.js"></script>
 		<link rel="stylesheet" href="css/gestioneLottiProduzione.css" />
-        <!--<script src="js_libraries/handsontable/handsontable.full.min.js"></script>
+        <script src="js_libraries/handsontable/handsontable.full.min.js"></script>
 		<link href="js_libraries/handsontable/handsontable.full.min.css" rel="stylesheet" media="screen">
-		<script type="text/javascript" src="js_libraries/handsontable/languages/it-IT.js"></script>-->
+		<script type="text/javascript" src="js_libraries/handsontable/languages/it-IT.js"></script>
 		<link rel="stylesheet" href="css/inPageNavBar.css" />
 	</head>
 	<body>
@@ -30,8 +30,12 @@
                     <i class="fad fa-layer-plus"></i>
                 </button>
 				<button class="in-page-nav-bar-button" id="btn_produzione_lotto" onclick="getMascheraProduzioneLotto(this)">
-					<span>Produzione lotto</span>
+					<span>Messa in produzione lotto</span>
                     <i class="fad fa-layer-plus"></i>
+                </button>
+				<button class="in-page-nav-bar-button" id="btn_anagrafica_articoli" onclick="getMascheraAnagraficaArticoli(this)">
+					<span>Anagrafica articoli</span>
+                    <i class="fad fa-database"></i>
                 </button>
 			</div>
 		</div>
