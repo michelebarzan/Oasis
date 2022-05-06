@@ -1004,7 +1004,7 @@ body
 {
 	background-color: #f7f7f7;
 }
-.messa-in-produzione-articoli-item-action span,.messa-in-produzione-articoli-item-stazione span
+.messa-in-produzione-articoli-item-action span,.messa-in-produzione-articoli-item-stazione span,.messa-in-produzione-articoli-item-qnt span
 {
 	font-family: 'Montserrat',sans-serif;
 	font-size: 12px;
@@ -1074,6 +1074,19 @@ body
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-evenly;
+	width: 100px;
+	min-width: 100px;
+	max-width: 100px;
+	height: 100%;
+	box-sizing: border-box;
+	border-left: 1px solid rgb(228, 228, 228);
+}
+.messa-in-produzione-articoli-item-qnt
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 	width: 100px;
 	min-width: 100px;
 	max-width: 100px;

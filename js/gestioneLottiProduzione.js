@@ -1663,11 +1663,11 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     
         Swal.close();
     
-        var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
+        var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100)) / stazioni.length;
         if(itemStazioneWidth<30)
         {
-            stazioni = stazioni.slice(0, (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100))/30);
-            var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
+            stazioni = stazioni.slice(0, (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100))/30);
+            var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100)) / stazioni.length;
     
             Swal.fire
             ({
@@ -1727,6 +1727,18 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     
         messaInProduzioneArticoliHeader.appendChild(itemArticolo);
     
+        var itemQnt = document.createElement("div");
+        itemQnt.setAttribute("class","messa-in-produzione-articoli-item-qnt");
+        itemQnt.setAttribute("style","justify-content:center");
+        var i = document.createElement("i");
+        i.setAttribute("class","fa-solid fa-sigma");
+        itemQnt.appendChild(i);
+        var span = document.createElement("span");
+        span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
+        span.innerHTML="Quantità";
+        itemQnt.appendChild(span);
+        messaInProduzioneArticoliHeader.appendChild(itemQnt);
+    
         var itemAction = document.createElement("div");
         itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
         itemAction.setAttribute("style","justify-content:center");
@@ -1762,7 +1774,7 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
         for (let index2 = 0; index2 < articoli.length; index2++)
         {
             const articolo = articoli[index2];
-    
+
             var messaInProduzioneArticoloRow = document.createElement("div");
             messaInProduzioneArticoloRow.setAttribute("class","messa-in-produzione-articoli-row");
             messaInProduzioneArticoloRow.setAttribute("id","messaInProduzioneArticoliRow"+articolo.id_articolo);
@@ -1786,9 +1798,19 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
             itemArticolo.appendChild(span);
             messaInProduzioneArticoloRow.appendChild(itemArticolo);
     
+            var itemQnt = document.createElement("div");
+            itemQnt.setAttribute("class","messa-in-produzione-articoli-item-qnt");
+            itemQnt.setAttribute("style","background-color:#f0f0f0;");
+            var span = document.createElement("span");
+            span.setAttribute("style","color:#E9A93A;font-weight:bold;white-space: nowrap;letter-spacing:1px");
+            span.setAttribute("title",articolo.qnt);
+            span.innerHTML=articolo.qnt;
+            itemQnt.appendChild(span);
+            messaInProduzioneArticoloRow.appendChild(itemQnt);
+    
             var itemAction = document.createElement("div");
             itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
-           /* var button = document.createElement("button");
+            /*var button = document.createElement("button");
             button.setAttribute("onclick","");
             button.setAttribute("title","");
             var i = document.createElement("i");
@@ -1821,12 +1843,12 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
                 if(articolo_stazione==undefined)
                 {
                     button.setAttribute("style","background-color:#ccc;");
-                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                    button.setAttribute("onclick","showAlertRigaArticoliStazioni(aggiungiRigaArticoliStazioni,this,"+articolo.id_articolo+","+stazione.id_stazione+",'"+articolo.codice_articolo+"')");
                 }
                 else
                 {
                     button.setAttribute("style","background-color:#70B085;");
-                    button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                    button.setAttribute("onclick","showAlertRigaArticoliStazioni(eliminaRigaArticoliStazioni,this,"+articolo.id_articolo+","+stazione.id_stazione+",'"+articolo.codice_articolo+"')");
                     var i = document.createElement("i");
                     i.setAttribute("class","fa-duotone fa-check-circle");
                     button.appendChild(i);
@@ -1850,6 +1872,26 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     
         searchArticoliMessaInProduzioneArticoli(oldSearch,sortArticoliMessaInProduzioneArticoli,oldSort);
     }
+}
+function showAlertRigaArticoliStazioni(callback,button,id_articolo,id_stazione,codice_articolo)
+{
+    Swal.fire
+    ({
+        icon: "warning",
+        title: "La modifica della stazione per l' articolo " + codice_articolo + " sarà effettiva per TUTTI I LOTTI",
+        confirmButtonText: "Conferma",
+        confirmButtonColor: "#DA6969",
+        showCancelButton: true,
+        cancelButtonText: "Annulla",
+        onOpen: function ()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+        }
+    }).then((result) => {
+        if(result.value)
+            callback(button,id_articolo,id_stazione);
+    });
 }
 function sortArticoliMessaInProduzioneArticoli(colonna)
 {
