@@ -927,3 +927,205 @@ body
 {
 	opacity: 0.7;
 }
+/*------------------------------------------------------*/
+.container-messa-in-produzione-articoli
+{
+	height: 100%;
+	max-height: 100%;
+	min-height: 100%;
+	width: 100%;
+	max-width:100%;
+	min-width: 100%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+.messa-in-produzione-articoli-header
+{
+	width: calc(100% - 100px);
+	max-width: calc(100% - 100px);
+	min-width: calc(100% - 100px);
+	margin-left: 50px;
+	margin-right: 50px;
+	margin-top: 20px;
+	border-bottom: 1px solid rgb(206, 206, 206);
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	background-color: white;
+	border-radius: 4px;
+    box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+	box-sizing: border-box;
+	padding-right: 10px;
+}
+.messa-in-produzione-articoli-body
+{
+	height: calc(100% - 60px);
+	max-height: calc(100% - 60px);
+	margin-bottom: 20px;
+	width: calc(100% - 100px);
+	max-width: calc(100% - 100px);
+	min-width: calc(100% - 100px);
+	margin-left: 50px;
+	margin-right: 50px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	background-color: white;
+	border-radius: 4px;
+    box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+	box-sizing: border-box;
+
+	/*background-color: #4c92cb49;*/
+}
+.messa-in-produzione-articoli-row
+{
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	width: calc(100% -10px);
+	min-width: calc(100% -10px);
+	max-width: calc(100% -10px);
+	margin-right: 10px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	border-bottom: 1px solid rgb(228, 228, 228);
+}
+.messa-in-produzione-articoli-row:hover
+{
+	background-color: #f7f7f7;
+}
+.messa-in-produzione-articoli-item-action span,.messa-in-produzione-articoli-item-stazione span
+{
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: gray;
+	font-weight: normal;
+}
+.messa-in-produzione-articoli-item-articolo span
+{
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+}
+.messa-in-produzione-articoli-item-stazione span
+{
+	text-transform: uppercase;
+	font-weight: bold;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+.messa-in-produzione-articoli-item-articolo
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	width: 450px;
+	min-width: 450px;
+	max-width: 450px;
+	height: 100%;
+}
+.messa-in-produzione-articoli-item-articolo-sort-select
+{
+	border: none;
+	background-color: transparent;
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: black;
+	outline: none;
+	padding: 0px;
+	margin: 0px;
+	margin-left:5px;
+}
+.messa-in-produzione-articoli-item-articolo-input-search
+{
+	margin-left: auto;
+	height: 25px;
+	border: 1px solid #aaa;
+	background-color: white;
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	color: black;
+	border-radius: 4px;
+	box-sizing: border-box;
+	padding: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: left;
+	width: 150px;
+	outline: none;
+}
+.messa-in-produzione-articoli-item-action
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
+	width: 100px;
+	min-width: 100px;
+	max-width: 100px;
+	height: 100%;
+	box-sizing: border-box;
+	border-left: 1px solid rgb(228, 228, 228);
+}
+.messa-in-produzione-articoli-item-stazione
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	border-left: 1px solid rgb(228, 228, 228);
+}
+.messa-in-produzione-articoli-item-action button
+{
+	background-color: transparent;
+	border:none;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+	font-size: 16px;
+}
+.messa-in-produzione-articoli-item-stazione button
+{
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+	height: 20px;
+	width: 70px;
+	max-width: 70px;
+	min-width: 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	font-size: 16px;
+	color: white;
+}
+.messa-in-produzione-articoli-item-stazione button:hover
+{
+	opacity: 0.7;
+}

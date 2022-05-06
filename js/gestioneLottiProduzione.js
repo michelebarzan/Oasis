@@ -1425,11 +1425,11 @@ async function getMascheraProduzioneLotto(button)
     span.innerHTML="Lotto";
     div.appendChild(span);
     var select=document.createElement("select");
-    select.setAttribute("style","text-decoration:none");
-    select.setAttribute("onchange","");
+    select.setAttribute("style","text-decoration:none;max-width:300px");
+    select.setAttribute("id","selectLottoMessaInProduzioneLotto");
+    select.setAttribute("onchange","getChartMessaInProduzioneLotto(false)");
 
-    lotti=await getLotti();
-    console.log(lotti);
+    lotti = await getLotti();
 
     Swal.close();
 
@@ -1451,31 +1451,36 @@ async function getMascheraProduzioneLotto(button)
 
     var button=document.createElement("button");
     button.setAttribute("class","rcb-button-text-icon");
-    button.setAttribute("onclick","");
+    button.setAttribute("onclick","getPopupCreaNuovoArticolo()");
     var span=document.createElement("span");
-    span.innerHTML="Esporta";
+    span.innerHTML="Crea nuovo articolo";
     button.appendChild(span);
     var i=document.createElement("i");
-    i.setAttribute("class","fad fa-file-excel");
+    i.setAttribute("class","fad fa-plus-circle");
     i.setAttribute("style","margin-left:5px");
     button.appendChild(i);
     actionBar.appendChild(button);
-}
 
-    /*var div=document.createElement("div");
-    div.setAttribute("class","rcb-select-container");
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("id","btnAggiungiArticoloAlLotto");
+    button.setAttribute("style","display:none");
+    button.setAttribute("onclick","getPopupAggiungiArticoloAlLotto()");
     var span=document.createElement("span");
-    span.innerHTML="Lotto";
-    div.appendChild(span);
-    var select=document.createElement("select");
-    select.setAttribute("style","text-decoration:none");
-    select.setAttribute("id","selectLottoCreazioneLotto");
-    select.setAttribute("onchange","getComposizioneLotto()");
-    div.appendChild(select);
-    actionBar.appendChild(div);*/
+    span.innerHTML="Aggiungi articolo al lotto";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fa-duotone fa-grid-2-plus");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
 
-    //getOptionsSelectLotto("selectLottoCreazioneLotto");
-/*async function getOptionsSelectLotto(id,toSelect,callback)
+    var containerMessaInProduzioneArticoli = document.createElement("div");
+    containerMessaInProduzioneArticoli.setAttribute("class","container-percorso-produttivo-articoli");
+    containerMessaInProduzioneArticoli.setAttribute("id","containerMessaInProduzioneArticoli");
+    document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerMessaInProduzioneArticoli);
+}
+async function getPopupAggiungiArticoloAlLotto()
 {
     Swal.fire
     ({
@@ -1491,31 +1496,462 @@ async function getMascheraProduzioneLotto(button)
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
-    var select = document.getElementById(id);
-    select.innerHTML="";
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+    var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+    
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","input-popup-outer-container");
 
-    lotti=await getLotti();
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","input-popup-inner-container");
+    
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
 
-    Swal.close();
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Codice articolo";
+    row.appendChild(spanNome);
 
-    var option=document.createElement("option");
-    option.setAttribute("value","");
-    option.innerHTML="seleziona...";
-    select.appendChild(option);
+    var select=document.createElement("select");
+    select.setAttribute("class","input-popup-input");
+    select.setAttribute("id","id_articolo");
 
-    lotti.forEach(lotto =>
+    var articoliLottoResponse = await getArticoliLotto(id_lotto);
+
+    var articoli = articoliLottoResponse.articoli;
+
+    articoli.forEach(articolo =>
     {
         var option=document.createElement("option");
-        option.setAttribute("value",lotto.id_lotto);
-        if(lotto.id_lotto==toSelect)
-            option.setAttribute("selected","selected");
-        option.innerHTML=lotto.lotto;
+        option.setAttribute("value",articolo.id_articolo);
+        option.innerHTML=articolo.codice_articolo;
         select.appendChild(option);
     });
 
+    row.appendChild(select);
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Quantità";
+    row.appendChild(spanNome);
+
+    var inputNumber=document.createElement("input");
+    inputNumber.setAttribute("class","input-popup-input");
+    inputNumber.setAttribute("type","number");
+    inputNumber.setAttribute("id", "qnt");
+    inputNumber.setAttribute("value", "1");
+    row.appendChild(inputNumber);
+    
+    innerContainer.appendChild(row);
+
+    outerContainer.appendChild(innerContainer);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+    row.setAttribute("style","padding:0px;min-height:30px");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","input-popup-button");
+    button.setAttribute("onclick",'getValuesPopupAggiungiArticoloAlLotto()');
+    button.innerHTML='<span>Aggiungi articolo al lotto</span><i class="fa-duotone fa-grid-2-plus"></i>';
+    row.appendChild(button);
+
+    outerContainer.appendChild(row);
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Swal.fire
+    ({
+        title: "Aggiungi articolo al lotto "+lotto.lotto,
+        background:"#f1f1f1",
+        html: outerContainer.outerHTML,
+        showConfirmButton:true,
+        showCloseButton:true,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+            document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-header")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-header")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-title")[0].style.color="black";
+
+            document.getElementsByClassName("swal2-actions")[0].style.display="none";
+        }
+    });
+}
+function getValuesPopupAggiungiArticoloAlLotto()
+{
+    var id_articolo = document.getElementById("id_articolo").value;
+    var qnt = document.getElementById("qnt").value;
+
+    if(qnt < 1 || qnt == "" || qnt == null || qnt == undefined || isNaN(qnt))
+    {
+        Swal.fire
+        ({
+            icon: "warning",
+            title: "Inserisci una quantità valida",
+            onOpen: function ()
+            {
+                document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+            }
+        }).then((result) => {
+            getPopupAggiungiArticoloAlLotto();
+        });
+    }
+    else
+    {
+        var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+        
+        var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+        aggiungiArticoloLottoMessaInProduzioneLotto(id_articolo,qnt,id_lotto,"Articolo aggiunto al lotto " + lotto.lotto);
+    }
+}
+async function getChartMessaInProduzioneLotto(scrollToTop)
+{
+    var containerMessaInProduzioneArticoli = document.getElementById("containerMessaInProduzioneArticoli");
+    containerMessaInProduzioneArticoli.innerHTML="";
+
+    document.getElementById("btnAggiungiArticoloAlLotto").style.display="none";
+
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+    if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
+    {
+        var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+
+        document.getElementById("btnAggiungiArticoloAlLotto").style.display="";
+        
+        Swal.fire
+        ({
+            width:"100%",
+            background:"transparent",
+            title:"Caricamento in corso...",
+            html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+            allowOutsideClick:false,
+            showCloseButton:false,
+            showConfirmButton:false,
+            allowEscapeKey:false,
+            showCancelButton:false,
+            onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+        });
+    
+        var oldScrollTop = 0;
+        var oldSort = "id_articolo";
+        var oldSearch = "";
+        try
+        {
+            oldScrollTop=document.getElementById("messaInProduzioneArticoliBody").scrollTop;
+            oldSort = document.getElementById("messaInProduzioneArticoliItemArticoloSortSelect").value;
+            oldSearch = document.getElementById("messaInProduzioneArticoliItemArticoloInputSearch").value;
+        } catch (error) {}
+    
+        var articoliLottoResponse = await getArticoliLotto(id_lotto);
+        var articoli = articoliLottoResponse.articoliLotto;
+        var stazioni = await getStazioni();
+        var articoli_stazioni = await getArticoliStazioni();
+    
+        Swal.close();
+    
+        var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
+        if(itemStazioneWidth<30)
+        {
+            stazioni = stazioni.slice(0, (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100))/30);
+            var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
+    
+            Swal.fire
+            ({
+                icon: 'warning',
+                title:"La risoluzione dello schermo utilizzato permette di visualizzare solo le prime "+stazioni.length+" stazioni. Utilizza uno schermo con risoluzione maggiore o contatta l'amministratore",
+                onOpen: function ()
+                {
+                    document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                    document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                },
+            });
+        }
+    
+        var messaInProduzioneArticoliHeader = document.createElement("div");
+        messaInProduzioneArticoliHeader.setAttribute("class","messa-in-produzione-articoli-header");
+    
+        var itemArticolo = document.createElement("div");
+        itemArticolo.setAttribute("class","messa-in-produzione-articoli-item-articolo");
+        itemArticolo.setAttribute("style","box-sizing:border-box;padding-left:10px");
+    
+        var i = document.createElement("i");
+        i.setAttribute("class","fad fa-database");
+        itemArticolo.appendChild(i);
+    
+        var span = document.createElement("span");
+        span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
+        span.innerHTML="Articolo";
+        itemArticolo.appendChild(span);
+    
+        var i = document.createElement('i');
+        i.setAttribute('class', 'fa-duotone fa-sort');
+        i.setAttribute('style', 'margin-left:auto');
+        itemArticolo.appendChild(i);
+    
+        var select = document.createElement('select');
+        select.setAttribute('onchange', 'sortArticoliMessaInProduzioneArticoli(this.value)');
+        select.setAttribute('id', 'messaInProduzioneArticoliItemArticoloSortSelect');
+        select.setAttribute('class', 'messa-in-produzione-articoli-item-articolo-sort-select');
+        var option = document.createElement('option');
+        option.setAttribute('value', 'id_articolo');
+        option.innerHTML = 'Nuovi prima';
+        select.appendChild(option);
+        var option = document.createElement('option');
+        option.setAttribute('value', 'codice_articolo');
+        option.innerHTML = 'Codice';
+        select.appendChild(option);
+        itemArticolo.appendChild(select);
+    
+        var input = document.createElement("input");
+        input.setAttribute("class","messa-in-produzione-articoli-item-articolo-input-search");
+        input.setAttribute("id","messaInProduzioneArticoliItemArticoloInputSearch");
+        input.setAttribute("type","search");
+        input.setAttribute("placeholder","Cerca...");
+        input.setAttribute('style', 'margin-left:10px;margin-right:10px;');
+        input.setAttribute("onsearch","searchArticoliMessaInProduzioneArticoli(this.value,sortArticoliMessaInProduzioneArticoli,document.getElementById('messaInProduzioneArticoliItemArticoloSortSelect').value)");
+        itemArticolo.appendChild(input);
+    
+        messaInProduzioneArticoliHeader.appendChild(itemArticolo);
+    
+        var itemAction = document.createElement("div");
+        itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
+        itemAction.setAttribute("style","justify-content:center");
+        var i = document.createElement("i");
+        i.setAttribute("class","fad fa-cog");
+        itemAction.appendChild(i);
+        var span = document.createElement("span");
+        span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
+        span.innerHTML="Azione";
+        itemAction.appendChild(span);
+        messaInProduzioneArticoliHeader.appendChild(itemAction);
+    
+        for (let index = 0; index < stazioni.length; index++)
+        {
+            const stazione = stazioni[index];
+    
+            var itemStazione = document.createElement("div");
+            itemStazione.setAttribute("class","messa-in-produzione-articoli-item-stazione");
+            itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px");
+            itemStazione.setAttribute("title",stazione.nome);
+            var span = document.createElement("span");
+            span.innerHTML=stazione.nome;
+            itemStazione.appendChild(span);
+            messaInProduzioneArticoliHeader.appendChild(itemStazione);
+        }
+    
+        containerMessaInProduzioneArticoli.appendChild(messaInProduzioneArticoliHeader);
+    
+        var messaInProduzioneArticoliBody = document.createElement("div");
+        messaInProduzioneArticoliBody.setAttribute("class","messa-in-produzione-articoli-body");
+        messaInProduzioneArticoliBody.setAttribute("id","messaInProduzioneArticoliBody");
+    
+        for (let index2 = 0; index2 < articoli.length; index2++)
+        {
+            const articolo = articoli[index2];
+    
+            var messaInProduzioneArticoloRow = document.createElement("div");
+            messaInProduzioneArticoloRow.setAttribute("class","messa-in-produzione-articoli-row");
+            messaInProduzioneArticoloRow.setAttribute("id","messaInProduzioneArticoliRow"+articolo.id_articolo);
+            
+            var itemArticolo = document.createElement("div");
+            itemArticolo.setAttribute("class","messa-in-produzione-articoli-item-articolo");
+            itemArticolo.setAttribute("style","background-color:#f0f0f0;padding-left:10px;box-sizing:border-box");
+            var span = document.createElement("span");
+            span.setAttribute("style","color: gray;font-weight: normal;");
+            span.innerHTML="#" + articolo.id_articolo;
+            itemArticolo.appendChild(span);
+            var span = document.createElement("span");
+            span.setAttribute("style","margin-left:10px;margin-right:30px;color:#4C91CB;font-weight:bold;white-space: nowrap");
+            span.setAttribute("title",articolo.codice_articolo);
+            span.innerHTML=articolo.codice_articolo;
+            itemArticolo.appendChild(span);
+            var span = document.createElement("span");
+            span.setAttribute("style","margin-left:auto;margin-right:10px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;color: gray;font-weight: normal;");
+            span.setAttribute("title",articolo.descrizione);
+            span.innerHTML=articolo.descrizione;
+            itemArticolo.appendChild(span);
+            messaInProduzioneArticoloRow.appendChild(itemArticolo);
+    
+            var itemAction = document.createElement("div");
+            itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
+           /* var button = document.createElement("button");
+            button.setAttribute("onclick","");
+            button.setAttribute("title","");
+            var i = document.createElement("i");
+            i.setAttribute("class","");
+            button.appendChild(i);
+            itemAction.appendChild(button);
+            var button = document.createElement("button");
+            button.setAttribute("onclick","");
+            button.setAttribute("title","");
+            var i = document.createElement("i");
+            i.setAttribute("class","");
+            button.appendChild(i);
+            itemAction.appendChild(button);*/
+            messaInProduzioneArticoloRow.appendChild(itemAction);
+    
+            for (let index = 0; index < stazioni.length; index++)
+            {
+                const stazione = stazioni[index];
+                
+                var articolo_stazione = articoli_stazioni.filter(function (articolo_stazione) {return articolo_stazione.stazione == stazione.id_stazione}).filter(function (articolo_stazione) {return articolo_stazione.articolo == articolo.id_articolo})[0];
+    
+                var itemStazione = document.createElement("div");
+                itemStazione.setAttribute("class","messa-in-produzione-articoli-item-stazione");
+                itemStazione.setAttribute("articolo",articolo.id_articolo);
+                itemStazione.setAttribute("stazione",stazione.id_stazione);
+                itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;");
+                
+                var button = document.createElement("button");
+                button.setAttribute("onclick","");
+                if(articolo_stazione==undefined)
+                {
+                    button.setAttribute("style","background-color:#ccc;");
+                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                }
+                else
+                {
+                    button.setAttribute("style","background-color:#70B085;");
+                    button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                    var i = document.createElement("i");
+                    i.setAttribute("class","fa-duotone fa-check-circle");
+                    button.appendChild(i);
+                }
+                itemStazione.appendChild(button);
+    
+                messaInProduzioneArticoloRow.appendChild(itemStazione);
+            }
+    
+            messaInProduzioneArticoliBody.appendChild(messaInProduzioneArticoloRow);
+        }
+    
+        containerMessaInProduzioneArticoli.appendChild(messaInProduzioneArticoliBody);
+    
+        if(scrollToTop)
+            document.getElementById("messaInProduzioneArticoliBody").scrollTop = 0;
+        else
+            document.getElementById("messaInProduzioneArticoliBody").scrollTop = oldScrollTop;
+        document.getElementById("messaInProduzioneArticoliItemArticoloInputSearch").value = oldSearch;
+        document.getElementById("messaInProduzioneArticoliItemArticoloSortSelect").value = oldSort;
+    
+        searchArticoliMessaInProduzioneArticoli(oldSearch,sortArticoliMessaInProduzioneArticoli,oldSort);
+    }
+}
+function sortArticoliMessaInProduzioneArticoli(colonna)
+{
+    switch (colonna)
+    {
+        case "id_articolo":
+            var items = document.getElementById("messaInProduzioneArticoliBody").getElementsByClassName("messa-in-produzione-articoli-row");
+            var itemsArray = [];
+
+            for (let index = 0; index < items.length; index++)
+            {
+                const item = items[index];
+                
+                itemsArray.push({
+                    value:parseInt(item.getElementsByClassName("messa-in-produzione-articoli-item-articolo")[0].getElementsByTagName("span")[0].innerHTML.replace("#","")),
+                    item
+                });
+            }
+    
+            function compare( a, b )
+            {
+                if ( a.value < b.value )
+                    return -1;
+                if ( a.value > b.value )
+                    return 1;
+                return 0;
+            }
+    
+            itemsArray.sort( compare );
+        
+            document.getElementById("messaInProduzioneArticoliBody").innerHTML="";
+        
+            for (let index = itemsArray.length - 1; index >= 0; index--)
+            {
+                const item = itemsArray[index];
+                
+                document.getElementById("messaInProduzioneArticoliBody").appendChild(item.item);
+            }
+        break;
+        case "codice_articolo":
+    var items = document.getElementById("messaInProduzioneArticoliBody").getElementsByClassName("messa-in-produzione-articoli-row");
+    var itemsArray = [];
+
+            for (let index = 0; index < items.length; index++)
+            {
+                const item = items[index];
+                
+                itemsArray.push({
+                    value:item.getElementsByClassName("messa-in-produzione-articoli-item-articolo")[0].getElementsByTagName("span")[1].innerHTML,
+                    item
+                });
+            }
+    
+            function compare( a, b )
+            {
+                if ( a.value < b.value )
+                    return -1;
+                if ( a.value > b.value )
+                    return 1;
+                return 0;
+            }
+    
+            itemsArray.sort( compare );
+        
+            document.getElementById("messaInProduzioneArticoliBody").innerHTML="";
+        
+            for (let index = 0; index < itemsArray.length; index++)
+            {
+                const item = itemsArray[index];
+                
+                document.getElementById("messaInProduzioneArticoliBody").appendChild(item.item);
+            }
+        break;
+    }
+}
+function searchArticoliMessaInProduzioneArticoli(value,callback,parameter)
+{
+    value = value.toString().toLocaleLowerCase();
+
+    var items = document.getElementById("messaInProduzioneArticoliBody").getElementsByClassName("messa-in-produzione-articoli-row");
+    for (let index = 0; index < items.length; index++)
+    {
+        const item = items[index];
+        
+        var keep = false;
+        var spans = item.getElementsByClassName("messa-in-produzione-articoli-item-articolo")[0].getElementsByTagName("span");
+        for (let index2 = 0; index2 < spans.length; index2++)
+        {
+            const span = spans[index2];
+
+            if(span.innerHTML.toString().toLocaleLowerCase().indexOf(value) > -1)
+                keep = true;
+        }
+        if(keep)
+            item.style.display="";
+        else
+            item.style.display="none";
+    }
+
     if(callback != null && callback != undefined && callback != "")
-        callback();
-}*/
+        callback(parameter)
+}
 //----------------------------------------------------------------------------------------------------------------------------------
 function getMascheraAnagraficaArticoli(button)
 {
@@ -1702,7 +2138,7 @@ function getHotDataAnagraficaArticoli()
     });
 }
 function getPopupCreaNuovoArticolo()
-{        
+{
     var outerContainer=document.createElement("div");
     outerContainer.setAttribute("class","input-popup-outer-container");
 
@@ -1834,6 +2270,7 @@ function creaNuovoArticolo()
                 }
                 else
                 {
+                    Swal.close();
                     switch (view)
                     {
                         case "anagrafica_articoli":
@@ -1847,6 +2284,28 @@ function creaNuovoArticolo()
                         case "creazione_lotto":
                             getLottoByIdLotto(creazioneLottiVariables.id_lotto);
                         break;
+                        case "produzione_lotto":
+                            var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+
+                            if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
+                            {
+                                var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+                                aggiungiArticoloLottoMessaInProduzioneLotto(response,1,id_lotto,"Articolo creato e aggiunto al lotto " + lotto.lotto);
+                            }
+                            else
+                            {
+                                Swal.fire
+                                ({
+                                    icon: "success",
+                                    title:"Articolo creato",
+                                    onOpen: function ()
+                                    {
+                                        document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                                        document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+                                    }
+                                });
+                            }
+                        break;
                         default:
                             getView();
                         break;
@@ -1856,8 +2315,66 @@ function creaNuovoArticolo()
         });
     }
 }
-//-------------------------------------------------------------------------------------------
+function aggiungiArticoloLottoMessaInProduzioneLotto(id_articolo,qnt,id_lotto,title)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
 
+    $.post('impostaQuantitaArticoloLottoGestioneLottiProduzione.php',{ id_lotto,id_articolo,qnt },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+
+                Swal.fire
+                ({
+                    icon: "success",
+                    title,
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName("swal2-title")[0].style.color = "gray";
+                        document.getElementsByClassName("swal2-title")[0].style.fontSize = "14px";
+                    }
+                }).then((result) =>
+                { 
+                    document.getElementById("messaInProduzioneArticoliItemArticoloSortSelect").value = "id_articolo";
+                    document.getElementById("messaInProduzioneArticoliItemArticoloInputSearch").value = "";
+
+                    getChartMessaInProduzioneLotto(true);
+                });
+            }
+        }
+    });
+}
+//-------------------------------------------------------------------------------------------
 function getMascheraAnagraficaStazioni(button)
 {
     view="anagrafica_stazioni";
@@ -2494,7 +3011,7 @@ function sortArticoliPercorsoProduzioneArticoli(colonna)
         
             document.getElementById("percorsoProduttivoArticoliBody").innerHTML="";
         
-            for (let index = itemsArray.length - 1; index > 0; index--)
+            for (let index = itemsArray.length - 1; index >= 0; index--)
             {
                 const item = itemsArray[index];
                 

@@ -7,10 +7,10 @@
     $articoliLotto=[];
     $articoli=[];
 
-    $q="SELECT TOP (100) PERCENT articoli.id_articolo, articoli.codice_articolo, articoli_lotti.lotto, articoli_lotti.articolo, COUNT(articoli_lotti.id_articolo_lotto) AS qnt, MAX(articoli_lotti.id_articolo_lotto) AS id_articolo_lotto
+    $q="SELECT TOP (100) PERCENT articoli.id_articolo, articoli.codice_articolo, articoli.descrizione, articoli_lotti.lotto, articoli_lotti.articolo, COUNT(articoli_lotti.id_articolo_lotto) AS qnt, MAX(articoli_lotti.id_articolo_lotto) AS id_articolo_lotto
         FROM oasis_produzione.dbo.articoli AS articoli INNER JOIN oasis_produzione.dbo.articoli_lotti AS articoli_lotti ON articoli.id_articolo = articoli_lotti.articolo
         WHERE articoli.eliminato = 'false'
-        GROUP BY articoli.id_articolo, articoli.codice_articolo, articoli_lotti.lotto, articoli_lotti.articolo
+        GROUP BY articoli.id_articolo, articoli.codice_articolo, articoli.descrizione, articoli_lotti.lotto, articoli_lotti.articolo
         HAVING (articoli_lotti.lotto = $id_lotto)
         ORDER BY id_articolo_lotto";
     $r=sqlsrv_query($conn,$q);
@@ -25,6 +25,7 @@
             $articolo["id_lotto"]=$row["lotto"];
             $articolo["id_articolo"]=$row["id_articolo"];
             $articolo["codice_articolo"]=utf8_encode($row["codice_articolo"]);
+            $articolo["descrizione"]=utf8_encode($row["descrizione"]);
             $articolo["qnt"]=$row["qnt"];
 
             array_push($articoliLotto,$articolo);
@@ -45,6 +46,7 @@
         {
             $articolo["id_articolo"]=$row2["id_articolo"];
             $articolo["codice_articolo"]=utf8_encode($row2["codice_articolo"]);
+            $articolo["descrizione"]=utf8_encode($row2["descrizione"]);
 
             array_push($articoli,$articolo);
         }
