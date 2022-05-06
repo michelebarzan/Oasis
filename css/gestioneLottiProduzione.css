@@ -796,7 +796,7 @@ body
 {
 	background-color: #f7f7f7;
 }
-.percorso-produttivo-articoli-item-articolo span,.percorso-produttivo-articoli-item-action span,.percorso-produttivo-articoli-item-stazione span
+.percorso-produttivo-articoli-item-action span,.percorso-produttivo-articoli-item-stazione span
 {
 	font-family: 'Montserrat',sans-serif;
 	font-size: 12px;
@@ -805,6 +805,11 @@ body
 	text-overflow: ellipsis;
 	color: gray;
 	font-weight: normal;
+}
+.percorso-produttivo-articoli-item-articolo span
+{
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
 }
 .percorso-produttivo-articoli-item-stazione span
 {
@@ -819,10 +824,41 @@ body
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
-	width: 350px;
-	min-width: 350px;
-	max-width: 350px;
+	width: 450px;
+	min-width: 450px;
+	max-width: 450px;
 	height: 100%;
+}
+.percorso-produttivo-articoli-item-articolo-sort-select
+{
+	border: none;
+	background-color: transparent;
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: black;
+	outline: none;
+	padding: 0px;
+	margin: 0px;
+	margin-left:5px;
+}
+.percorso-produttivo-articoli-item-articolo-input-search
+{
+	margin-left: auto;
+	height: 25px;
+	border: 1px solid #aaa;
+	background-color: white;
+	font-family: 'Montserrat',sans-serif;
+	font-size: 12px;
+	color: black;
+	border-radius: 4px;
+	box-sizing: border-box;
+	padding: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: left;
+	width: 150px;
+	outline: none;
 }
 .percorso-produttivo-articoli-item-articolo-checkbox
 {
@@ -841,7 +877,6 @@ body
 	max-width: 100px;
 	height: 100%;
 	box-sizing: border-box;
-	border-right: 1px solid rgb(228, 228, 228);
 	border-left: 1px solid rgb(228, 228, 228);
 }
 .percorso-produttivo-articoli-item-stazione
@@ -851,6 +886,7 @@ body
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+	border-left: 1px solid rgb(228, 228, 228);
 }
 .percorso-produttivo-articoli-item-action button
 {

@@ -55,6 +55,18 @@ async function getMascheraCreazioneLotto(button)
     button.appendChild(i);
     actionBar.appendChild(button);
 
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","getPopupCreaNuovoArticolo()");
+    var span=document.createElement("span");
+    span.innerHTML="Crea nuovo articolo";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
     var containerCreazioneLotto = document.createElement("div");
     containerCreazioneLotto.setAttribute("class","container-creazione-lotto");
     containerCreazioneLotto.setAttribute("id","containerCreazioneLotto");
@@ -1821,7 +1833,25 @@ function creaNuovoArticolo()
                     console.log(response);
                 }
                 else
-                    getHotAnagraficaArticoli();
+                {
+                    switch (view)
+                    {
+                        case "anagrafica_articoli":
+                            getHotAnagraficaArticoli();
+                        break;
+                        case "percorso_produttivo_articoli":
+                            document.getElementById("percorsoProduttivoArticoliItemArticoloSortSelect").value = "id_articolo";
+                            document.getElementById("percorsoProduttivoArticoliItemArticoloInputSearch").value = "";
+                            getChartPercorsoProduttivoArticoli(true);
+                        break;
+                        case "creazione_lotto":
+                            getLottoByIdLotto(creazioneLottiVariables.id_lotto);
+                        break;
+                        default:
+                            getView();
+                        break;
+                    }
+                }
             }
         });
     }
@@ -2157,16 +2187,13 @@ function getMascheraPercorsoProduttivoArticoli(button)
 
     var button=document.createElement("button");
     button.setAttribute("class","rcb-button-text-icon");
-    button.setAttribute("style","display:none");
-    button.setAttribute("id","btnConfermaCopiaPercorsoProduttivoArticoli");
-    button.setAttribute("onclick","confermaCopiaPercorsoProduttivoArticoli(this)");
+    button.setAttribute("onclick","getPopupCreaNuovoArticolo()");
     var span=document.createElement("span");
-    span.setAttribute("style","color:#70B085;font-weight:bold");
-    span.innerHTML="Conferma copia assegnaizoni";
+    span.innerHTML="Crea nuovo articolo";
     button.appendChild(span);
     var i=document.createElement("i");
-    i.setAttribute("class","fad fa-copy");
-    i.setAttribute("style","margin-left:5px;color:#70B085");
+    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
     button.appendChild(i);
     actionBar.appendChild(button);
 
@@ -2185,14 +2212,29 @@ function getMascheraPercorsoProduttivoArticoli(button)
     button.appendChild(i);
     actionBar.appendChild(button);
 
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("style","display:none");
+    button.setAttribute("id","btnConfermaCopiaPercorsoProduttivoArticoli");
+    button.setAttribute("onclick","confermaCopiaPercorsoProduttivoArticoli(this)");
+    var span=document.createElement("span");
+    span.setAttribute("style","color:#70B085;font-weight:bold");
+    span.innerHTML="Conferma copia assegnaizoni";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-copy");
+    i.setAttribute("style","margin-left:5px;color:#70B085");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
     var containerPercorsoProduttivoArticoli = document.createElement("div");
     containerPercorsoProduttivoArticoli.setAttribute("class","container-percorso-produttivo-articoli");
     containerPercorsoProduttivoArticoli.setAttribute("id","containerPercorsoProduttivoArticoli");
     document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerPercorsoProduttivoArticoli);
 
-    getChartPercorsoProduttivoArticoli();
+    getChartPercorsoProduttivoArticoli(false);
 }
-async function getChartPercorsoProduttivoArticoli()
+async function getChartPercorsoProduttivoArticoli(scrollToTop)
 {
     Swal.fire
     ({
@@ -2208,6 +2250,16 @@ async function getChartPercorsoProduttivoArticoli()
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
+    var oldScrollTop = 0;
+    var oldSort = "id_articolo";
+    var oldSearch = "";
+    try
+    {
+        oldScrollTop=document.getElementById("percorsoProduttivoArticoliBody").scrollTop;
+        oldSort = document.getElementById("percorsoProduttivoArticoliItemArticoloSortSelect").value;
+        oldSearch = document.getElementById("percorsoProduttivoArticoliItemArticoloInputSearch").value;
+    } catch (error) {}
+
     var containerPercorsoProduttivoArticoli = document.getElementById("containerPercorsoProduttivoArticoli");
     containerPercorsoProduttivoArticoli.innerHTML="";
 
@@ -2217,11 +2269,11 @@ async function getChartPercorsoProduttivoArticoli()
 
     Swal.close();
 
-    var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100)) / stazioni.length;
+    var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
     if(itemStazioneWidth<30)
     {
-        stazioni = stazioni.slice(0, (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100))/30);
-        var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 350 + 100)) / stazioni.length;
+        stazioni = stazioni.slice(0, (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 450 + 100))/30);
+        var itemStazioneWidth = (containerPercorsoProduttivoArticoli.offsetWidth - 100 - (10 + 450 + 100)) / stazioni.length;
 
         Swal.fire
         ({
@@ -2241,13 +2293,44 @@ async function getChartPercorsoProduttivoArticoli()
     var itemArticolo = document.createElement("div");
     itemArticolo.setAttribute("class","percorso-produttivo-articoli-item-articolo");
     itemArticolo.setAttribute("style","box-sizing:border-box;padding-left:10px");
+
     var i = document.createElement("i");
     i.setAttribute("class","fad fa-database");
     itemArticolo.appendChild(i);
+
     var span = document.createElement("span");
     span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
     span.innerHTML="Articolo";
     itemArticolo.appendChild(span);
+
+    var i = document.createElement('i');
+    i.setAttribute('class', 'fa-duotone fa-sort');
+    i.setAttribute('style', 'margin-left:auto');
+    itemArticolo.appendChild(i);
+
+    var select = document.createElement('select');
+    select.setAttribute('onchange', 'sortArticoliPercorsoProduzioneArticoli(this.value)');
+    select.setAttribute('id', 'percorsoProduttivoArticoliItemArticoloSortSelect');
+    select.setAttribute('class', 'percorso-produttivo-articoli-item-articolo-sort-select');
+    var option = document.createElement('option');
+    option.setAttribute('value', 'id_articolo');
+    option.innerHTML = 'Nuovi prima';
+    select.appendChild(option);
+    var option = document.createElement('option');
+    option.setAttribute('value', 'codice_articolo');
+    option.innerHTML = 'Codice';
+    select.appendChild(option);
+    itemArticolo.appendChild(select);
+
+    var input = document.createElement("input");
+    input.setAttribute("class","percorso-produttivo-articoli-item-articolo-input-search");
+    input.setAttribute("id","percorsoProduttivoArticoliItemArticoloInputSearch");
+    input.setAttribute("type","search");
+    input.setAttribute("placeholder","Cerca...");
+    input.setAttribute('style', 'margin-left:10px;margin-right:10px;');
+    input.setAttribute("onsearch","searchArticoliPercorsoProduzioneArticoli(this.value,sortArticoliPercorsoProduzioneArticoli,document.getElementById('percorsoProduttivoArticoliItemArticoloSortSelect').value)");
+    itemArticolo.appendChild(input);
+
     percorsoProduttivoArticoliHeader.appendChild(itemArticolo);
 
     var itemAction = document.createElement("div");
@@ -2280,6 +2363,7 @@ async function getChartPercorsoProduttivoArticoli()
 
     var percorsoProduttivoArticoliBody = document.createElement("div");
     percorsoProduttivoArticoliBody.setAttribute("class","percorso-produttivo-articoli-body");
+    percorsoProduttivoArticoliBody.setAttribute("id","percorsoProduttivoArticoliBody");
 
     for (let index2 = 0; index2 < articoli.length; index2++)
     {
@@ -2293,11 +2377,18 @@ async function getChartPercorsoProduttivoArticoli()
         itemArticolo.setAttribute("class","percorso-produttivo-articoli-item-articolo");
         itemArticolo.setAttribute("style","background-color:#f0f0f0;padding-left:10px;box-sizing:border-box");
         var span = document.createElement("span");
+        span.setAttribute("style","color: gray;font-weight: normal;");
         span.innerHTML="#" + articolo.id_articolo;
         itemArticolo.appendChild(span);
         var span = document.createElement("span");
-        span.setAttribute("style","margin-left:10px;color:#4C91CB;font-weight:bold");
+        span.setAttribute("style","margin-left:10px;margin-right:30px;color:#4C91CB;font-weight:bold;white-space: nowrap");
+        span.setAttribute("title",articolo.codice_articolo);
         span.innerHTML=articolo.codice_articolo;
+        itemArticolo.appendChild(span);
+        var span = document.createElement("span");
+        span.setAttribute("style","margin-left:auto;margin-right:10px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;color: gray;font-weight: normal;");
+        span.setAttribute("title",articolo.descrizione);
+        span.innerHTML=articolo.descrizione;
         itemArticolo.appendChild(span);
         var checkbox = document.createElement("input");
         checkbox.setAttribute("type","checkbox");
@@ -2362,6 +2453,116 @@ async function getChartPercorsoProduttivoArticoli()
     }
 
     containerPercorsoProduttivoArticoli.appendChild(percorsoProduttivoArticoliBody);
+
+    if(scrollToTop)
+        document.getElementById("percorsoProduttivoArticoliBody").scrollTop = 0;
+    else
+        document.getElementById("percorsoProduttivoArticoliBody").scrollTop = oldScrollTop;
+    document.getElementById("percorsoProduttivoArticoliItemArticoloInputSearch").value = oldSearch;
+    document.getElementById("percorsoProduttivoArticoliItemArticoloSortSelect").value = oldSort;
+
+    searchArticoliPercorsoProduzioneArticoli(oldSearch,sortArticoliPercorsoProduzioneArticoli,oldSort);
+}
+function sortArticoliPercorsoProduzioneArticoli(colonna)
+{
+    switch (colonna)
+    {
+        case "id_articolo":
+            var items = document.getElementById("percorsoProduttivoArticoliBody").getElementsByClassName("percorso-produttivo-articoli-row");
+            var itemsArray = [];
+
+            for (let index = 0; index < items.length; index++)
+            {
+                const item = items[index];
+                
+                itemsArray.push({
+                    value:parseInt(item.getElementsByClassName("percorso-produttivo-articoli-item-articolo")[0].getElementsByTagName("span")[0].innerHTML.replace("#","")),
+                    item
+                });
+            }
+    
+            function compare( a, b )
+            {
+                if ( a.value < b.value )
+                    return -1;
+                if ( a.value > b.value )
+                    return 1;
+                return 0;
+            }
+    
+            itemsArray.sort( compare );
+        
+            document.getElementById("percorsoProduttivoArticoliBody").innerHTML="";
+        
+            for (let index = itemsArray.length - 1; index > 0; index--)
+            {
+                const item = itemsArray[index];
+                
+                document.getElementById("percorsoProduttivoArticoliBody").appendChild(item.item);
+            }
+        break;
+        case "codice_articolo":
+    var items = document.getElementById("percorsoProduttivoArticoliBody").getElementsByClassName("percorso-produttivo-articoli-row");
+    var itemsArray = [];
+
+            for (let index = 0; index < items.length; index++)
+            {
+                const item = items[index];
+                
+                itemsArray.push({
+                    value:item.getElementsByClassName("percorso-produttivo-articoli-item-articolo")[0].getElementsByTagName("span")[1].innerHTML,
+                    item
+                });
+            }
+    
+            function compare( a, b )
+            {
+                if ( a.value < b.value )
+                    return -1;
+                if ( a.value > b.value )
+                    return 1;
+                return 0;
+            }
+    
+            itemsArray.sort( compare );
+        
+            document.getElementById("percorsoProduttivoArticoliBody").innerHTML="";
+        
+            for (let index = 0; index < itemsArray.length; index++)
+            {
+                const item = itemsArray[index];
+                
+                document.getElementById("percorsoProduttivoArticoliBody").appendChild(item.item);
+            }
+        break;
+    }
+}
+function searchArticoliPercorsoProduzioneArticoli(value,callback,parameter)
+{
+    value = value.toString().toLocaleLowerCase();
+
+    var items = document.getElementById("percorsoProduttivoArticoliBody").getElementsByClassName("percorso-produttivo-articoli-row");
+    for (let index = 0; index < items.length; index++)
+    {
+        const item = items[index];
+        
+        var keep = false;
+        var spans = item.getElementsByClassName("percorso-produttivo-articoli-item-articolo")[0].getElementsByTagName("span");
+        for (let index2 = 0; index2 < spans.length; index2++)
+        {
+            const span = spans[index2];
+
+            if(span.innerHTML.toString().toLocaleLowerCase().indexOf(value) > -1)
+                keep = true;
+        }
+        if(keep)
+            item.style.display="";
+        else
+            item.style.display="none";
+    }
+
+    if(callback != null && callback != undefined && callback != "")
+        callback(parameter)
 }
 function confermaCopiaPercorsoProduttivoArticoli(button)
 {
@@ -2417,7 +2618,7 @@ function confermaCopiaPercorsoProduttivoArticoli(button)
                 Swal.close();
 
                 resetCopiaStazioniArticoloArticoliStazioni();
-                getChartPercorsoProduttivoArticoli();
+                getChartPercorsoProduttivoArticoli(false);
             }
         }
     });

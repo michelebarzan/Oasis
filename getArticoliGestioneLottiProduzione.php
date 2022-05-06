@@ -6,8 +6,7 @@
 
     $q="SELECT *
         FROM oasis_produzione.dbo.articoli AS articoli
-        WHERE eliminato = 'false'
-        ORDER BY codice_articolo";
+        WHERE eliminato = 'false'";
     $r=sqlsrv_query($conn,$q);
     if($r==FALSE)
     {
