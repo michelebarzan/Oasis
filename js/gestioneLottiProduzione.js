@@ -1835,6 +1835,7 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
         var articoli = articoliLottoResponse.articoliLotto;
         var stazioni = await getStazioni();
         var articoli_stazioni = await getArticoliStazioni();
+        var articoli_lotti_stazioni = await getArticoliLottiStazioni();
     
         Swal.close();
     
@@ -2006,15 +2007,17 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
                 const stazione = stazioni[index];
                 
                 var articolo_stazione = articoli_stazioni.filter(function (articolo_stazione) {return articolo_stazione.stazione == stazione.id_stazione}).filter(function (articolo_stazione) {return articolo_stazione.articolo == articolo.id_articolo})[0];
-    
+                var articolo_lotto_stazione_array = articoli_lotti_stazioni.filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.lotto == id_lotto}).filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.articolo == articolo.id_articolo}).filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.stazione == stazione.id_stazione});
+
+                console.log(articolo_lotto_stazione_array)
                 var itemStazione = document.createElement("div");
                 itemStazione.setAttribute("class","messa-in-produzione-articoli-item-stazione");
                 itemStazione.setAttribute("articolo",articolo.id_articolo);
                 itemStazione.setAttribute("stazione",stazione.id_stazione);
                 itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;");
                 
+                //------------------------------------------------------------------------------
                 var button = document.createElement("button");
-                button.setAttribute("onclick","");
                 if(articolo_stazione==undefined)
                 {
                     button.setAttribute("style","background-color:#ccc;");
@@ -2029,6 +2032,21 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
                     button.appendChild(i);
                 }
                 itemStazione.appendChild(button);
+
+                //------------------------------------------------------------------------------
+                
+                if(articolo_lotto_stazione_array.length > 0)
+                {
+                    var button = document.createElement("button");
+                    button.setAttribute("style","background-color:#70B085;");
+                    var i = document.createElement("i");
+                    i.setAttribute("class","fa-duotone fa-check-circle");
+                    button.appendChild(i);
+                    var span = document.createElement("span");
+                    span.innerHTML = articolo_lotto_stazione_array.length;
+                    button.appendChild(span);
+                    itemStazione.appendChild(button);
+                }
     
                 messaInProduzioneArticoloRow.appendChild(itemStazione);
             }
@@ -3704,6 +3722,56 @@ function getArticoliStazioni()
     return new Promise(function (resolve, reject)
     {
         $.get('getArticoliStazioniGestioneLottiProduzione.php',
+        function (response, status)
+        {
+            if (status == 'success')
+            {
+                if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+                {
+                    Swal.fire
+                    ({
+                        icon: 'error',
+                        title:"Errore. Se il problema persiste contatta l' amministratore",
+                        onOpen: function ()
+                        {
+                            document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                            document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                        },
+                    });
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try
+                    {
+                        resolve(JSON.parse(response));
+                    }
+                    catch (error)
+                    {
+                        Swal.fire
+                        ({
+                            icon: 'error',
+                            title:"Errore. Se il problema persiste contatta l' amministratore",
+                            onOpen: function ()
+                            {
+                                document.getElementsByClassName('swal2-title')[0].style.color = 'gray';
+                                document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                            },
+                        });
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getArticoliLottiStazioni()
+{
+    return new Promise(function (resolve, reject)
+    {
+        $.get('getArticoliLottiStazioniGestioneLottiProduzione.php',
         function (response, status)
         {
             if (status == 'success')
