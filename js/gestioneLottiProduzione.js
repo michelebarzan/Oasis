@@ -17,6 +17,11 @@ async function getMascheraCreazioneLotto(button)
 {
     view="creazione_lotto";
 
+    var id_lotto = null;
+    try {
+        id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+    } catch (error) {}
+
     $(".in-page-nav-bar-button").css({"border-bottom-color":"","font-weight":""});
     button.style.borderBottomColor="#4C91CB";
     button.style.fontWeight="bold";
@@ -72,10 +77,10 @@ async function getMascheraCreazioneLotto(button)
     containerCreazioneLotto.setAttribute("id","containerCreazioneLotto");
     document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerCreazioneLotto);
 
-    getContainerLotti();
+    getContainerLotti(id_lotto);
     getContainerArticoli();
 }
-async function getContainerLotti()
+async function getContainerLotti(id_lotto)
 {
     var container = document.getElementById('containerCreazioneLotto');
 
@@ -172,7 +177,10 @@ async function getContainerLotti()
 
     Swal.close();
 
-    getElencoLotti(lotti);
+    if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
+        getElencoLotti(lotti,id_lotto);
+    else
+        getElencoLotti(lotti);
     sortFilterLottiCreazioneLotti()
 }
 function searchLottiCreazioneLotti(input)
@@ -1442,6 +1450,8 @@ async function getMascheraProduzioneLotto(button)
     {
         var option=document.createElement("option");
         option.setAttribute("value",lotto.id_lotto);
+        if(creazioneLottiVariables.id_lotto == lotto.id_lotto)
+            option.setAttribute("selected","selected");
         option.innerHTML=lotto.lotto;
         select.appendChild(option);
     });
@@ -1475,10 +1485,149 @@ async function getMascheraProduzioneLotto(button)
     button.appendChild(i);
     actionBar.appendChild(button);
 
+    var div = document.createElement("div");
+    div.setAttribute("class","rcb-input-icon-container");
+    div.setAttribute("id","produzioneLottoCheckboxChiusoContainer");
+    div.setAttribute("style","display:none");
+    var checkbox = document.createElement("input");
+    checkbox.setAttribute("type","checkbox");
+    checkbox.setAttribute("onchange","setChiusoLotto(this.checked)");
+    checkbox.setAttribute("style","margin:0px;margin-right:5px");
+    div.appendChild(checkbox);
+    var span = document.createElement("span");
+    div.appendChild(span);
+    actionBar.appendChild(div);
+
+    var div = document.createElement("div");
+    div.setAttribute("class","rcb-input-icon-container");
+    div.setAttribute("id","produzioneLottoCheckboxProducibileContainer");
+    div.setAttribute("style","display:none");
+    var checkbox = document.createElement("input");
+    checkbox.setAttribute("type","checkbox");
+    checkbox.setAttribute("onchange","setProducibileLotto(this.checked)");
+    checkbox.setAttribute("style","margin:0px;margin-right:5px");
+    div.appendChild(checkbox);
+    var span = document.createElement("span");
+    div.appendChild(span);
+    actionBar.appendChild(div);
+
     var containerMessaInProduzioneArticoli = document.createElement("div");
     containerMessaInProduzioneArticoli.setAttribute("class","container-percorso-produttivo-articoli");
     containerMessaInProduzioneArticoli.setAttribute("id","containerMessaInProduzioneArticoli");
     document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerMessaInProduzioneArticoli);
+
+    if(creazioneLottiVariables.id_lotto != "" && creazioneLottiVariables.id_lotto != null && creazioneLottiVariables.id_lotto != undefined)
+        getChartMessaInProduzioneLotto(false);
+}
+function setProducibileLotto(producibile)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+
+    $.post('setProducibileLottoGestioneLottiProduzione.php',{ id_lotto,producibile:producibile.toString() },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+                
+                if(producibile)
+                {
+                    document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("input")[0].checked = true;
+                    document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("span")[0].innerHTML = "Lotto producibile";
+                }
+                else
+                {
+                    document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("input")[0].checked = false;
+                    document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("span")[0].innerHTML = "Lotto non producibile";
+                }
+            }
+        }
+    });
+}
+function setChiusoLotto(chiuso)
+{
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+
+    $.post('setChiusoLottoGestioneLottiProduzione.php',{ id_lotto,chiuso:chiuso.toString() },
+    function (response, status)
+    {
+        if (status == 'success')
+        {
+            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            {
+                Swal.fire
+                ({
+                    icon: 'error',
+                    title:"Errore. Se il problema persiste contatta l' amministratore",
+                    onOpen: function ()
+                    {
+                        document.getElementsByClassName('swal2-title')[0].style.color ='gray';
+                        document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
+                    },
+                });
+                console.log(response);
+            }
+            else
+            {
+                Swal.close();
+                
+                if(chiuso)
+                {
+                    document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("input")[0].checked = true;
+                    document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("span")[0].innerHTML = "Lotto chiuso";
+                }
+                else
+                {
+                    document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("input")[0].checked = false;
+                    document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("span")[0].innerHTML = "Lotto aperto";
+                }
+            }
+        }
+    });
 }
 async function getPopupAggiungiArticoloAlLotto()
 {
@@ -1624,6 +1773,8 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     containerMessaInProduzioneArticoli.innerHTML="";
 
     document.getElementById("btnAggiungiArticoloAlLotto").style.display="none";
+    document.getElementById("produzioneLottoCheckboxProducibileContainer").style.display="none";
+    document.getElementById("produzioneLottoCheckboxChiusoContainer").style.display="none";
 
     var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
     if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
@@ -1631,6 +1782,30 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
         var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
 
         document.getElementById("btnAggiungiArticoloAlLotto").style.display="";
+        document.getElementById("produzioneLottoCheckboxProducibileContainer").style.display="";
+        document.getElementById("produzioneLottoCheckboxChiusoContainer").style.display="";
+        
+        if(lotto.producibile)
+        {
+            document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("input")[0].checked = true;
+            document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("span")[0].innerHTML = "Lotto producibile";
+        }
+        else
+        {
+            document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("input")[0].checked = false;
+            document.getElementById("produzioneLottoCheckboxProducibileContainer").getElementsByTagName("span")[0].innerHTML = "Lotto non producibile";
+        }
+        
+        if(lotto.chiuso)
+        {
+            document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("input")[0].checked = true;
+            document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("span")[0].innerHTML = "Lotto chiuso";
+        }
+        else
+        {
+            document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("input")[0].checked = false;
+            document.getElementById("produzioneLottoCheckboxChiusoContainer").getElementsByTagName("span")[0].innerHTML = "Lotto aperto";
+        }
         
         Swal.fire
         ({
@@ -2216,6 +2391,27 @@ function getPopupCreaNuovoArticolo()
     textarea.setAttribute("onkeyup","checkEnter(event,creaNuovoArticolo)");
     textarea.setAttribute("id", "descrizione");
     row.appendChild(textarea);
+
+    if(view == "produzione_lotto")
+    {
+        var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+
+        if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
+        {
+            var spanNome=document.createElement("span");
+            spanNome.setAttribute("class","input-popup-span");
+            spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+            spanNome.innerHTML="Quantità da aggiungere al lotto";
+            row.appendChild(spanNome);
+
+            var inputNumber=document.createElement("input");
+            inputNumber.setAttribute("class","input-popup-input");
+            inputNumber.setAttribute("type","number");
+            inputNumber.setAttribute("id", "qnt");
+            inputNumber.setAttribute("value", "1");
+            row.appendChild(inputNumber);
+        }
+    }
     
     innerContainer.appendChild(row);
 
@@ -2268,6 +2464,14 @@ function creaNuovoArticolo()
 {
     var codice_articolo = document.getElementById("codice_articolo").value;
     var descrizione = document.getElementById("descrizione").value;
+
+    if(view == "produzione_lotto")
+    {
+        var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+
+        if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
+            var qnt = document.getElementById("qnt").value;
+    }
 
     Swal.fire
     ({
@@ -2324,7 +2528,8 @@ function creaNuovoArticolo()
                             getChartPercorsoProduttivoArticoli(true);
                         break;
                         case "creazione_lotto":
-                            getLottoByIdLotto(creazioneLottiVariables.id_lotto);
+                            if(creazioneLottiVariables.id_lotto != "" && creazioneLottiVariables.id_lotto != null && creazioneLottiVariables.id_lotto != undefined)
+                                getLottoByIdLotto(creazioneLottiVariables.id_lotto);
                         break;
                         case "produzione_lotto":
                             var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
@@ -2332,7 +2537,11 @@ function creaNuovoArticolo()
                             if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
                             {
                                 var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
-                                aggiungiArticoloLottoMessaInProduzioneLotto(response,1,id_lotto,"Articolo creato e aggiunto al lotto " + lotto.lotto);
+
+                                if(qnt < 1 || qnt == "" || qnt == null || qnt == undefined || isNaN(qnt))
+                                    qnt = 1;
+
+                                aggiungiArticoloLottoMessaInProduzioneLotto(response,qnt,id_lotto,"Articolo creato e aggiunto al lotto " + lotto.lotto);
                             }
                             else
                             {
