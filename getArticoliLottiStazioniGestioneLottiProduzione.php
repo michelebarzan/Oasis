@@ -15,6 +15,7 @@
     {
         while($row=sqlsrv_fetch_array($r))
         {
+            $articolo_lotto_stazione["id_registrazione_stazione"]=$row["id_registrazione_stazione"];
             $articolo_lotto_stazione["articolo"]=$row["articolo"];
             $articolo_lotto_stazione["lotto"]=$row["lotto"];
             $articolo_lotto_stazione["stazione"]=$row["stazione"];

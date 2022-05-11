@@ -1839,11 +1839,11 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     
         Swal.close();
     
-        var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100)) / stazioni.length;
+        var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 150)) / stazioni.length;
         if(itemStazioneWidth<30)
         {
-            stazioni = stazioni.slice(0, (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100))/30);
-            var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 100)) / stazioni.length;
+            stazioni = stazioni.slice(0, (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 150))/30);
+            var itemStazioneWidth = (containerMessaInProduzioneArticoli.offsetWidth - 100 - (10 + 450 + 100 + 150)) / stazioni.length;
     
             Swal.fire
             ({
@@ -1915,17 +1915,17 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
         itemQnt.appendChild(span);
         messaInProduzioneArticoliHeader.appendChild(itemQnt);
     
-        var itemAction = document.createElement("div");
-        itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
-        itemAction.setAttribute("style","justify-content:center");
+        var itemProgress = document.createElement("div");
+        itemProgress.setAttribute("class","messa-in-produzione-articoli-item-progress");
+        itemProgress.setAttribute("style","justify-content:center");
         var i = document.createElement("i");
-        i.setAttribute("class","fad fa-cog");
-        itemAction.appendChild(i);
+        i.setAttribute("class","fa-duotone fa-bars-progress");
+        itemProgress.appendChild(i);
         var span = document.createElement("span");
         span.setAttribute("style","font-weight:bold;color:black;margin-left:10px");
-        span.innerHTML="Azione";
-        itemAction.appendChild(span);
-        messaInProduzioneArticoliHeader.appendChild(itemAction);
+        span.innerHTML="Progresso";
+        itemProgress.appendChild(span);
+        messaInProduzioneArticoliHeader.appendChild(itemProgress);
     
         for (let index = 0; index < stazioni.length; index++)
         {
@@ -1983,25 +1983,14 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
             span.innerHTML=articolo.qnt;
             itemQnt.appendChild(span);
             messaInProduzioneArticoloRow.appendChild(itemQnt);
+
+            var itemProgress = document.createElement("div");
+            itemProgress.setAttribute("class","messa-in-produzione-articoli-item-progress");
+            itemProgress.setAttribute("style","justify-content:center");
+            messaInProduzioneArticoloRow.appendChild(itemProgress);
     
-            var itemAction = document.createElement("div");
-            itemAction.setAttribute("class","messa-in-produzione-articoli-item-action");
-            /*var button = document.createElement("button");
-            button.setAttribute("onclick","");
-            button.setAttribute("title","");
-            var i = document.createElement("i");
-            i.setAttribute("class","");
-            button.appendChild(i);
-            itemAction.appendChild(button);
-            var button = document.createElement("button");
-            button.setAttribute("onclick","");
-            button.setAttribute("title","");
-            var i = document.createElement("i");
-            i.setAttribute("class","");
-            button.appendChild(i);
-            itemAction.appendChild(button);*/
-            messaInProduzioneArticoloRow.appendChild(itemAction);
-    
+            var totale_articoli = 0;
+            var n_stazioni_articolo = 0;
             for (let index = 0; index < stazioni.length; index++)
             {
                 const stazione = stazioni[index];
@@ -2009,47 +1998,66 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
                 var articolo_stazione = articoli_stazioni.filter(function (articolo_stazione) {return articolo_stazione.stazione == stazione.id_stazione}).filter(function (articolo_stazione) {return articolo_stazione.articolo == articolo.id_articolo})[0];
                 var articolo_lotto_stazione_array = articoli_lotti_stazioni.filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.lotto == id_lotto}).filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.articolo == articolo.id_articolo}).filter(function (articolo_lotto_stazione) {return articolo_lotto_stazione.stazione == stazione.id_stazione});
 
-                console.log(articolo_lotto_stazione_array)
                 var itemStazione = document.createElement("div");
                 itemStazione.setAttribute("class","messa-in-produzione-articoli-item-stazione");
                 itemStazione.setAttribute("articolo",articolo.id_articolo);
                 itemStazione.setAttribute("stazione",stazione.id_stazione);
-                itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;");
+                itemStazione.setAttribute("title",articolo_lotto_stazione_array.length + " articoli registrati");
+
+                var backgroundColor = "";
+                if(articolo_lotto_stazione_array.length == 0)
+                    backgroundColor = "#ccc";
+                if(articolo_lotto_stazione_array.length > 0 && articolo_lotto_stazione_array.length < articolo.qnt)
+                    backgroundColor = "#E9A93A";
+                if(articolo_lotto_stazione_array.length == articolo.qnt)
+                    backgroundColor = "#70B085";
+                if(articolo_lotto_stazione_array.length > articolo.qnt)
+                    backgroundColor = "#DA6969";
+
+                itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;background-color:"+backgroundColor);
                 
+                totale_articoli += articolo_lotto_stazione_array.length;
                 //------------------------------------------------------------------------------
                 var button = document.createElement("button");
                 if(articolo_stazione==undefined)
                 {
-                    button.setAttribute("style","background-color:#ccc;");
+                    button.setAttribute("style","background-color:"+backgroundColor);
                     button.setAttribute("onclick","showAlertRigaArticoliStazioni(aggiungiRigaArticoliStazioni,this,"+articolo.id_articolo+","+stazione.id_stazione+",'"+articolo.codice_articolo+"')");
                 }
                 else
                 {
-                    button.setAttribute("style","background-color:#70B085;");
+                    n_stazioni_articolo++;
+                    button.setAttribute("style","background-color:"+backgroundColor);
                     button.setAttribute("onclick","showAlertRigaArticoliStazioni(eliminaRigaArticoliStazioni,this,"+articolo.id_articolo+","+stazione.id_stazione+",'"+articolo.codice_articolo+"')");
                     var i = document.createElement("i");
                     i.setAttribute("class","fa-duotone fa-check-circle");
                     button.appendChild(i);
                 }
                 itemStazione.appendChild(button);
-
-                //------------------------------------------------------------------------------
-                
-                if(articolo_lotto_stazione_array.length > 0)
-                {
-                    var button = document.createElement("button");
-                    button.setAttribute("style","background-color:#70B085;");
-                    var i = document.createElement("i");
-                    i.setAttribute("class","fa-duotone fa-check-circle");
-                    button.appendChild(i);
-                    var span = document.createElement("span");
-                    span.innerHTML = articolo_lotto_stazione_array.length;
-                    button.appendChild(span);
-                    itemStazione.appendChild(button);
-                }
     
                 messaInProduzioneArticoloRow.appendChild(itemStazione);
             }
+
+            var percentuale = ((totale_articoli * 100) / (articolo.qnt * n_stazioni_articolo));
+            if(isNaN(percentuale))
+                percentuale = 0;
+
+            var backgroundColor = "";
+            if(percentuale == 100)
+                backgroundColor = "#70B085";
+            if(percentuale == 0)
+                backgroundColor = "transparent";
+            if(percentuale > 0 && percentuale < 100)
+                backgroundColor = "#E9A93A";
+
+            var span = document.createElement("span");
+            span.setAttribute("style","color:black;font-weight:bold;letter-spacing:1px;");
+            span.innerHTML=percentuale.toFixed(2) + "%";
+            itemProgress.appendChild(span);
+            
+            var progressBar = document.createElement("div");
+            progressBar.setAttribute("style","width:"+percentuale+"%;background-color:"+backgroundColor);
+            itemProgress.appendChild(progressBar);
     
             messaInProduzioneArticoliBody.appendChild(messaInProduzioneArticoloRow);
         }
@@ -2083,7 +2091,7 @@ function showAlertRigaArticoliStazioni(callback,button,id_articolo,id_stazione,c
         }
     }).then((result) => {
         if(result.value)
-            callback(button,id_articolo,id_stazione);
+            callback(button,id_articolo,id_stazione,false);
     });
 }
 function sortArticoliMessaInProduzioneArticoli(colonna)
@@ -3216,16 +3224,15 @@ async function getChartPercorsoProduttivoArticoli(scrollToTop)
             itemStazione.setAttribute("style","width:"+itemStazioneWidth+"px;min-width:"+itemStazioneWidth+"px;max-width:"+itemStazioneWidth+"px;");
             
             var button = document.createElement("button");
-            button.setAttribute("onclick","");
             if(articolo_stazione==undefined)
             {
                 button.setAttribute("style","background-color:#ccc;");
-                button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+",true)");
             }
             else
             {
                 button.setAttribute("style","background-color:#70B085;");
-                button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+")");
+                button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo.id_articolo+","+stazione.id_stazione+",true)");
                 var i = document.createElement("i");
                 i.setAttribute("class","fa-duotone fa-check-circle");
                 button.appendChild(i);
@@ -3512,14 +3519,14 @@ function eliminaStazioniArticoloArticoliStazioni(articolo)
                     
                     var button = itemStazione.getElementsByTagName("button")[0];
                     button.style.backgroundColor="#ccc";
-                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+parseInt(itemStazione.getAttribute("stazione"))+")");
+                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+parseInt(itemStazione.getAttribute("stazione"))+",true)");
                     button.innerHTML="";
                 }
             }
         }
     });
 }
-function eliminaRigaArticoliStazioni(button,articolo,stazione)
+function eliminaRigaArticoliStazioni(button,articolo,stazione,skipRefresh)
 {
     Swal.fire
     ({
@@ -3560,14 +3567,24 @@ function eliminaRigaArticoliStazioni(button,articolo,stazione)
             {
                 Swal.close();
                 
-                button.style.backgroundColor="#ccc";
-                button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+stazione+")");
-                button.innerHTML="";
+                if(skipRefresh)
+                {
+                    button.style.backgroundColor="#ccc";
+                    button.innerHTML="";
+                    button.setAttribute("onclick","aggiungiRigaArticoliStazioni(this,"+articolo+","+stazione+",true)");
+                }
+                else
+                {
+                    if(view == "produzione_lotto")
+                        getChartMessaInProduzioneLotto(false);
+                    if(view == "percorso_produttivo_articoli")
+                        getChartPercorsoProduttivoArticoli(false);
+                }
             }
         }
     });
 }
-function aggiungiRigaArticoliStazioni(button,articolo,stazione)
+function aggiungiRigaArticoliStazioni(button,articolo,stazione,skipRefresh)
 {
     Swal.fire
     ({
@@ -3608,11 +3625,21 @@ function aggiungiRigaArticoliStazioni(button,articolo,stazione)
             {
                 Swal.close();
                 
-                button.style.backgroundColor="#70B085";
-                button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo+","+stazione+")");
-                var i = document.createElement("i");
-                i.setAttribute("class","fa-duotone fa-check-circle");
-                button.appendChild(i);
+                if(skipRefresh)
+                {
+                    button.style.backgroundColor="#70B085";
+                    button.setAttribute("onclick","eliminaRigaArticoliStazioni(this,"+articolo+","+stazione+",true)");
+                    var i = document.createElement("i");
+                    i.setAttribute("class","fa-duotone fa-check-circle");
+                    button.appendChild(i);
+                }
+                else
+                {
+                    if(view == "produzione_lotto")
+                        getChartMessaInProduzioneLotto(false);
+                    if(view == "percorso_produttivo_articoli")
+                        getChartPercorsoProduttivoArticoli(false);
+                }
             }
         }
     });
