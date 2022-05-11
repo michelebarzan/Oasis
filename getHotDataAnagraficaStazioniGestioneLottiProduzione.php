@@ -11,6 +11,7 @@
     $column["data"]="nome";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
     $column["data"]="descrizione";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
     $column["data"]="percorso_output_macchina";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
+    $column["data"]="formato_output_macchina";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
 
     foreach ($columns as $column)
     {

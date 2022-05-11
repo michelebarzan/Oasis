@@ -1151,3 +1151,54 @@ body
 	opacity: 0.7;
     box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
 }
+.popup-importa-articoli-lotto-anteprima-container
+{
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+	box-sizing: border-box;
+	overflow-x: auto;
+	overflow-y: auto;
+	max-height: 300px;
+}
+.popup-importa-articoli-lotto-anteprima-container span
+{
+	color:#DA6969;
+	margin-left: 10px;
+	font-weight: bold;
+}
+.popup-importa-articoli-lotto-anteprima-container i
+{
+	color:#DA6969;
+	font-size: 17px;
+}
+.popup-importa-articoli-lotto-anteprima-container table
+{
+	width: 100%;
+	max-width: 100%;
+}
+.popup-importa-articoli-lotto-anteprima-container table th
+{
+	font-family: "Montserrat", sans-serif;
+	color: black;
+	font-weight: normal;
+	font-size: 12px;
+	background-color: #f1f1f1;
+	border:1px solid #bbb;
+	box-sizing: border-box;
+	padding: 5px;
+	font-weight: bold;
+	text-align: center;
+}
+.popup-importa-articoli-lotto-anteprima-container table td
+{
+	font-family: "Montserrat", sans-serif;
+	color: black;
+	font-weight: normal;
+	font-size: 12px;
+	border:1px solid #bbb;
+	box-sizing: border-box;
+	padding: 5px;
+	text-align: left;
+}
