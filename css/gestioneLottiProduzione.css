@@ -455,8 +455,8 @@ body
 	border-radius: 4px;
 	margin-left: 50px;
 	width: calc(100% - 1400px);
-	min-width: calc(100% - 1400px);
-	max-width: calc(100% - 1400px);
+	min-width: 470px;
+	max-width: 600px;
 	height: calc(100% - 40px);
 	min-height: calc(100% - 40px);
 	max-height: calc(100% - 40px);
