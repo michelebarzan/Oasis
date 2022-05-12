@@ -1,51 +1,74 @@
 
 <?php
 
-    /*$path = "C:\\Users\\joshu\\Desktop\\output_macchine_oasis\\SCM_OlimpicK560\\Report\\test.csv";
-    // $path = "C:\\Users\\joshu\\Desktop\\output_macchine_oasis\\SCM_M200\\Report\\2022\\20220330(PRO).csv";
-    // $path = "C:\\Users\\joshu\\Desktop\\output_macchine_oasis\\SCM_CX220\\Report\\2022\\20220328(PRO).csv";
-    // $path = "C:\\Users\\joshu\\Desktop\\output_macchine_oasis\\SCM_GabbianiS\\Report\\export29_03_22.csv";
+    $datas=[];
 
-    //array di oggetti che conterrà tutte le righe del csv
-    $return_array = [];
-    //array di intestazioni di colonna
-    $headers = [];
-    //apro e leggo file
-    $content = fopen($path, "r");
-    //popolo le intestazioni di colonna che (si spera) saranno sempre la prima riga del file
-    $data = fgetcsv($content,";");
-    //separo le intestazioni usando il ";" e le inserisco nell'array di ritorno
-    $headers = explode(";",$data[0]);
-    //prendo i valori e li inserisco in un array temporaneo
-    $tmp_array = [];
+    include "connessione.php";
 
-    for ($i=0; $i < count($headers); $i++) { 
-        if(empty($headers[$i]))
-            unset($headers[$i]);
+    $q="SELECT * FROM oasis_produzione.dbo.stazioni AS stazioni ORDER BY posizione";
+    $r=sqlsrv_query($conn,$q);
+    if($r==FALSE)
+    {
+        die("error".$q);
     }
-    while (($data = fgetcsv($content, 1000, ";")) !== FALSE) {
-        // print_r($data);
-        $num = count($data);
-        if($num == count($headers) -1 || $num == count($headers))
+    else
+    {
+        while($row_lcl=sqlsrv_fetch_array($r))
         {
-            for ($c=0; $c < $num ; $c++) {
-                
-                    if(!empty($data[$c]))
-                    {
-                        $tmp_array[$headers[$c]] = $data[$c];
-                    }
-                    else
-                    {
-                        $tmp_array[$headers[$c]] = "";
-                    }
-            }
-            array_push($return_array, $tmp_array); 
-            $tmp_array = [];
-        }
+            $dir = $row_lcl["percorso_output_macchina"];
+            $extension = $row_lcl["formato_output_macchina"];
+            $col_separator = $row_lcl["separatore_colonne_output_macchina"];
 
+            $dataObj["colonna_articolo_output_macchina"] = $row_lcl["colonna_articolo_output_macchina"];
+            $dataObj["colonna_data_output_macchina"] = $row_lcl["colonna_data_output_macchina"];
+            $dataObj["colonna_ora_output_macchina"] = $row_lcl["colonna_ora_output_macchina"];
+            $dataObj["id_stazione"] = $row_lcl["id_stazione"];
+
+            $data = [];
+
+            if (is_dir($dir))
+            {
+                if ($dh = opendir($dir))
+                {
+                    while (($file_name = readdir($dh)) !== false)
+                    {
+                        $file_array = explode('.', $file_name);
+                        $file_extension = end($file_array);
+
+                        if($file_extension == $extension)
+                        {
+                            $file = fopen($dir."\\".$file_name, "r") or die("Unable to open file!");
+
+                            $dataObj["dataCreazione"] = date ("Y-m-d", filemtime($dir."\\".$file_name));
+
+                            while(!feof($file))
+                            {
+                                $rowString = fgets($file);
+                                $rowString = str_replace("\r\n",'', $rowString);
+                                $rowString = str_replace("\r",'', $rowString);
+                                $rowString = str_replace("\n",'', $rowString);
+                                $rowString = str_replace("'", "", $rowString);
+
+                                $row = [];
+
+                                $row = explode($col_separator,$rowString);
+
+                                array_push($data,$row);
+                            }
+                            fclose($file);
+                        }
+                    }
+
+                    closedir($dh);
+                }
+            }
+
+            $dataObj["data"] = $data;
+
+            array_push($datas,$dataObj);
+        }
     }
 
-    // print_r($return_array);
-    echo json_encode($return_array);*/
+    //echo json_encode($datas);//delete
     
 ?>

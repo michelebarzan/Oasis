@@ -567,7 +567,7 @@ function getElencoLotti(lotti,toSelect)
         var lottoItem = document.createElement('div');
         lottoItem.setAttribute('class', 'lotto-item');
         lottoItem.setAttribute('id_lotto', lotto.id_lotto);
-        lottoItem.setAttribute('onclick','document.getElementById("btnGetPopupModificaLotto").style.display="";document.getElementById("btnGetPopupImportaArticoliLotto").style.display="";getElencoArticoli(' + lotto.id_lotto + ')');
+        lottoItem.setAttribute('onclick','getElencoArticoli(' + lotto.id_lotto + ')');
         if (c == 0)
             lottoItem.setAttribute('style','border-top:1px solid #ccc;border-bottom:1px solid #ccc');
         else
@@ -1062,6 +1062,9 @@ async function getElencoArticoli(id_lotto)
         showCancelButton:false,
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
+
+    document.getElementById("btnGetPopupModificaLotto").style.display="";
+    document.getElementById("btnGetPopupImportaArticoliLotto").style.display="";
 
     resetElencoArticoli();
     
@@ -1767,6 +1770,20 @@ async function getMascheraProduzioneLotto(button)
     button.appendChild(i);
     actionBar.appendChild(button);
 
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("id","btnGetPopupImportaArticoliLotto");
+    button.setAttribute("style","display:none");
+    button.setAttribute("onclick","getPopupImportaArticoliLotto()");
+    var span=document.createElement("span");
+    span.innerHTML="Importa articoli lotto";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-file-import");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
     var div = document.createElement("div");
     div.setAttribute("class","rcb-input-icon-container");
     div.setAttribute("id","produzioneLottoCheckboxChiusoContainer");
@@ -1793,7 +1810,7 @@ async function getMascheraProduzioneLotto(button)
     div.appendChild(span);
     actionBar.appendChild(div);
 
-    var button=document.createElement("button");
+    /*var button=document.createElement("button");
     button.setAttribute("class","rcb-button-text-icon");
     button.setAttribute("onclick","importaRegistrazioniStazioni()");
     var span=document.createElement("span");
@@ -1803,21 +1820,7 @@ async function getMascheraProduzioneLotto(button)
     i.setAttribute("class","fad fa-file-import");
     i.setAttribute("style","margin-left:5px");
     button.appendChild(i);
-    actionBar.appendChild(button);
-
-    var button=document.createElement("button");
-    button.setAttribute("class","rcb-button-text-icon");
-    button.setAttribute("id","btnGetPopupImportaArticoliLotto");
-    button.setAttribute("style","display:none");
-    button.setAttribute("onclick","getPopupImportaArticoliLotto()");
-    var span=document.createElement("span");
-    span.innerHTML="Importa articoli lotto";
-    button.appendChild(span);
-    var i=document.createElement("i");
-    i.setAttribute("class","fad fa-file-import");
-    i.setAttribute("style","margin-left:5px");
-    button.appendChild(i);
-    actionBar.appendChild(button);
+    actionBar.appendChild(button);*/
 
     var containerMessaInProduzioneArticoli = document.createElement("div");
     containerMessaInProduzioneArticoli.setAttribute("class","container-percorso-produttivo-articoli");
@@ -1848,7 +1851,13 @@ function importaRegistrazioniStazioni()
     {
         if (status == 'success')
         {
-            if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
+            try {
+                console.log(JSON.parse(response));
+            } catch (error) {
+                console.log(response)
+            }
+            Swal.close();
+            /*if (response.toLowerCase().indexOf('error') > -1 ||response.toLowerCase().indexOf('notice') > -1 ||response.toLowerCase().indexOf('warning') > -1)
             {
                 Swal.fire
                 ({
@@ -1876,7 +1885,7 @@ function importaRegistrazioniStazioni()
                 }).then((result) => {
                     getChartMessaInProduzioneLotto(false);
                 });
-            }
+            }*/
         }
     });
 }
@@ -3142,7 +3151,7 @@ async function getHotAnagraficaStazioni()
                 }
             }
         );
-        hot.getPlugin('columnSorting').sort({ column: 0, sortOrder: 'desc' });
+        //hot.getPlugin('columnSorting').sort({ column: 6, sortOrder: 'asc' });
         exportPlugin1 = hot.getPlugin('exportFile');
         document.getElementById("hot-display-license-info").remove();
     }
@@ -4199,6 +4208,321 @@ function getArticoliLottiStazioni()
                                 document.getElementsByClassName('swal2-title')[0].style.fontSize = '14px';
                             },
                         });
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+/*------------------------------------------------------------------------------------------------------------------------------*/
+async function getMascheraRegistrazioniStazioni(button)
+{
+    view="registrazioni_stazioni";
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    $(".in-page-nav-bar-button").css({"border-bottom-color":"","font-weight":""});
+    button.style.borderBottomColor="#4C91CB";
+    button.style.fontWeight="bold";
+
+    document.getElementById("actionBarGestioneLottiProduzione").style.display="";
+    document.getElementById("actionBarGestioneLottiProduzione").innerHTML="";
+
+    document.getElementById("gestioneLottiProduzioneContainer").style.display="";
+    document.getElementById("gestioneLottiProduzioneContainer").innerHTML="";
+
+    var actionBar=document.getElementById("actionBarGestioneLottiProduzione");
+
+    var div=document.createElement("div");
+    div.setAttribute("class","rcb-select-container");
+    var span=document.createElement("span");
+    span.innerHTML="Stazione";
+    div.appendChild(span);
+    var select=document.createElement("select");
+    select.setAttribute("style","text-decoration:none;max-width:300px");
+    select.setAttribute("id","selectStazioneRegistrazioniStazioni");
+    select.setAttribute("onchange","getFilesRegistrazioniStazioni()");
+
+    stazioni = await getStazioni();
+
+    Swal.close();
+
+    var option=document.createElement("option");
+    option.setAttribute("value","");
+    option.innerHTML="seleziona...";
+    select.appendChild(option);
+
+    stazioni.forEach(stazione =>
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value",stazione.id_stazione);
+        if(stazione.percorso_output_macchina == "" || stazione.percorso_output_macchina == "NULL" || stazione.percorso_output_macchina == null || stazione.percorso_output_macchina == "null")
+            option.setAttribute("disabled","disabled");
+        option.innerHTML=stazione.nome;
+        select.appendChild(option);
+    });
+
+    div.appendChild(select);
+    actionBar.appendChild(div);
+}
+async function getFilesRegistrazioniStazioni()
+{
+    var id_stazione = document.getElementById("selectStazioneRegistrazioniStazioni").value;
+
+    try {hot.destroy();} catch (error) {}
+    document.getElementById("gestioneLottiProduzioneContainer").innerHTML="";
+
+    if(id_stazione != "" && id_stazione != null && id_stazione != undefined)
+    {
+        Swal.fire
+        ({
+            width:"100%",
+            background:"transparent",
+            title:"Caricamento in corso...",
+            html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+            allowOutsideClick:false,
+            showCloseButton:false,
+            showConfirmButton:false,
+            allowEscapeKey:false,
+            showCancelButton:false,
+            onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+        });
+
+        var containerRegistrazioniStazioni = document.createElement("div");
+        containerRegistrazioniStazioni.setAttribute("class","container-registrazioni-stazioni");
+        containerRegistrazioniStazioni.setAttribute("id","containerRegistrazioniStazioni");
+        document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerRegistrazioniStazioni);
+
+        var filesContainer = document.createElement("div");
+        filesContainer.setAttribute("class","lcontainer-files-registrazioni-stazioni");
+
+        var titleContainer = document.createElement("div");
+        titleContainer.setAttribute("class","title-container-files-registrazioni-stazioni");
+        var i = document.createElement("i");
+        i.setAttribute("class","fa-solid fa-grid");
+        i.setAttribute("style","margin-right:10px");
+        titleContainer.appendChild(i);
+        var span = document.createElement("span");
+        span.innerHTML="Elenco file";
+        titleContainer.appendChild(span);
+        filesContainer.appendChild(titleContainer);
+
+        var innerContainer = document.createElement("div");
+        innerContainer.setAttribute("class","inner-container-files-registrazioni-stazioni");
+        innerContainer.setAttribute("id","innerContainerFilesRegistrazioniStazioni");
+        filesContainer.appendChild(innerContainer);
+        
+        containerRegistrazioniStazioni.appendChild(filesContainer);
+
+        var hotContainer = document.createElement("div");
+        hotContainer.setAttribute("class","hot-container-files-registrazioni-stazioni");
+        hotContainer.setAttribute("id","hotContainerFilesRegistrazioniStazioni");
+        containerRegistrazioniStazioni.appendChild(hotContainer);
+
+        var stazioni = await getStazioni();
+        var stazione = stazioni.filter(function (stazione) {return stazione.id_stazione == id_stazione})[0];
+
+        var container = document.getElementById("innerContainerFilesRegistrazioniStazioni");
+
+        var files = await getFilesStazione(id_stazione);
+
+        function compare( a, b )
+        {
+            if ( a.dataCreazione < b.dataCreazione )
+                return 1;
+            if ( a.dataCreazione > b.dataCreazione )
+                return -1;
+            return 0;
+        }
+        files.sort( compare );
+
+        for (let index = 0; index < files.length; index++)
+        {
+            const file = files[index];
+            
+            var item = document.createElement("item");
+            item.setAttribute("class","files-registrazioni-stazioni-item");
+            item.setAttribute("onclick","getHotRegistrazioniStazioni(this,'"+stazione.percorso_output_macchina.replaceAll('\\','||')+"||"+file.file_name+"."+file.file_extension+"','"+stazione.separatore_colonne_output_macchina+"')");
+            if(index == 0)
+                item.setAttribute("style","border-top: 1px solid #ccc;");
+            
+            var i = document.createElement("i");
+            i.setAttribute("class","fa-duotone fa-file");
+            i.setAttribute("style","margin-right:10px");
+            item.appendChild(i);
+            var span = document.createElement("span");
+            span.setAttribute("style","font-weight:bold;color:#4C91CB");
+            span.innerHTML=file.file_name+"."+file.file_extension;
+            item.appendChild(span);
+
+            var i = document.createElement("i");
+            i.setAttribute("class","fa-duotone fa-calendar-day");
+            i.setAttribute("style","margin-left:auto");
+            item.appendChild(i);
+            var span = document.createElement("span");
+            span.setAttribute("style","margin-left:10px;font-weight:normal;color:gray");
+            span.innerHTML=file.dataCreazione;
+            item.appendChild(span);
+
+            container.appendChild(item);
+        }
+
+        Swal.close();
+    }
+}
+async function getHotRegistrazioniStazioni(button,uri,col_separator)
+{
+    try {hot.destroy();} catch (error) {}
+
+    var container = document.getElementById('hotContainerFilesRegistrazioniStazioni');
+    container.innerHTML="";
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var buttons=document.getElementsByClassName("files-registrazioni-stazioni-item");
+    for (let index = 0; index < buttons.length; index++)
+    {
+        const buttonElement = buttons[index];
+
+        buttonElement.style.backgroundColor="";
+        buttonElement.getElementsByTagName("span")[0].style.color="#4C91CB";
+        buttonElement.getElementsByTagName("span")[1].style.color="gray";
+        buttonElement.getElementsByTagName("i")[0].style.color="";
+        buttonElement.getElementsByTagName("i")[1].style.color="";
+    }
+
+    button.style.backgroundColor="#4C91CB";
+    button.getElementsByTagName("span")[0].style.color="#EBEBEB";
+    button.getElementsByTagName("span")[1].style.color="#EBEBEB";
+    button.getElementsByTagName("i")[0].style.color="#EBEBEB";
+    button.getElementsByTagName("i")[1].style.color="#EBEBEB";
+
+    var response=await getHotDataRegistrazioniStazioni(uri,col_separator);
+
+    Swal.close();
+
+    var height=container.offsetHeight;
+
+    if(response.data.length>0)
+    {
+        hot = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                filters: true,
+                manualColumnMove:true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: false,
+                columnSorting: true,
+                width:"100%",
+                height,
+                columns:response.columns,
+                beforeChange: (changes) =>
+                {
+                    return false;
+                },
+                beforeCreateRow: (index,amount,source) =>
+                {
+                    return false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    return false;
+                },
+                afterDropdownMenuShow: (dropdownMenu) =>
+                {
+                    document.getElementsByClassName("htUIMultipleSelectSearch")[0].getElementsByTagName("input")[0].addEventListener("click", function()
+                    {
+                        document.getElementsByClassName("htUIClearAll")[0].getElementsByTagName("a")[0].click();
+                    });
+                }
+            }
+        );
+        document.getElementById("hot-display-license-info").remove();
+    }
+}
+function getHotDataRegistrazioniStazioni(uri,col_separator)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getHotDataRegistrazioniStazioniGestioneLottiProduzione.php",{uri,col_separator},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function getFilesStazione(id_stazione)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getFilesStazioneGestioneLottiProduzione.php",{id_stazione},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
                         console.log(response);
                         resolve([]);
                     }

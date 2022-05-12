@@ -12,6 +12,11 @@
     $column["data"]="descrizione";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
     $column["data"]="percorso_output_macchina";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
     $column["data"]="formato_output_macchina";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
+    $column["data"]="posizione";$column["readOnly"]=false;$column["type"]="numeric";array_push($columns,$column);
+    $column["data"]="separatore_colonne_output_macchina";$column["readOnly"]=false;$column["type"]="text";array_push($columns,$column);
+    $column["data"]="colonna_articolo_output_macchina";$column["readOnly"]=false;$column["type"]="numeric";array_push($columns,$column);
+    $column["data"]="colonna_data_output_macchina";$column["readOnly"]=false;$column["type"]="numeric";array_push($columns,$column);
+    $column["data"]="colonna_ora_output_macchina";$column["readOnly"]=false;$column["type"]="numeric";array_push($columns,$column);
 
     foreach ($columns as $column)
     {
@@ -20,7 +25,7 @@
 
     $data=[];
 
-    $q="SELECT * FROM oasis_produzione.dbo.stazioni AS stazioni";
+    $q="SELECT * FROM oasis_produzione.dbo.stazioni AS stazioni ORDER BY posizione";
     $r=sqlsrv_query($conn,$q);
     if($r==FALSE)
     {
