@@ -32,6 +32,7 @@
                         {
                             $file["percorso_output_macchina"] = ["percorso_output_macchina"];
                             $file["dataCreazione"] = date ("d/m/Y", filemtime($dir."\\".$file_name));
+                            $file["dataCreazioneInt"] = intval(date ("Ymd", filemtime($dir."\\".$file_name)));
                             $file["file_extension"] = $file_extension;
                             $file["file_name"] = str_replace(".".$file_extension,"",$file_name);
                             array_push($files,$file);

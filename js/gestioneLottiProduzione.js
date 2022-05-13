@@ -4342,9 +4342,9 @@ async function getFilesRegistrazioniStazioni()
 
         function compare( a, b )
         {
-            if ( a.dataCreazione < b.dataCreazione )
+            if ( a.dataCreazioneInt < b.dataCreazioneInt )
                 return 1;
-            if ( a.dataCreazione > b.dataCreazione )
+            if ( a.dataCreazioneInt > b.dataCreazioneInt )
                 return -1;
             return 0;
         }
