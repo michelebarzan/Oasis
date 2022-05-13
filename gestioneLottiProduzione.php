@@ -45,6 +45,10 @@
 					<span>Percorso produttivo articoli</span>
 					<i class="fa-duotone fa-diagram-project"></i>
                 </button>
+				<button class="in-page-nav-bar-button" id="btn_registrazioni_stazioni" onclick="getMascheraRegistrazioniStazioni(this)">
+					<span>Registrazioni stazioni</span>
+					<i class="fa-duotone fa-right-left"></i>
+                </button>
 			</div>
 		</div>
 		<div class="reusable-control-bar" id="actionBarGestioneLottiProduzione" style="display:none"></div>
