@@ -1810,6 +1810,20 @@ async function getMascheraProduzioneLotto(button)
     div.appendChild(span);
     actionBar.appendChild(div);
 
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("id", "btnStampaSchedaArticoliLotto");
+    button.setAttribute("onclick","stampaSchedaArticoliLotto()");
+    button.setAttribute("style","display:none");
+    var span=document.createElement("span");
+    span.innerHTML="Stampa Scheda";
+    button.appendChild(span);
+    var i=document.createElement("i");
+    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("style","margin-left:5px");
+    button.appendChild(i);
+    actionBar.appendChild(button);
+
     /*var button=document.createElement("button");
     button.setAttribute("class","rcb-button-text-icon");
     button.setAttribute("onclick","importaRegistrazioniStazioni()");
@@ -1829,6 +1843,200 @@ async function getMascheraProduzioneLotto(button)
 
     if(creazioneLottiVariables.id_lotto != "" && creazioneLottiVariables.id_lotto != null && creazioneLottiVariables.id_lotto != undefined)
         getChartMessaInProduzioneLotto(false);
+}
+async function stampaSchedaArticoliLotto()
+{
+    var server_adress=await getServerValue("SERVER_ADDR");
+    var server_port=await getServerValue("SERVER_PORT");
+
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+    var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+    var articoliLottoResponse = await getArticoliLotto(id_lotto);
+    var articoli = articoliLottoResponse.articoliLotto;
+    var stazioni = await getStazioni();
+    var articoli_stazioni = await getArticoliStazioni();
+
+    //Per provare con più pagine
+    articoli = [...articoli,...articoli,...articoli];
+    var height = 21;
+    var width = 29.7;
+    var intestazioneRowHeight = 2;
+    var tableRowHeight = 1;
+
+    var printWindow = window.open('', '_blank', 'height=auto,width=auto');
+
+    var script=document.createElement("script");
+    script.defer = true;
+    script.innerHTML="setTimeout(()=>{window.print()}, 300);";
+    printWindow.document.head.appendChild(script);
+
+    var link=document.createElement("link");
+    link.setAttribute("href","http://"+server_adress+":"+server_port+"/oasis/css/fonts.css");
+    link.setAttribute("rel","stylesheet");
+    printWindow.document.head.appendChild(link);
+
+
+    printWindow.document.body.setAttribute("onafterprint","window.close();");
+    printWindow.document.body.style.backgroundColor="white";
+    printWindow.document.body.style.overflow="hidden";
+    printWindow.document.body.style.marginTop="0px";
+    printWindow.document.body.style.paddingTop="0px";
+    printWindow.document.body.style.marginBottom="0px";
+    printWindow.document.body.style.paddingBottom="0px";
+    printWindow.document.body.style.marginLeft="0px";
+    printWindow.document.body.style.paddingRight="0px";
+
+    var headers = ["Codice articolo", "Quantità", ...stazioni.map((stazione)=>{return stazione.nome})];
+    console.log(headers, 'headers');
+    
+    const chunkSize = 18;
+    var page_number = 1;
+
+    var chunk = [];
+    for (let i = 0; i < articoli.length; i += chunkSize) {
+        chunk.push(articoli.slice(i, i + chunkSize));
+    }
+
+    for (let j = 0; j <= chunk.length; j++) {
+        const articoli = chunk[j];
+
+        var container = document.createElement("div");
+        container.setAttribute('style', "display:grid; grid-template-rows: 2cm repeat("+chunkSize+", "+tableRowHeight+"cm); min-width:"+ width+"cm; max-width:"+ width+"cm; width:"+width+"cm; min-height:"+height+"cm; max-height:"+height+"cm; height:"+ height +"cm; border:.5mm solid black;box-sizing:border-box;margin-bottom: 5px;");
+
+        var intestazione = document.createElement('div');
+        intestazione.setAttribute("style","display: grid; grid-template-columns: repeat(3, auto) 74px; min-width:100%;max-width:100%;width:100%;min-height:"+intestazioneRowHeight+"cm;max-height:"+intestazioneRowHeight+"cm;border-bottom:.5mm solid black;box-sizing:border-box");
+        var div=document.createElement("div");
+        div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+        var span=document.createElement("span");
+        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:6mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.innerHTML="<b>"+lotto.lotto+"</b>";
+        div.appendChild(span);
+        intestazione.appendChild(div);
+
+        var div=document.createElement("div");
+        div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+        var span=document.createElement("span");
+        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size: 6mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.innerHTML="<b>"+lotto.dataOraString+"</b>";
+        div.appendChild(span);
+        intestazione.appendChild(div);
+
+        var div=document.createElement("div");
+        div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+        var span=document.createElement("span");
+        span.setAttribute("style","text-align:center;font-family: 'Libre Barcode 39', cursive;font-size: 12mm;padding-top: 5mm;;min-width:calc(100% - 10px);max-width:calc(100% - 10px);width:calc(100% - 10px);margin-left:5px;margin-right:5px;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.innerHTML="*"+lotto.lotto+"*";
+        div.appendChild(span);
+        intestazione.appendChild(div);
+        var intestazionePaginaLogo = document.createElement('div');
+        intestazionePaginaLogo.setAttribute('style', 'display: grid; grid-template-rows: repeat(2, auto); min-width:100%;max-width:100%;width:100%;min-height:100%;max-height:100%;box-sizing:border-box');
+
+        var div=document.createElement("div");
+        div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center; border-bottom:.5mm solid black;");
+        var img=document.createElement("img");
+        img.setAttribute("style","min-height:100%;max-height:100%;height:100%;");
+        img.setAttribute("src","http://"+server_adress+":"+server_port+"/oasis/images/logo.png");
+        div.appendChild(img);
+        intestazionePaginaLogo.appendChild(div);
+
+        var div=document.createElement("div");
+        div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+        var span=document.createElement("span");
+        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.innerHTML="<b> Pagina"+page_number+" di "+ chunk.length+"</b>";
+        div.appendChild(span);
+        intestazionePaginaLogo.appendChild(div);
+        page_number++;
+        intestazione.appendChild(intestazionePaginaLogo);
+        container.appendChild(intestazione);
+
+        var containerTabella = document.createElement("div");
+        containerTabella.setAttribute('style', "display:grid; grid-template-rows: repeat("+chunkSize+", 1cm); min-width:"+ width+"cm; max-width:"+ width+"cm; width:"+width+"cm; min-height:"+height+"cm; max-height:"+height+"cm; height:"+ height +"cm; box-sizing:border-box;");
+
+        var tabella = document.createElement("div");
+        tabella.setAttribute("style","display: grid; grid-template-columns: repeat("+headers.length+","+width/headers.length+"cm); min-width:100%;max-width:100%;width:100%;min-height:"+tableRowHeight+"cm;max-height:"+tableRowHeight+"cm;border-bottom:.5mm solid black;box-sizing:border-box");
+
+        headers.forEach((header)=>
+        {
+            var div=document.createElement("div");
+            div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+            var span=document.createElement("span");
+            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:4mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+            span.innerHTML="<b>"+header+"</b>";
+            div.appendChild(span);
+            tabella.appendChild(div); 
+
+        });
+
+        containerTabella.appendChild(tabella);
+        for (let index2 = 0; index2 < articoli.length; index2++)
+        {
+            const articolo = articoli[index2];
+   
+            var tabella = document.createElement("div");
+            tabella.setAttribute("style","display: grid; grid-template-columns: repeat("+headers.length+","+width/headers.length+"cm); min-width:100%;max-width:100%;width:100%;min-height:"+tableRowHeight+"cm;max-height:"+tableRowHeight+"cm;border-bottom:.5mm solid black;box-sizing:border-box");
+            var div=document.createElement("div");
+            div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+            var span=document.createElement("span");
+            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+            span.innerHTML="<b>"+articolo.codice_articolo+"</b>";
+            div.appendChild(span);
+            tabella.appendChild(div);
+            var div=document.createElement("div");
+            div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+            var span=document.createElement("span");
+            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+            span.innerHTML="<b>"+articolo.qnt+"</b>";
+            div.appendChild(span);
+            tabella.appendChild(div);
+
+            for (let index = 0; index < stazioni.length; index++)
+            {
+                const stazione = stazioni[index];
+                var articolo_stazione = articoli_stazioni.filter(function (articolo_stazione) {return articolo_stazione.stazione == stazione.id_stazione}).filter(function (articolo_stazione) {return articolo_stazione.articolo == articolo.id_articolo})[0];
+
+                if(articolo_stazione!==undefined)
+                {
+                    var div=document.createElement("div");
+                    div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+                    var span=document.createElement("span");
+                    span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:4mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+                    span.innerHTML="<b>"+"V"+"</b>";
+                    div.appendChild(span);
+                    tabella.appendChild(div);    
+                }
+                else
+                {
+                    var div=document.createElement("div");
+                    div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
+                    var span=document.createElement("span");
+                    span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:4mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+                    span.innerHTML="<b>"+""+"</b>";
+                    div.appendChild(span);
+                    tabella.appendChild(div);
+                }
+            }
+            containerTabella.appendChild(tabella);
+            container.appendChild(containerTabella);
+        }
+        printWindow.document.body.appendChild(container);
+    }
+}
+function getServerValue(name)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getServerValue.php",{name},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                resolve(response);
+            }
+            else
+                reject({status});
+        });
+    });
 }
 function importaRegistrazioniStazioni()
 {
@@ -2146,6 +2354,7 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
     document.getElementById("produzioneLottoCheckboxProducibileContainer").style.display="none";
     document.getElementById("produzioneLottoCheckboxChiusoContainer").style.display="none";
     document.getElementById("btnGetPopupImportaArticoliLotto").style.display="none";
+    document.getElementById("btnStampaSchedaArticoliLotto").style.display="none";
 
     var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
     if(id_lotto != "" && id_lotto != null && id_lotto != undefined)
@@ -2156,6 +2365,7 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
         document.getElementById("produzioneLottoCheckboxProducibileContainer").style.display="";
         document.getElementById("produzioneLottoCheckboxChiusoContainer").style.display="";
         document.getElementById("btnGetPopupImportaArticoliLotto").style.display="";
+        document.getElementById("btnStampaSchedaArticoliLotto").style.display="";
         
         if(lotto.producibile)
         {
@@ -3399,7 +3609,7 @@ function getMascheraPercorsoProduttivoArticoli(button)
     document.getElementById("gestioneLottiProduzioneContainer").appendChild(containerPercorsoProduttivoArticoli);
 
     getChartPercorsoProduttivoArticoli(false);
-}
+} 
 async function getChartPercorsoProduttivoArticoli(scrollToTop)
 {
     Swal.fire
