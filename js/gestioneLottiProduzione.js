@@ -798,7 +798,7 @@ function getPopupCreaNuovoLotto()
     var inputTesto=document.createElement("input");
     inputTesto.setAttribute("type","text");
     inputTesto.setAttribute("class","input-popup-input");
-    inputTesto.setAttribute("onkeydown","validateInput(this,event)");
+    inputTesto.setAttribute("onkeydown","validateInput(this,event,['_'])");
     inputTesto.setAttribute("onkeyup","checkEnter(event,creaNuovoLotto)");
     inputTesto.setAttribute("id", "lotto");
     row.appendChild(inputTesto);
@@ -1646,9 +1646,18 @@ function getLotti()
         });
     });
 }
-function validateInput(input,event)
+function validateInput(input,event,extra)
 {
     var allowed=["1","2","3","4","5","6","7","8","9","0","Control","CapsLock",";","Shift","Enter","Backspace","Delete","ArrowLeft","ArrowRight","ArrowUp","ArrowDown"," ","A","a","B","b","C","c","D","d","E","e","F","f","G","g","H","h","I","i","J","j","K","k","L","l","M","m","N","n","O","o","P","p","Q","q","R","r","S","s","T","t","U","u","V","v","W","w","X","x","Y","y","Z","z","/",",",".",":","-","_","(",")"];
+    if(extra != "" && extra != null && extra != undefined)
+    for (let index = 0; index < extra.length; index++)
+    {
+        const element = extra[index];
+
+        const i = allowed.indexOf(element);
+        if (i > -1)
+            allowed.splice(i, 1);
+    }
     if(!allowed.includes(event.key))
     {
         event.preventDefault();
@@ -1813,13 +1822,13 @@ async function getMascheraProduzioneLotto(button)
     var button=document.createElement("button");
     button.setAttribute("class","rcb-button-text-icon");
     button.setAttribute("id", "btnStampaSchedaArticoliLotto");
-    button.setAttribute("onclick","stampaSchedaArticoliLotto()");
+    button.setAttribute("onclick","getPopupStampaSchedaArticoliLotto()");
     button.setAttribute("style","display:none");
     var span=document.createElement("span");
-    span.innerHTML="Stampa Scheda";
+    span.innerHTML="Stampa scheda lotto";
     button.appendChild(span);
     var i=document.createElement("i");
-    i.setAttribute("class","fad fa-plus-circle");
+    i.setAttribute("class","fad fa-print");
     i.setAttribute("style","margin-left:5px");
     button.appendChild(i);
     actionBar.appendChild(button);
@@ -1844,20 +1853,120 @@ async function getMascheraProduzioneLotto(button)
     if(creazioneLottiVariables.id_lotto != "" && creazioneLottiVariables.id_lotto != null && creazioneLottiVariables.id_lotto != undefined)
         getChartMessaInProduzioneLotto(false);
 }
+function getPopupStampaSchedaArticoliLotto()
+{
+    var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
+    var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+
+    var outerContainer=document.createElement("div");
+    outerContainer.setAttribute("class","input-popup-outer-container");
+
+    var innerContainer=document.createElement("div");
+    innerContainer.setAttribute("class","input-popup-inner-container");
+    
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+
+    var spanNome=document.createElement("span");
+    spanNome.setAttribute("class","input-popup-span");
+    spanNome.setAttribute("style","border:none;padding:0px;margin:0px;margin-top:10px;margin-bottom:5px");
+    spanNome.innerHTML="Data prevista inizio produzione";
+    row.appendChild(spanNome);
+
+    var inputData=document.createElement("input");
+    inputData.setAttribute("type","date");
+    inputData.setAttribute("class","input-popup-input");
+    inputData.setAttribute("style","resize:none");
+    inputData.setAttribute("id", "data");
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    inputData.setAttribute("value", yyyy + "-" + mm + "-" + dd);
+    row.appendChild(inputData);
+
+    innerContainer.appendChild(row);
+
+    outerContainer.appendChild(innerContainer);
+
+    var row=document.createElement("div");
+    row.setAttribute("class","input-popup-row");
+    row.setAttribute("style","padding:0px;min-height:30px");
+
+    var button=document.createElement("button");
+    button.setAttribute("class","input-popup-button");
+    button.setAttribute("onclick","stampaSchedaArticoliLotto()");
+    button.innerHTML='<span>Stampa etichetta</span><i class="fad fa-print"></i>';
+    row.appendChild(button);
+
+    outerContainer.appendChild(row);
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Swal.fire
+    ({
+        title: "Stampa etichetta lotto "+lotto.lotto,
+        background:"#f1f1f1",
+        html: outerContainer.outerHTML,
+        showConfirmButton:true,
+        showCloseButton:true,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.textAlign="left";
+            document.getElementsByClassName("swal2-title")[0].style.width="100%";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-close")[0].style.outline="none";
+
+            document.getElementsByClassName("swal2-popup")[0].style.paddingLeft="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.paddingRight="0px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-content")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-header")[0].style.paddingRight="20px";
+            document.getElementsByClassName("swal2-header")[0].style.paddingLeft="20px";
+
+            document.getElementsByClassName("swal2-title")[0].style.color="black";
+
+            document.getElementsByClassName("swal2-actions")[0].style.display="none";
+        }
+    });    
+}
 async function stampaSchedaArticoliLotto()
 {
+    var data = new Date(document.getElementById("data").value);
+
+    var dd = String(data.getDate()).padStart(2, '0');
+    var mm = String(data.getMonth() + 1).padStart(2, '0');
+    var yyyy = data.getFullYear();
+
+    data = dd+"/"+mm+"/"+yyyy;
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
     var server_adress=await getServerValue("SERVER_ADDR");
     var server_port=await getServerValue("SERVER_PORT");
 
     var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
     var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
+    
     var articoliLottoResponse = await getArticoliLotto(id_lotto);
     var articoli = articoliLottoResponse.articoliLotto;
     var stazioni = await getStazioni();
     var articoli_stazioni = await getArticoliStazioni();
 
-    //Per provare con più pagine
-    articoli = [...articoli,...articoli,...articoli];
     var height = 21;
     var width = 29.7;
     var intestazioneRowHeight = 2;
@@ -1865,16 +1974,17 @@ async function stampaSchedaArticoliLotto()
 
     var printWindow = window.open('', '_blank', 'height=auto,width=auto');
 
+    Swal.close();
+
     var script=document.createElement("script");
-    script.defer = true;
     script.innerHTML="setTimeout(()=>{window.print()}, 300);";
     printWindow.document.head.appendChild(script);
 
     var link=document.createElement("link");
     link.setAttribute("href","http://"+server_adress+":"+server_port+"/oasis/css/fonts.css");
     link.setAttribute("rel","stylesheet");
+    link.setAttribute("defer","defer");
     printWindow.document.head.appendChild(link);
-
 
     printWindow.document.body.setAttribute("onafterprint","window.close();");
     printWindow.document.body.style.backgroundColor="white";
@@ -1887,17 +1997,18 @@ async function stampaSchedaArticoliLotto()
     printWindow.document.body.style.paddingRight="0px";
 
     var headers = ["Codice articolo", "Quantità", ...stazioni.map((stazione)=>{return stazione.nome})];
-    console.log(headers, 'headers');
     
     const chunkSize = 18;
     var page_number = 1;
 
     var chunk = [];
-    for (let i = 0; i < articoli.length; i += chunkSize) {
+    for (let i = 0; i < articoli.length; i += chunkSize)
+    {
         chunk.push(articoli.slice(i, i + chunkSize));
     }
 
-    for (let j = 0; j <= chunk.length; j++) {
+    for (let j = 0; j < chunk.length; j++)
+    {
         const articoli = chunk[j];
 
         var container = document.createElement("div");
@@ -1908,7 +2019,7 @@ async function stampaSchedaArticoliLotto()
         var div=document.createElement("div");
         div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
         var span=document.createElement("span");
-        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:6mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:10mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
         span.innerHTML="<b>"+lotto.lotto+"</b>";
         div.appendChild(span);
         intestazione.appendChild(div);
@@ -1916,15 +2027,15 @@ async function stampaSchedaArticoliLotto()
         var div=document.createElement("div");
         div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
         var span=document.createElement("span");
-        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size: 6mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
-        span.innerHTML="<b>"+lotto.dataOraString+"</b>";
+        span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size: 10mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.innerHTML="<b>"+data+"</b>";
         div.appendChild(span);
         intestazione.appendChild(div);
 
         var div=document.createElement("div");
         div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
         var span=document.createElement("span");
-        span.setAttribute("style","text-align:center;font-family: 'Libre Barcode 39', cursive;font-size: 12mm;padding-top: 5mm;;min-width:calc(100% - 10px);max-width:calc(100% - 10px);width:calc(100% - 10px);margin-left:5px;margin-right:5px;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+        span.setAttribute("style","text-align:center;font-family: 'Libre Barcode 39', cursive;font-size: 16mm;padding-top: 5mm;;min-width:calc(100% - 10px);max-width:calc(100% - 10px);width:calc(100% - 10px);margin-left:5px;margin-right:5px;white-space: nowrap;overflow: hidden;text-overflow: clip;");
         span.innerHTML="*"+lotto.lotto+"*";
         div.appendChild(span);
         intestazione.appendChild(div);
@@ -1943,7 +2054,7 @@ async function stampaSchedaArticoliLotto()
         div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
         var span=document.createElement("span");
         span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
-        span.innerHTML="<b> Pagina"+page_number+" di "+ chunk.length+"</b>";
+        span.innerHTML="<b> Pagina "+page_number+" di "+ chunk.length+"</b>";
         div.appendChild(span);
         intestazionePaginaLogo.appendChild(div);
         page_number++;
@@ -1978,14 +2089,14 @@ async function stampaSchedaArticoliLotto()
             var div=document.createElement("div");
             div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
             var span=document.createElement("span");
-            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:4mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
             span.innerHTML="<b>"+articolo.codice_articolo+"</b>";
             div.appendChild(span);
             tabella.appendChild(div);
             var div=document.createElement("div");
             div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center");
             var span=document.createElement("span");
-            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:2.5mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
+            span.setAttribute("style","font-family: 'Questrial', sans-serif;font-size:4mm;margin-left:auto;margin-right:auto;white-space: nowrap;overflow: hidden;text-overflow: clip;");
             span.innerHTML="<b>"+articolo.qnt+"</b>";
             div.appendChild(span);
             tabella.appendChild(div);
@@ -2631,6 +2742,8 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
                 backgroundColor = "transparent";
             if(percentuale > 0 && percentuale < 100)
                 backgroundColor = "#E9A93A";
+            if(percentuale>100)
+                backgroundColor = "#DA6969";
 
             var span = document.createElement("span");
             span.setAttribute("style","color:black;font-weight:bold;letter-spacing:1px;");
@@ -2638,7 +2751,7 @@ async function getChartMessaInProduzioneLotto(scrollToTop)
             itemProgress.appendChild(span);
             
             var progressBar = document.createElement("div");
-            progressBar.setAttribute("style","width:"+percentuale+"%;background-color:"+backgroundColor);
+            progressBar.setAttribute("style","width:calc("+percentuale+"% - 10px);max-width:calc(100% - 10px);min-width:0%;background-color:"+backgroundColor);
             itemProgress.appendChild(progressBar);
     
             messaInProduzioneArticoliBody.appendChild(messaInProduzioneArticoloRow);
