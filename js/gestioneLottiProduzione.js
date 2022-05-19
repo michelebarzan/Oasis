@@ -1956,9 +1956,6 @@ async function stampaSchedaArticoliLotto()
         onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
     });
 
-    var server_adress=await getServerValue("SERVER_ADDR");
-    var server_port=await getServerValue("SERVER_PORT");
-
     var id_lotto = document.getElementById("selectLottoMessaInProduzioneLotto").value;
     var lotto = lotti.filter(function (lotto) {return lotto.id_lotto == id_lotto})[0];
     
@@ -1981,7 +1978,7 @@ async function stampaSchedaArticoliLotto()
     printWindow.document.head.appendChild(script);
 
     var link=document.createElement("link");
-    link.setAttribute("href","http://"+server_adress+":"+server_port+"/oasis/css/fonts.css");
+    link.setAttribute("href","http://remote.oasisgroup.it/oasis/css/fonts.css");
     link.setAttribute("rel","stylesheet");
     link.setAttribute("defer","defer");
     printWindow.document.head.appendChild(link);
@@ -2046,7 +2043,7 @@ async function stampaSchedaArticoliLotto()
         div.setAttribute("style","overflow:hidden;box-sizing:border-box; border-right:.5mm solid black; display: flex; justify-content: center; align-items: center; border-bottom:.5mm solid black;");
         var img=document.createElement("img");
         img.setAttribute("style","min-height:100%;max-height:100%;height:100%;");
-        img.setAttribute("src","http://"+server_adress+":"+server_port+"/oasis/images/logo.png");
+        img.setAttribute("src","http://remote.oasisgroup.it/oasis/images/logo.png");
         div.appendChild(img);
         intestazionePaginaLogo.appendChild(div);
 
