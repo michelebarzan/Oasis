@@ -7,8 +7,8 @@
 	
 	$stazione = preg_replace('/\s+/', '', $stazione);
 	
-	$output2 = shell_exec("net use \\\\srv-dati\\Produzione\\FotoProduzioneAndroid /delete 2>&1");
-	$output2 = shell_exec("net use \\\\srv-dati\\Produzione\\FotoProduzioneAndroid Toiurech01. /user:quaia-oasis\loris 2>&1");
+	$output2 = shell_exec("net use \\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\ /delete 2>&1");
+	$output2 = shell_exec("net use \\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\ Toiurech01. /user:quaia-oasis\loris 2>&1");
 	
 	if(!is_dir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine))
 		mkdir('\\\\srv-dati\\Produzione\\FotoProduzioneAndroid\\'.$ordine);
